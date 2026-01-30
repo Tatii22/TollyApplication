@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/security_app_dev?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    url: ${DB_URL:jdbc:mysql://localhost:3309/tolly_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:1234}
+    password: ${DB_PASSWORD:admin}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -31,7 +31,7 @@ spring:
 # Configuración de logging para desarrollo
 logging:
   level:
-    com.bkseducate.securityapp: DEBUG
+    com.rentaherramientas.tolly: DEBUG
     org.springframework.security: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE

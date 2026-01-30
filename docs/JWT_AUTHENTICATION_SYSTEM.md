@@ -18,7 +18,8 @@
 
 ## Introducción
 
-Este documento describe el sistema completo de autenticación y autorización basado en **JWT (JSON Web Tokens)** implementado en SecurityApp. El sistema utiliza una arquitectura hexagonal (puertos y adaptadores) con Domain-Driven Design (DDD), garantizando separación de responsabilidades y mantenibilidad.
+Este documento describe el sistema completo de autenticación y autorización basado en **JWT (JSON Web Tokens)** implementado en tolly
+. El sistema utiliza una arquitectura hexagonal (puertos y adaptadores) con Domain-Driven Design (DDD), garantizando separación de responsabilidades y mantenibilidad.
 
 ### Características Principales
 

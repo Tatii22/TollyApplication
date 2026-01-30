@@ -19,4 +19,4 @@ jwt:
 
 logging:
   level:
-    com.bkseducate.securityapp: DEBUG
+    com.rentaherramientas.tolly: DEBUG

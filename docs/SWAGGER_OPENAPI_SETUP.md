@@ -1,6 +1,7 @@
 # Configuración e Instalación de Swagger/OpenAPI
 
-Este documento explica cómo está configurado Swagger/OpenAPI en el proyecto SecurityApp y cómo utilizarlo.
+Este documento explica cómo está configurado Swagger/OpenAPI en el proyecto tolly
+ y cómo utilizarlo.
 
 ## 📚 Índice
 
@@ -45,7 +46,8 @@ El proyecto usa **SpringDoc OpenAPI**, que es la implementación moderna y recom
 
 La configuración se encuentra en:
 ```
-src/main/java/com/bkseducate/securityapp/infrastructure/config/OpenApiConfig.java
+src/main/java/com/bkseducate/tolly
+/infrastructure/config/OpenApiConfig.java
 ```
 
 Esta clase define:

@@ -1,4 +1,5 @@
-# SecurityApp
+# tolly
+
 
 Aplicación de autenticación y autorización construida con Spring Boot 3.3.0 y Spring Security 6, siguiendo **Arquitectura Hexagonal** y **Domain-Driven Design (DDD)**.
 
@@ -7,7 +8,8 @@ Aplicación de autenticación y autorización construida con Spring Boot 3.3.0 y
 El proyecto está estructurado siguiendo los principios de Arquitectura Hexagonal:
 
 ```
-src/main/java/com/bkseducate/securityapp/
+src/main/java/com/bkseducate/tolly
+/
 ├── domain/                    # Capa de dominio (sin dependencias externas)
 │   ├── model/                # Entidades de dominio (User, Role, RefreshToken)
 │   ├── ports/                # Interfaces (puertos) del dominio
@@ -241,11 +243,13 @@ mvn test
 mvn clean package
 ```
 
-El JAR ejecutable se generará en `target/security-app-1.0.0-SNAPSHOT.jar`
+El JAR ejecutable se generará en `target/tolly
+-1.0.0-SNAPSHOT.jar`
 
 Ejecutar JAR:
 ```bash
-java -jar target/security-app-1.0.0-SNAPSHOT.jar
+java -jar target/tolly
+-1.0.0-SNAPSHOT.jar
 ```
 
 ## 🗄️ Base de datos

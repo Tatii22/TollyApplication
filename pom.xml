@@ -12,10 +12,12 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.bkseducate</groupId>
-    <artifactId>security-app</artifactId>
+    <groupId>com.rentaherramientas</groupId>
+    <artifactId>tolly
+</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>SecurityApp</name>
+    <name>tolly
+</name>
     <description>Spring Boot Security Application with Hexagonal Architecture</description>
     <packaging>jar</packaging>
 

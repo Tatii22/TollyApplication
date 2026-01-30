@@ -37,12 +37,13 @@ springdoc:
 # Configuración de logging para producción
 logging:
   level:
-    com.bkseducate.securityapp: INFO
+    com.rentaherramientas.tolly: INFO
     org.springframework.security: WARN
     org.hibernate.SQL: WARN
     org.hibernate.type.descriptor.sql.BasicBinder: WARN
   file:
-    name: ${LOG_FILE_PATH:/var/log/security-app/application.log}
+    name: ${LOG_FILE_PATH:/var/log/tolly
+/application.log}
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
