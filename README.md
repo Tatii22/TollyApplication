@@ -231,7 +231,7 @@ curl -X PUT http://localhost:8080/users/{userId}/roles \
 - `ROLE_ADMIN` - Requerido para asignar roles
 - `ROLE_MODERATOR` - Rol adicional disponible
 
-## 🧪 Testing
+## 🧪 Testing 
 
 ```bash
 mvn test
