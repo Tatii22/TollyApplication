@@ -2,7 +2,8 @@ package com.rentaherramientas.tolly.infrastructure.persistence.adapters.in.rest;
 
 import com.rentaherramientas.tolly.application.dto.AssignRoleRequest;
 import com.rentaherramientas.tolly.application.dto.UserResponse;
-import com.rentaherramientas.tolly.application.usecase.AssignRoleUseCase;
+import com.rentaherramientas.tolly.application.usecase.user.AssignRoleUseCase;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

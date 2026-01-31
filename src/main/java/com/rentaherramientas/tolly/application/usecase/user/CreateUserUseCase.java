@@ -1,7 +1,7 @@
-package com.rentaherramientas.tolly.application.usecase;
+package com.rentaherramientas.tolly.application.usecase.user;
 
-import com.rentaherramientas.tolly.application.dto.RegisterRequest;
 import com.rentaherramientas.tolly.application.dto.UserResponse;
+import com.rentaherramientas.tolly.application.dto.auth.RegisterRequest;
 import com.rentaherramientas.tolly.application.mapper.UserMapper;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 import com.rentaherramientas.tolly.domain.model.Role;
