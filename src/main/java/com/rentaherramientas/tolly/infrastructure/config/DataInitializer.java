@@ -17,23 +17,22 @@ import java.util.UUID;
 @Component
 @Order(1)
 public class DataInitializer implements CommandLineRunner {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
-    
+
     private final RoleRepository roleRepository;
-    
+
     public DataInitializer(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
-    
+
     @Override
     public void run(String... args) {
         initializeRoles();
     }
-    
     private void initializeRoles() {
         logger.info("Inicializando roles...");
-        
+
         // Crear rol USER
         if (!roleRepository.existsByAuthority("ROLE_USER")) {
             Role userRole = Role.reconstruct(
@@ -44,7 +43,7 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.save(userRole);
             logger.info("Rol USER creado");
         }
-        
+
         // Crear rol ADMIN
         if (!roleRepository.existsByAuthority("ROLE_ADMIN")) {
             Role adminRole = Role.reconstruct(
@@ -55,18 +54,28 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.save(adminRole);
             logger.info("Rol ADMIN creado");
         }
-        
+
         // Crear rol MODERATOR
-        if (!roleRepository.existsByAuthority("ROLE_MODERATOR")) {
+        if (!roleRepository.existsByAuthority("ROLE_PROVIDER")) {
             Role moderatorRole = Role.reconstruct(
                 UUID.fromString("550e8400-e29b-41d4-a716-446655440003"),
-                "MODERATOR",
-                "ROLE_MODERATOR"
+                "PROVIDER",
+                "ROLE_PROVIDER"
             );
             roleRepository.save(moderatorRole);
-            logger.info("Rol MODERATOR creado");
+            logger.info("Rol PROVIDER creado");
         }
-        
+
+        if (!roleRepository.existsByAuthority("ROLE_CLIENT")) {
+            Role moderatorRole = Role.reconstruct(
+                UUID.fromString("550e8400-e29b-41d4-a716-446655440004"),
+                "CLIENT",
+                "ROLE_CLIENT"
+            );
+            roleRepository.save(moderatorRole);
+            logger.info("Rol CLIENT creado");
+        }
+
         logger.info("Inicialización de roles completada");
     }
 }
