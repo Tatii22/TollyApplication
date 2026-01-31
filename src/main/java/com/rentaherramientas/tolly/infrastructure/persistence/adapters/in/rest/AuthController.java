@@ -1,7 +1,18 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.in.rest;
 
 import com.rentaherramientas.tolly.application.dto.*;
+import com.rentaherramientas.tolly.application.dto.auth.LoginRequest;
+import com.rentaherramientas.tolly.application.dto.auth.LoginResponse;
+import com.rentaherramientas.tolly.application.dto.auth.RefreshTokenRequest;
+import com.rentaherramientas.tolly.application.dto.auth.RegisterRequest;
 import com.rentaherramientas.tolly.application.usecase.*;
+import com.rentaherramientas.tolly.application.usecase.auth.ChangePasswordUseCase;
+import com.rentaherramientas.tolly.application.usecase.auth.LoginUseCase;
+import com.rentaherramientas.tolly.application.usecase.auth.LogoutUseCase;
+import com.rentaherramientas.tolly.application.usecase.auth.RefreshTokenUseCase;
+import com.rentaherramientas.tolly.application.usecase.user.CreateUserUseCase;
+import com.rentaherramientas.tolly.application.usecase.user.GetCurrentUserUseCase;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

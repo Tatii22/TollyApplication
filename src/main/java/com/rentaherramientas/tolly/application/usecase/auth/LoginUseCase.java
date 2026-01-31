@@ -1,7 +1,7 @@
-package com.rentaherramientas.tolly.application.usecase;
+package com.rentaherramientas.tolly.application.usecase.auth;
 
-import com.rentaherramientas.tolly.application.dto.LoginRequest;
-import com.rentaherramientas.tolly.application.dto.LoginResponse;
+import com.rentaherramientas.tolly.application.dto.auth.LoginRequest;
+import com.rentaherramientas.tolly.application.dto.auth.LoginResponse;
 import com.rentaherramientas.tolly.domain.exceptions.InvalidCredentialsException;
 import com.rentaherramientas.tolly.domain.exceptions.UserNotFoundException;
 import com.rentaherramientas.tolly.domain.model.RefreshToken;

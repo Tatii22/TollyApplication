@@ -3,6 +3,7 @@ package com.rentaherramientas.tolly.application.mapper;
 import com.rentaherramientas.tolly.domain.model.enums.ToolStatus;
 import org.mapstruct.Mapper;
 
+
 @Mapper(componentModel = "spring")
 public interface ToolMapper {
 

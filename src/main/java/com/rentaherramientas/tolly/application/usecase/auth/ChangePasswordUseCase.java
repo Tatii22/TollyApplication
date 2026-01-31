@@ -1,4 +1,4 @@
-package com.rentaherramientas.tolly.application.usecase;
+package com.rentaherramientas.tolly.application.usecase.auth;
 
 import com.rentaherramientas.tolly.application.dto.ChangePasswordRequest;
 import com.rentaherramientas.tolly.domain.exceptions.InvalidCredentialsException;

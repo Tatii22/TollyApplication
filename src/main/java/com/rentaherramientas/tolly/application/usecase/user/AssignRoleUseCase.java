@@ -1,4 +1,4 @@
-package com.rentaherramientas.tolly.application.usecase;
+package com.rentaherramientas.tolly.application.usecase.user;
 
 import com.rentaherramientas.tolly.application.dto.AssignRoleRequest;
 import com.rentaherramientas.tolly.application.dto.UserResponse;
