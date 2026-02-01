@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 
 
 @Mapper(componentModel = "spring")
-public interface ToolMapper {
+public interface ToolMapper{
 
     // Convierte ToolStatus a String (almacenado en la base de datos)
     default String toolStatusToString(ToolStatus status) {
