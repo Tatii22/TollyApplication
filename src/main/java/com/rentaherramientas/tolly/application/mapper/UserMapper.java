@@ -1,6 +1,8 @@
 package com.rentaherramientas.tolly.application.mapper;
 
+import com.rentaherramientas.tolly.application.dto.ClientResponse;
 import com.rentaherramientas.tolly.application.dto.RoleResponse;
+import com.rentaherramientas.tolly.application.dto.SupplierResponse;
 import com.rentaherramientas.tolly.application.dto.UserResponse;
 import com.rentaherramientas.tolly.domain.model.Role;
 import com.rentaherramientas.tolly.domain.model.User;
@@ -19,12 +21,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(target = "roles", source = "roles")
-    @Mapping(target = "client", expression = "java(user.getClient() != null ? new ClientResponse(user.getClient().getAddress()) : null)")
-    @Mapping(target = "supplier", expression = "java(user.getSupplier() != null ? new SupplierResponse(user.getSupplier().getPhone(), user.getSupplier().getCompany()) : null)")
-    UserResponse toResponse(User user);
+  @Mapping(target = "roles", source = "roles")
+  @Mapping(target = "client", expression = "java(user.getClient() != null ? new ClientResponse(user.getClient().getAddress()) : null)")
+  @Mapping(target = "supplier", expression = "java(user.getSupplier() != null ? new SupplierResponse(user.getSupplier().getPhone(), user.getSupplier().getCompany()) : null)")
+  UserResponse toResponse(User user);
 
-    java.util.List<RoleResponse> rolesToRoleResponses(Set<Role> roles);
+  java.util.List<RoleResponse> rolesToRoleResponses(Set<Role> roles);
 
-    RoleResponse toRoleResponse(Role role);
+  RoleResponse toRoleResponse(Role role);
 }
