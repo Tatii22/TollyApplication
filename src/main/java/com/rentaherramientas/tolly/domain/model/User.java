@@ -1,6 +1,8 @@
 package com.rentaherramientas.tolly.domain.model;
 
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
+import com.rentaherramientas.tolly.domain.model.enums.UserStatus;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

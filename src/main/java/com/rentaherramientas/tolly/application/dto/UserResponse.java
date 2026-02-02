@@ -1,9 +1,10 @@
 package com.rentaherramientas.tolly.application.dto;
 
-import com.rentaherramientas.tolly.domain.model.UserStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
 import java.util.UUID;
+
+import com.rentaherramientas.tolly.domain.model.enums.UserStatus;
 
 /**
  * DTO para respuesta de usuario

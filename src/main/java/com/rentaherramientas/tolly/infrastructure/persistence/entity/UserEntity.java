@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import com.rentaherramientas.tolly.domain.model.UserStatus;
+import com.rentaherramientas.tolly.domain.model.enums.UserStatus;
 
 /**
  * Entidad JPA para User
