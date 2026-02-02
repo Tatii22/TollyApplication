@@ -28,7 +28,8 @@ public class DataInitializer implements CommandLineRunner {
   private final UserRepository userRepository;
   private final PasswordService passwordService;
 
-  public DataInitializer(RoleRepository roleRepository, UserRepository userRepository,PasswordService passwordService) {
+  public DataInitializer(RoleRepository roleRepository, UserRepository userRepository,
+      PasswordService passwordService) {
     this.roleRepository = roleRepository;
     this.userRepository = userRepository;
     this.passwordService = passwordService;
@@ -37,6 +38,7 @@ public class DataInitializer implements CommandLineRunner {
   @Override
   public void run(String... args) {
     initializeRoles();
+    initializeAdmin();
   }
 
   private void initializeRoles() {
@@ -81,11 +83,30 @@ public class DataInitializer implements CommandLineRunner {
       logger.info("Rol CLIENT creado");
     }
 
-    User admin = User.create("admintoll@example.com", passwordService.hash("123456"));
-    Role adminRole = roleRepository.findByAuthority("ROLE_ADMIN").get();
+    logger.info("Inicialización de roles completada");
+  }
+
+  private void initializeAdmin() {
+
+    String adminEmail = "admintoll@example.com";
+
+    if (userRepository.existsByEmail(adminEmail)) {
+        logger.info("Admin ya existe, no se crea nuevamente");
+        return;
+    }
+
+    User admin = User.create(
+        adminEmail,
+        passwordService.hash("123456")
+    );
+
+    Role adminRole = roleRepository.findByAuthority("ROLE_ADMIN")
+        .orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"));
+
     admin.assignRole(adminRole);
     userRepository.save(admin);
 
-    logger.info("Inicialización de roles completada");
+    logger.info("Usuario ADMIN creado correctamente");
   }
+
 }
