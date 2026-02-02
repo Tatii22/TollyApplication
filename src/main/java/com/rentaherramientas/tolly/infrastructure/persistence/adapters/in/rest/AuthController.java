@@ -5,13 +5,13 @@ import com.rentaherramientas.tolly.application.dto.auth.LoginRequest;
 import com.rentaherramientas.tolly.application.dto.auth.LoginResponse;
 import com.rentaherramientas.tolly.application.dto.auth.RefreshTokenRequest;
 import com.rentaherramientas.tolly.application.dto.auth.RegisterRequest;
-import com.rentaherramientas.tolly.application.usecase.*;
 import com.rentaherramientas.tolly.application.usecase.auth.ChangePasswordUseCase;
 import com.rentaherramientas.tolly.application.usecase.auth.LoginUseCase;
 import com.rentaherramientas.tolly.application.usecase.auth.LogoutUseCase;
 import com.rentaherramientas.tolly.application.usecase.auth.RefreshTokenUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.CreateUserUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.GetCurrentUserUseCase;
+import com.rentaherramientas.tolly.application.usecase.user.ListUsersUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,9 +23,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -36,126 +38,110 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    
-    private final CreateUserUseCase createUserUseCase;
-    private final LoginUseCase loginUseCase;
-    private final RefreshTokenUseCase refreshTokenUseCase;
-    private final LogoutUseCase logoutUseCase;
-    private final ChangePasswordUseCase changePasswordUseCase;
-    private final GetCurrentUserUseCase getCurrentUserUseCase;
-    
-    public AuthController(
-            CreateUserUseCase createUserUseCase,
-            LoginUseCase loginUseCase,
-            RefreshTokenUseCase refreshTokenUseCase,
-            LogoutUseCase logoutUseCase,
-            ChangePasswordUseCase changePasswordUseCase,
-            GetCurrentUserUseCase getCurrentUserUseCase) {
-        this.createUserUseCase = createUserUseCase;
-        this.loginUseCase = loginUseCase;
-        this.refreshTokenUseCase = refreshTokenUseCase;
-        this.logoutUseCase = logoutUseCase;
-        this.changePasswordUseCase = changePasswordUseCase;
-        this.getCurrentUserUseCase = getCurrentUserUseCase;
-    }
-    
-    @Operation(
-        summary = "Registrar nuevo usuario",
-        description = "Crea un nuevo usuario en el sistema. Se asigna automáticamente el rol ROLE_USER."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente",
-            content = @Content(schema = @Schema(implementation = UserResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario ya existe"),
-        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
-    @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        UserResponse response = createUserUseCase.execute(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-    
-    @Operation(
-        summary = "Iniciar sesión",
-        description = "Autentica un usuario y retorna un access token y refresh token JWT."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Login exitoso",
-            content = @Content(schema = @Schema(implementation = LoginResponse.class))),
-        @ApiResponse(responseCode = "401", description = "Credenciales inválidas"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse response = loginUseCase.execute(request);
-        return ResponseEntity.ok(response);
-    }
-    
-    @Operation(
-        summary = "Refrescar access token",
-        description = "Genera un nuevo access token usando un refresh token válido."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Token refrescado exitosamente",
-            content = @Content(schema = @Schema(implementation = LoginResponse.class))),
-        @ApiResponse(responseCode = "401", description = "Refresh token inválido o expirado")
-    })
-    @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        LoginResponse response = refreshTokenUseCase.execute(request);
-        return ResponseEntity.ok(response);
-    }
-    
-    @Operation(
-        summary = "Cerrar sesión",
-        description = "Invalida el refresh token, cerrando la sesión del usuario."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Sesión cerrada exitosamente"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request, 
-                                       Authentication authentication) {
-        logoutUseCase.execute(request.refreshToken());
-        return ResponseEntity.noContent().build();
-    }
-    
-    @Operation(
-        summary = "Obtener usuario autenticado",
-        description = "Retorna la información del usuario actualmente autenticado."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente",
-            content = @Content(schema = @Schema(implementation = UserResponse.class))),
-        @ApiResponse(responseCode = "401", description = "No autenticado"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @SecurityRequirement(name = "bearerAuth")
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
-        UUID userId = (UUID) authentication.getPrincipal();
-        UserResponse response = getCurrentUserUseCase.execute(userId);
-        return ResponseEntity.ok(response);
-    }
-    
-    @Operation(
-        summary = "Cambiar contraseña",
-        description = "Permite al usuario autenticado cambiar su contraseña. Requiere la contraseña actual."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Contraseña cambiada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos"),
-        @ApiResponse(responseCode = "401", description = "Contraseña actual incorrecta o no autenticado")
-    })
-    @SecurityRequirement(name = "bearerAuth")
-    @PutMapping("/change-password")
-    public ResponseEntity<Void> changePassword(
-            @Valid @RequestBody ChangePasswordRequest request,
-            Authentication authentication) {
-        UUID userId = (UUID) authentication.getPrincipal();
-        changePasswordUseCase.execute(userId, request);
-        return ResponseEntity.noContent().build();
-    }
+
+  private final CreateUserUseCase createUserUseCase;
+  private final LoginUseCase loginUseCase;
+  private final RefreshTokenUseCase refreshTokenUseCase;
+  private final LogoutUseCase logoutUseCase;
+  private final ChangePasswordUseCase changePasswordUseCase;
+  private final GetCurrentUserUseCase getCurrentUserUseCase;
+  private final ListUsersUseCase listUsersUseCase;
+
+
+
+  public AuthController(CreateUserUseCase createUserUseCase, LoginUseCase loginUseCase,
+      RefreshTokenUseCase refreshTokenUseCase, LogoutUseCase logoutUseCase, ChangePasswordUseCase changePasswordUseCase,
+      GetCurrentUserUseCase getCurrentUserUseCase, ListUsersUseCase listUsersUseCase) {
+    this.createUserUseCase = createUserUseCase;
+    this.loginUseCase = loginUseCase;
+    this.refreshTokenUseCase = refreshTokenUseCase;
+    this.logoutUseCase = logoutUseCase;
+    this.changePasswordUseCase = changePasswordUseCase;
+    this.getCurrentUserUseCase = getCurrentUserUseCase;
+    this.listUsersUseCase = listUsersUseCase;
+  }
+
+  @Operation(summary = "Registrar nuevo usuario", description = "Crea un nuevo usuario en el sistema. Se asigna automáticamente el rol ROLE_USER.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+      @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario ya existe"),
+      @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+  })
+  @PostMapping("/register")
+  public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
+    UserResponse response = createUserUseCase.execute(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y retorna un access token y refresh token JWT.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Login exitoso", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+      @ApiResponse(responseCode = "401", description = "Credenciales inválidas"),
+      @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+  })
+  @PostMapping("/login")
+  public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    LoginResponse response = loginUseCase.execute(request);
+    return ResponseEntity.ok(response);
+  }
+
+  @Operation(summary = "Refrescar access token", description = "Genera un nuevo access token usando un refresh token válido.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Token refrescado exitosamente", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+      @ApiResponse(responseCode = "401", description = "Refresh token inválido o expirado")
+  })
+  @PostMapping("/refresh")
+  public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+    LoginResponse response = refreshTokenUseCase.execute(request);
+    return ResponseEntity.ok(response);
+  }
+
+  @Operation(summary = "Cerrar sesión", description = "Invalida el refresh token, cerrando la sesión del usuario.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "204", description = "Sesión cerrada exitosamente"),
+      @ApiResponse(responseCode = "401", description = "No autenticado")
+  })
+  @SecurityRequirement(name = "bearerAuth")
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request,
+      Authentication authentication) {
+    logoutUseCase.execute(request.refreshToken());
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/admin/users")
+  @PreAuthorize("hasRole('ADMIN')")
+  public List<UserResponse> listUsers() {
+    return listUsersUseCase.execute();
+  }
+
+  @Operation(summary = "Obtener usuario autenticado", description = "Retorna la información del usuario actualmente autenticado.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Usuario obtenido exitosamente", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+      @ApiResponse(responseCode = "401", description = "No autenticado"),
+      @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+  })
+  @SecurityRequirement(name = "bearerAuth")
+  @GetMapping("/me")
+  public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
+    UUID userId = (UUID) authentication.getPrincipal();
+    UserResponse response = getCurrentUserUseCase.execute(userId);
+    return ResponseEntity.ok(response);
+  }
+
+  @Operation(summary = "Cambiar contraseña", description = "Permite al usuario autenticado cambiar su contraseña. Requiere la contraseña actual.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "204", description = "Contraseña cambiada exitosamente"),
+      @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+      @ApiResponse(responseCode = "401", description = "Contraseña actual incorrecta o no autenticado")
+  })
+  @SecurityRequirement(name = "bearerAuth")
+  @PutMapping("/change-password")
+  public ResponseEntity<Void> changePassword(
+      @Valid @RequestBody ChangePasswordRequest request,
+      Authentication authentication) {
+    UUID userId = (UUID) authentication.getPrincipal();
+    changePasswordUseCase.execute(userId, request);
+    return ResponseEntity.noContent().build();
+  }
 }

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import com.rentaherramientas.tolly.domain.model.UserStatus;
+import com.rentaherramientas.tolly.domain.model.enums.UserStatus;
 
 /**
  * Entidad JPA para User
@@ -16,7 +16,7 @@ import com.rentaherramientas.tolly.domain.model.UserStatus;
 public class UserEntity {
 
   @Id
-  @Column(columnDefinition = "CHAR(36)", length = 36)
+  @Column(columnDefinition = "CHAR(36)")
   private UUID id;
 
   @Column(nullable = false, unique = true)
@@ -25,7 +25,7 @@ public class UserEntity {
   @Column(nullable = false)
   private String password;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<RoleEntity> roles = new HashSet<>();
 

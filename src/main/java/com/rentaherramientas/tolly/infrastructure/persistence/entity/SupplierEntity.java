@@ -9,10 +9,10 @@ import jakarta.persistence.*;
 public class SupplierEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(columnDefinition = "CHAR(36)")
+    private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
     private UUID userId;
 
     @Column(nullable = false, length = 10)
@@ -21,13 +21,20 @@ public class SupplierEntity {
     @Column(nullable = false, length = 20)
     private String company;
 
-    protected SupplierEntity() {}
+    public SupplierEntity() {}
 
-    public Long getId() {
+    public UUID getId() {
       return id;
     }
 
-    public void setId(Long id) {
+    public SupplierEntity(UUID id, UUID userId, String phone, String company) {
+      this.id = id;
+      this.userId = userId;
+      this.phone = phone;
+      this.company = company;
+    }
+
+    public void setId(UUID id) {
       this.id = id;
     }
 
@@ -54,6 +61,8 @@ public class SupplierEntity {
     public void setCompany(String company) {
       this.company = company;
     }
+
+
 
 
 }
