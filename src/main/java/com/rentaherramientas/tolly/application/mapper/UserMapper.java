@@ -1,12 +1,16 @@
 package com.rentaherramientas.tolly.application.mapper;
 
+import com.rentaherramientas.tolly.application.dto.ClientResponse;
 import com.rentaherramientas.tolly.application.dto.RoleResponse;
+import com.rentaherramientas.tolly.application.dto.SupplierResponse;
 import com.rentaherramientas.tolly.application.dto.UserResponse;
 import com.rentaherramientas.tolly.domain.model.Role;
 import com.rentaherramientas.tolly.domain.model.User;
+
+import java.util.Set;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 
 /**
  * Mapper MapStruct para conversión entre User (dominio) y UserResponse (DTO)
@@ -15,21 +19,14 @@ import org.mapstruct.Mapping;
  * No usar INSTANCE estático con este modelo.
  */
 @Mapper(componentModel = "spring")
-public interface UserMapper{
+public interface UserMapper {
 
-    /**
-     * Convierte un User del dominio a UserResponse DTO
-     */
     @Mapping(target = "roles", source = "roles")
+    @Mapping(target = "client", expression = "java(user.getClient() != null ? new ClientResponse(user.getClient().getAddress()) : null)")
+    @Mapping(target = "supplier", expression = "java(user.getSupplier() != null ? new SupplierResponse(user.getSupplier().getPhone(), user.getSupplier().getCompany()) : null)")
     UserResponse toResponse(User user);
 
-    /**
-     * Convierte una lista de Roles del dominio a lista de RoleResponse DTOs
-     */
-    java.util.List<RoleResponse> rolesToRoleResponses(java.util.Set<Role> roles);
+    java.util.List<RoleResponse> rolesToRoleResponses(Set<Role> roles);
 
-    /**
-     * Convierte un Role del dominio a RoleResponse DTO
-     */
     RoleResponse toRoleResponse(Role role);
 }

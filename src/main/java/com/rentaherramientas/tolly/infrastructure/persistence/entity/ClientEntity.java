@@ -8,42 +8,41 @@ import jakarta.persistence.*;
 @Table(name = "clients")
 public class ClientEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @Column(columnDefinition = "CHAR(36)")
+  private UUID id;
 
-    @Column(nullable = false)
-    private UUID userId;
+  @Column(name = "user_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
+  private UUID userId;
 
-    @Column(nullable = false, length = 255)
-    private String address;
+  @Column(nullable = false, length = 255)
+  private String address;
 
-    protected ClientEntity() {}
+  public ClientEntity() {
+  }
 
-    public Long getId() {
-      return id;
-    }
+  public UUID getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-      this.id = id;
-    }
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
-    public UUID getUserId() {
-      return userId;
-    }
+  public UUID getUserId() {
+    return userId;
+  }
 
-    public void setUserId(UUID userId) {
-      this.userId = userId;
-    }
+  public void setUserId(UUID userId) {
+    this.userId = userId;
+  }
 
-    public String getAddress() {
-      return address;
-    }
+  public String getAddress() {
+    return address;
+  }
 
-    public void setAddress(String address) {
-      this.address = address;
-    }
+  public void setAddress(String address) {
+    this.address = address;
+  }
 
-    
 }
-

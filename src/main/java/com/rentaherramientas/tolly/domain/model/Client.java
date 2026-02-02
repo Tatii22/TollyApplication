@@ -5,12 +5,18 @@ import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 
 public class Client {
 
-    private Long id;
+    private UUID id;
     private UUID userId;
     private String address;
 
     // Constructor privado
     private Client() {}
+
+    private Client(UUID id, UUID userId, String address) {
+        this.id = id;
+        this.userId = userId;
+        this.address = address;
+    }
 
     public static Client create(UUID userId, String address) {
 
@@ -23,6 +29,7 @@ public class Client {
         }
 
         Client client = new Client();
+        client.id = UUID.randomUUID();
         client.userId = userId;
         client.address = address.trim();
 
@@ -37,7 +44,7 @@ public class Client {
         this.address = newAddress.trim();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -47,5 +54,9 @@ public class Client {
 
     public String getAddress() {
         return address;
+    }
+
+    public static Client restore(UUID id, UUID userId, String address) {
+        return new Client(id, userId, address);
     }
 }

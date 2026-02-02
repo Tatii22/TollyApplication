@@ -5,13 +5,24 @@ import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 
 public class Supplier {
 
-    private Long id;
+    private UUID id;
     private UUID userId;
     private String phone;
     private String company;
 
     // Constructor privado
     private Supplier() {}
+
+
+
+    public Supplier(UUID id, UUID userId, String phone, String company) {
+      this.id = id;
+      this.userId = userId;
+      this.phone = phone;
+      this.company = company;
+    }
+
+
 
     // Factory method
     public static Supplier create(UUID userId, String phone, String company) {
@@ -29,6 +40,7 @@ public class Supplier {
         }
 
         Supplier supplier = new Supplier();
+        supplier.id = UUID.randomUUID();
         supplier.userId = userId;
         supplier.phone = phone.trim();
         supplier.company = company.trim();
@@ -57,7 +69,7 @@ public class Supplier {
     this.company = newCompany.trim();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -72,4 +84,9 @@ public class Supplier {
     public String getCompany() {
         return company;
     }
+
+    public static Supplier restore(UUID id, UUID userId, String phone, String company) {
+      return new Supplier(id, userId, phone, company);
+}
+
 }
