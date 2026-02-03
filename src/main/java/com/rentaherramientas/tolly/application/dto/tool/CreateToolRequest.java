@@ -1,12 +1,16 @@
 package com.rentaherramientas.tolly.application.dto.tool;
 
+/**
+ * DTO para crear una nueva herramienta
+ * El estado inicial se asigna automáticamente como AVAIBLE (disponible)
+ */
 public class CreateToolRequest {
     private Long supplierId;
     private Long categoryId;
     private String name;
     private String description;
     private Double dailyCost;
-    private String status;
+    private Integer stock;
 
     public Long getSupplierId() { return supplierId; }
     public void setSupplierId(Long supplierId) { this.supplierId = supplierId; }
@@ -22,7 +26,7 @@ public class CreateToolRequest {
 
     public Double getDailyCost() { return dailyCost; }
     public void setDailyCost(Double dailyCost) { this.dailyCost = dailyCost; }
-    
-    public String getStatus() {return status;}
-    public void setStatus(String status) {this.status = status;}
+
+    public Integer getStock() { return stock; }
+    public void setStock(Integer stock) { this.stock = stock; }
 }

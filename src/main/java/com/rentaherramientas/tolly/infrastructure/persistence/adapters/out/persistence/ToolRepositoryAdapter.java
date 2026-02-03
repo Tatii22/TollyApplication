@@ -61,7 +61,8 @@ public class ToolRepositoryAdapter implements ToolRepository {
         tool.setName(toolEntity.getName());
         tool.setDescription(toolEntity.getDescription());
         tool.setDailyCost(toolEntity.getDailyCost());
-        tool.setStatus(toolEntity.getStatus()); 
+        tool.setStatus(toolEntity.getStatus());
+        tool.setStock(toolEntity.getStock());
         return tool;
     }
 
@@ -75,6 +76,7 @@ public class ToolRepositoryAdapter implements ToolRepository {
         toolEntity.setDescription(tool.getDescription());
         toolEntity.setDailyCost(tool.getDailyCost());
         toolEntity.setStatus(tool.getStatus());
+        toolEntity.setStock(tool.getStock());
         return toolEntity;
     }
 }

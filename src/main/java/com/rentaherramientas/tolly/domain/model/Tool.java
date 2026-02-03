@@ -9,6 +9,7 @@ public class Tool {
     private String description;
     private Double dailyCost;
     private ToolStatus status;
+    private Integer stock;
 
     public Tool() {
 }
@@ -19,7 +20,8 @@ public class Tool {
                 String name,
                 String description,
                 Double dailyCost,
-                ToolStatus status) {
+                ToolStatus status,
+                Integer stock) {
 
         if (supplierId == null || supplierId <= 0) {
             throw new IllegalArgumentException("El ID del proveedor no puede ser nulo o menor o igual a cero");
@@ -47,6 +49,7 @@ public class Tool {
         this.description = description;
         this.dailyCost = dailyCost;
         this.status = status;
+        this.stock = stock;
     }
 
     public Long getId() {return id;}
@@ -69,4 +72,7 @@ public class Tool {
 
     public ToolStatus getStatus() {return status;}
     public void setStatus(ToolStatus status) {this.status = status;}
+
+    public Integer getStock() {return stock;}
+    public void setStock(Integer stock) {this.stock = stock;}
 }

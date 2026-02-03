@@ -36,6 +36,9 @@ public class ToolEntity {
     @Enumerated(EnumType.STRING)
     private ToolStatus status;
 
+    @Column(name = "stock", nullable = false)
+    private Integer stock;
+
     public ToolEntity() {}
 
     public Long getId() {return id;}
@@ -58,4 +61,7 @@ public class ToolEntity {
 
     public ToolStatus getStatus() {return status;}
     public void setStatus(ToolStatus status) {this.status = status;}
+
+    public Integer getStock() {return stock;}
+    public void setStock(Integer stock) {this.stock = stock;}
 }
