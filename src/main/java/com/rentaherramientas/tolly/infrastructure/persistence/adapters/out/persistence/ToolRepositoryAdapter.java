@@ -7,7 +7,9 @@ import com.rentaherramientas.tolly.domain.model.Tool;
 import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ToolEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ToolJpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class ToolRepositoryAdapter implements ToolRepository {
     private final ToolJpaRepository toolJpaRepository;
     public ToolRepositoryAdapter(ToolJpaRepository toolJpaRepository) {
