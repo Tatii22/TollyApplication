@@ -1,13 +1,12 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.persistence;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.rentaherramientas.tolly.domain.model.Tool;
-import com.rentaherramientas.tolly.domain.model.enums.ToolStatus;
 import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ToolEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ToolJpaRepository;
-import com.rentaherramientas.tolly.application.mapper.ToolMapper;
 
 public class ToolRepositoryAdapter implements ToolRepository {
     private final ToolJpaRepository toolJpaRepository;
@@ -16,18 +15,22 @@ public class ToolRepositoryAdapter implements ToolRepository {
     }
     @Override
     public List<Tool> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return toolJpaRepository.findAll().stream()
+            .map(ToolRepositoryAdapter::toDomain)
+            .collect(Collectors.toList());
     }
     @Override
     public Optional<Tool> findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return toolJpaRepository.findById(id).map(ToolRepositoryAdapter::toDomain);
     }
     @Override
     public Optional<Tool> update(Long id, Tool tool) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        return toolJpaRepository.findById(id)
+            .map(existing -> {
+                existing.setName(tool.getName());
+                ToolEntity updated = toolJpaRepository.save(existing);
+                return ToolRepositoryAdapter.toDomain(updated);
+            });
     }
     @Override
     public Tool save(Tool tool) {
@@ -36,11 +39,18 @@ public class ToolRepositoryAdapter implements ToolRepository {
     return ToolRepositoryAdapter.toDomain(savedToolEntity);
 }
     @Override
-    public Optional<Tool> deleteById(Long id) {
-        var existing = toolJpaRepository.findById(id);
-        if (existing.isEmpty()) return Optional.empty();
+    public void deleteById(Long id) {
         toolJpaRepository.deleteById(id);
-        return existing.map(ToolRepositoryAdapter::toDomain);
+    }
+
+    @Override
+    public Optional<Tool> findByName(String name) {
+        return toolJpaRepository.findByName(name).map(ToolRepositoryAdapter::toDomain);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return toolJpaRepository.existsByName(name);
     }
 
     public static Tool toDomain(ToolEntity toolEntity) {
