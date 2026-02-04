@@ -1,15 +1,15 @@
 package com.rentaherramientas.tolly.application.mapper;
 
+
 import com.rentaherramientas.tolly.application.dto.RoleResponse;
+
 import com.rentaherramientas.tolly.application.dto.UserFullResponse;
-import com.rentaherramientas.tolly.application.dto.ClientResponse;
-import com.rentaherramientas.tolly.application.dto.SupplierResponse;
+
 
 import com.rentaherramientas.tolly.domain.model.Role;
 import com.rentaherramientas.tolly.domain.model.User;
 
 import java.util.Set;
-import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

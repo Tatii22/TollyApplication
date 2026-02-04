@@ -52,11 +52,6 @@ public class SupplierRepositoryAdapter implements SupplierRepository {
   }
 
   @Override
-  public Optional<Supplier> findById(UUID id) {
-    return repository.findById(id).map(SupplierMapper::toDomain);
-  }
-
-  @Override
   public void delete(Supplier supplier) {
 
     supplierRepository.deleteById(supplier.getId());

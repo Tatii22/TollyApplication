@@ -1,33 +1,28 @@
 package com.rentaherramientas.tolly.domain.model;
-
-import java.util.UUID;
+import com.rentaherramientas.tolly.domain.model.enums.ToolStatus;
 
 public class Tool {
     private Long id;
+    private Long supplierId;
+    private Long categoryId;
     private String name;
     private String description;
-    private Double dailyPrice;
-    private Integer totalQuantity;
-    private Integer availableQuantity;
-    private Long statusId;
-    private UUID supplierId;
-    private Long categoryId;
+    private Double dailyCost;
+    private ToolStatus status;
 
     public Tool() {
 }
 
     public Tool(Long id,
+                Long supplierId,
+                Long categoryId,
                 String name,
                 String description,
-                Double dailyPrice,
-                Integer totalQuantity,
-                Integer availableQuantity,
-                Long statusId,
-                UUID supplierId,
-                Long categoryId) {
+                Double dailyCost,
+                ToolStatus status) {
 
-        if (supplierId == null) {
-            throw new IllegalArgumentException("El ID del proveedor no puede ser nulo");
+        if (supplierId == null || supplierId <= 0) {
+            throw new IllegalArgumentException("El ID del proveedor no puede ser nulo o menor o igual a cero");
         }
         if (categoryId == null || categoryId <= 0) {
             throw new IllegalArgumentException("El ID de la categoría no puede ser nulo o menor o igual a cero");
@@ -38,23 +33,30 @@ public class Tool {
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("La descripción de la herramienta no puede ser nula o vacía");
         }
-        if (dailyPrice == null || dailyPrice < 0) {
+        if (dailyCost == null || dailyCost < 0) {
             throw new IllegalArgumentException("El costo diario no puede ser nulo o negativo");
         }
-        
+        if (status == null) {
+            throw new IllegalArgumentException("El estado de la herramienta no puede ser nulo o vacío");
+        }
+
         this.id = id;
-        this.name = name;
-        this.description = description;
-        this.dailyPrice = dailyPrice;
-        this.totalQuantity = totalQuantity;
-        this.availableQuantity = availableQuantity;
-        this.statusId = statusId;
         this.supplierId = supplierId;
         this.categoryId = categoryId;
+        this.name = name;
+        this.description = description;
+        this.dailyCost = dailyCost;
+        this.status = status;
     }
 
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
+
+    public Long getSupplierId() {return supplierId;}
+    public void setSupplierId(Long supplierId) {this.supplierId = supplierId;}
+
+    public Long getCategoryId() {return categoryId;}
+    public void setCategoryId(Long categoryId) {this.categoryId = categoryId;}
 
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
@@ -62,22 +64,9 @@ public class Tool {
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
 
-    public Double getDailyPrice() {return dailyPrice;}
-    public void setDailyPrice(Double dailyPrice) {this.dailyPrice = dailyPrice;}
+    public Double getDailyCost() {return dailyCost;}
+    public void setDailyCost(Double dailyCost) {this.dailyCost = dailyCost;}
 
-    public UUID getSupplierId() {return supplierId;}
-    public void setSupplierId(UUID supplierId) {this.supplierId = supplierId;}
-
-    public Long getCategoryId() {return categoryId;}
-    public void setCategoryId(Long categoryId) {this.categoryId = categoryId;}
-
-    public Integer getTotalQuantity() {return totalQuantity;}
-    public void setTotalQuantity(Integer totalQuantity) {this.totalQuantity = totalQuantity;}
-
-    public Integer getAvailableQuantity() {return availableQuantity;}
-    public void setAvailableQuantity(Integer availableQuantity) {this.availableQuantity = availableQuantity;}
-
-    public Long getStatusId() {return statusId;}
-    public void setStatusId(Long statusId) {this.statusId = statusId;
-    }
+    public ToolStatus getStatus() {return status;}
+    public void setStatus(ToolStatus status) {this.status = status;}
 }
