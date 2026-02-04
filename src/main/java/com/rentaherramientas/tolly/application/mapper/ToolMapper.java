@@ -24,6 +24,12 @@ public interface ToolMapper {
     @Mapping(target = "id", ignore = true)
     Tool toTool(CreateToolRequest request);
 
+    // Convierte ToolStatus a String (almacenado en la base de datos)
+    default String toolStatusToString(ToolStatus status) {
+        return status != null ? status.name() : null;  // Usa el nombre del enum como String
+    }
+
+
     /**
      * Convierte UpdateToolRequest (DTO) a Tool de dominio
      */
