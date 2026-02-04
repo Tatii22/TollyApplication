@@ -1,15 +1,14 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.entity;
+import com.rentaherramientas.tolly.domain.model.enums.ToolStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.FetchType;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tools")
@@ -18,6 +17,12 @@ public class ToolEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "id_supplier", nullable = false)
+    private Long supplierId;
+
+    @Column(name = "id_category", nullable = false)
+    private Long categoryId;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -25,41 +30,22 @@ public class ToolEntity {
     private String description;
 
     @Column(name = "daily_cost", nullable = false)
-    private Double dailyPrice;
+    private Double dailyCost;
 
-    @Column(name = "total_quantity", nullable = false)
-    private Integer totalQuantity;
-
-    @Column(name = "available_quantity", nullable = false)
-    private Integer availableQuantity;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_tool_status", nullable = false)
-    private ToolStatusEntity toolStatus;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_supplier", nullable = false)
-    private SupplierEntity supplier;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_category", nullable = false)
-    private CategoryEntity category;
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ToolStatus status;
 
     public ToolEntity() {}
 
-    public ToolEntity(Long id, String name, String description, Double dailyPrice,
-                        Integer totalQuantity, Integer availableQuantity, Long statusId,
-                        UUID supplierId, Long categoryId) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.dailyPrice = dailyPrice;
-        this.totalQuantity = totalQuantity;
-        this.availableQuantity = availableQuantity;
-    }
-
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
+
+    public Long getSupplierId() {return supplierId;}
+    public void setSupplierId(Long supplierId) {this.supplierId = supplierId;}
+
+    public Long getCategoryId() {return categoryId;}
+    public void setCategoryId(Long categoryId) {this.categoryId = categoryId;}
 
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
@@ -67,39 +53,9 @@ public class ToolEntity {
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
 
-    public Double getDailyPrice() {return dailyPrice;}
-    public void setDailyPrice(Double dailyPrice) {this.dailyPrice = dailyPrice;}
+    public Double getDailyCost() {return dailyCost;}
+    public void setDailyCost(Double dailyCost) {this.dailyCost = dailyCost;}
 
-    public Long getStatusId() {return toolStatus != null ? toolStatus.getId() : null;}
-    public void setStatusId(Long statusId) {
-        if (toolStatus == null) toolStatus = new ToolStatusEntity();
-        toolStatus.setId(statusId);
-    }
-
-    public ToolStatusEntity getToolStatus() {return toolStatus;}
-    public void setToolStatus(ToolStatusEntity toolStatus) {this.toolStatus = toolStatus;}
-
-    public Integer getTotalQuantity() {return totalQuantity;}
-    public void setTotalQuantity(Integer totalQuantity) {this.totalQuantity = totalQuantity;}
-
-    public Integer getAvailableQuantity() {return availableQuantity;}
-    public void setAvailableQuantity(Integer availableQuantity) {this.availableQuantity = availableQuantity;}
-
-    public UUID getSupplierId() {return supplier != null ? supplier.getId() : null;}
-    public void setSupplierId(UUID supplierId) {
-        if (supplier == null) supplier = new SupplierEntity();
-        supplier.setId(supplierId);
-    }
-
-    public SupplierEntity getSupplier() {return supplier;}
-    public void setSupplier(SupplierEntity supplier) {this.supplier = supplier;}
-
-    public Long getCategoryId() {return category != null ? category.getId() : null;}
-    public void setCategoryId(Long categoryId) {
-        if (category == null) category = new CategoryEntity();
-        category.setId(categoryId);
-    }
-
-    public CategoryEntity getCategory() {return category;}
-    public void setCategory(CategoryEntity category) {this.category = category;}
+    public ToolStatus getStatus() {return status;}
+    public void setStatus(ToolStatus status) {this.status = status;}
 }

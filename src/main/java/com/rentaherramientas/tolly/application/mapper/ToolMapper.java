@@ -1,39 +1,20 @@
 package com.rentaherramientas.tolly.application.mapper;
 
-import com.rentaherramientas.tolly.application.dto.tool.CreateToolRequest;
-import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
-import com.rentaherramientas.tolly.application.dto.tool.UpdateToolRequest;
-import com.rentaherramientas.tolly.domain.model.Tool;
+import com.rentaherramientas.tolly.domain.model.enums.ToolStatus;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
-/**
- * Mapper MapStruct para conversión entre Tool (dominio) y DTOs
- */
+
 @Mapper(componentModel = "spring")
-public interface ToolMapper {
-
-    /**
-     * Convierte Tool de dominio a ToolResponse (DTO)
-     */
-    ToolResponse toToolResponse(Tool tool);
-
-    /**
-     * Convierte CreateToolRequest (DTO) a Tool de dominio
-     */
-    @Mapping(target = "id", ignore = true)
-    Tool toTool(CreateToolRequest request);
-
+public interface ToolMapper{
+  
     // Convierte ToolStatus a String (almacenado en la base de datos)
     default String toolStatusToString(ToolStatus status) {
         return status != null ? status.name() : null;  // Usa el nombre del enum como String
     }
 
-
-    /**
-     * Convierte UpdateToolRequest (DTO) a Tool de dominio
-     */
-    @Mapping(target = "id", ignore = true)
-    Tool toTool(UpdateToolRequest request);
+    // Convierte String (de la base de datos) a ToolStatus (enum)
+    default ToolStatus stringToToolStatus(String status) {
+        return status != null ? ToolStatus.valueOf(status) : null;
+    }
 }
 
