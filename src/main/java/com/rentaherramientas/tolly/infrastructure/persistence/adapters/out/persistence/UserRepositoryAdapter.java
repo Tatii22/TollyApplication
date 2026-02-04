@@ -4,11 +4,11 @@ import com.rentaherramientas.tolly.domain.model.Client;
 import com.rentaherramientas.tolly.domain.model.Role;
 import com.rentaherramientas.tolly.domain.model.Supplier;
 import com.rentaherramientas.tolly.domain.model.User;
+import com.rentaherramientas.tolly.domain.model.UserStatus;
 import com.rentaherramientas.tolly.domain.ports.UserRepository;
-import com.rentaherramientas.tolly.infrastructure.persistence.entity.ClientEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.RoleEntity;
-import com.rentaherramientas.tolly.infrastructure.persistence.entity.SupplierEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserEntity;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserStatusEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ClientJpaRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.SupplierJpaRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.UserJpaRepository;
@@ -31,9 +31,11 @@ public class UserRepositoryAdapter implements UserRepository {
   private final ClientJpaRepository clientJpaRepository;
   private final SupplierJpaRepository supplierJpaRepository;
 
-  public UserRepositoryAdapter(UserJpaRepository jpaRepository,
+  public UserRepositoryAdapter(
+      UserJpaRepository jpaRepository,
       ClientJpaRepository clientJpaRepository,
-      SupplierJpaRepository supplierJpaRepository) {
+      SupplierJpaRepository supplierJpaRepository
+  ) {
     this.jpaRepository = jpaRepository;
     this.clientJpaRepository = clientJpaRepository;
     this.supplierJpaRepository = supplierJpaRepository;
@@ -65,21 +67,34 @@ public class UserRepositoryAdapter implements UserRepository {
 
   @Override
   public void delete(User user) {
-    UserEntity entity = toEntity(user);
-    jpaRepository.delete(entity);
+    jpaRepository.deleteById(user.getId());
   }
+
+  @Override
+  public List<User> findAll() {
+    return jpaRepository.findAll().stream()
+        .map(this::toDomain)
+        .collect(Collectors.toList());
+  }
+
+  /* =========================
+     MAPPERS PRIVADOS
+     ========================= */
 
   private UserEntity toEntity(User user) {
     Set<RoleEntity> roleEntities = user.getRoles().stream()
         .map(this::roleToEntity)
         .collect(Collectors.toSet());
 
+
+
     return new UserEntity(
         user.getId(),
         user.getEmail(),
         user.getPassword(),
         roleEntities,
-        user.getStatus());
+        user.getStatus() != null ? statusToEntity(user.getStatus()) : null
+    );
   }
 
   private User toDomain(UserEntity entity) {
@@ -87,27 +102,43 @@ public class UserRepositoryAdapter implements UserRepository {
         .map(this::roleToDomain)
         .collect(Collectors.toSet());
 
+
     User user = User.reconstruct(
         entity.getId(),
         entity.getEmail(),
         entity.getPassword(),
         roles,
-        entity.getStatus());
+        entity.getStatus() != null ? statusToDomain(entity.getStatus()) : null
+    );
 
-    // Cargar datos de Cliente si existen
-    Optional<ClientEntity> clientEntity = clientJpaRepository.findByUserId(entity.getId());
-    if (clientEntity.isPresent()) {
-      ClientEntity client = clientEntity.get();
-      user.setClient(Client.restore(client.getId(), client.getUserId(), client.getAddress()));
-    }
+    // ✅ CLIENT
+    clientJpaRepository.findByUserId(entity)
+        .ifPresent(client ->
+            user.setClient(
+                Client.restore(client.getId(),
+                user,
+                client.getAddress(),
+                client.getPhoneNumber(),
+                client.getFirstName(),
+                client.getLastName(),
+                client.getNationalId())
+            )
+        );
 
-    // Cargar datos de Proveedor si existen
-    Optional<SupplierEntity> supplierEntity = supplierJpaRepository.findByUserId(entity.getId());
-    if (supplierEntity.isPresent()) {
-      SupplierEntity supplier = supplierEntity.get();
-      user.setSupplier(
-          new Supplier(supplier.getId(), supplier.getUserId(), supplier.getPhone(), supplier.getCompany()));
-    }
+    // ✅ SUPPLIER
+    supplierJpaRepository.findByUserId(entity)
+        .ifPresent(supplier ->
+            user.setSupplier(
+                Supplier.restore(
+                    supplier.getId(),
+                    user,
+                    supplier.getPhone(),
+                    supplier.getCompanyName(),
+                    supplier.getIdentification(),
+                    supplier.getContactName()
+                )
+            )
+        );
 
     return user;
   }
@@ -116,20 +147,28 @@ public class UserRepositoryAdapter implements UserRepository {
     return new RoleEntity(
         role.getId(),
         role.getName(),
-        role.getAuthority());
+        role.getAuthority()
+    );
   }
 
   private Role roleToDomain(RoleEntity entity) {
     return Role.reconstruct(
         entity.getId(),
         entity.getName(),
-        entity.getAuthority());
+        entity.getAuthority()
+    );
   }
 
-  @Override
-  public List<User> findAll() {
-    return jpaRepository.findAll().stream()
-        .map(this::toDomain)
-        .collect(Collectors.toList());
+  private UserStatusEntity statusToEntity(UserStatus status) {
+    return new UserStatusEntity(
+        status.getId(),
+        status.getStatusName()
+    );
+  }
+  private UserStatus statusToDomain(UserStatusEntity entity) {
+    return UserStatus.reconstruct(
+        entity.getId(),
+        entity.getName()
+    );
   }
 }

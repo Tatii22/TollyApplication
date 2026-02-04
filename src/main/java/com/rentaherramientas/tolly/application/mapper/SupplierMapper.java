@@ -1,29 +1,38 @@
 package com.rentaherramientas.tolly.application.mapper;
 
-import com.rentaherramientas.tolly.domain.model.Supplier;
-import com.rentaherramientas.tolly.infrastructure.persistence.entity.SupplierEntity;
+import org.springframework.stereotype.Component;
 
+import com.rentaherramientas.tolly.domain.model.Supplier;
+import com.rentaherramientas.tolly.domain.model.User;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.SupplierEntity;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserEntity;
+
+@Component
 public class SupplierMapper {
 
   private SupplierMapper(){
 
   }
 
-  public static SupplierEntity toEntity(Supplier supplier){
+  public SupplierEntity toEntity(Supplier supplier, UserEntity userEntity){
     SupplierEntity entity = new SupplierEntity();
     entity.setId(supplier.getId());
-    entity.setUserId(supplier.getUserId());
+    entity.setUserId(userEntity);
     entity.setPhone(supplier.getPhone());
-    entity.setCompany(supplier.getCompany());
+    entity.setCompanyName(supplier.getCompany());
+    entity.setIdentification(supplier.getIdentification());
+    entity.setContactName(supplier.getContactName());
     return entity;
   }
 
-  public static Supplier toDomain(SupplierEntity entity){
+  public Supplier toDomain(SupplierEntity entity){
     return Supplier.restore(
       entity.getId(),
-      entity.getUserId(),
+      User.restore(entity.getUserId().getId()),
       entity.getPhone(),
-      entity.getCompany()
+      entity.getCompanyName(),
+      entity.getIdentification(),
+      entity.getContactName()
     );
   }
 }

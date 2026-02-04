@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ToolMapper{
-
+  
     // Convierte ToolStatus a String (almacenado en la base de datos)
     default String toolStatusToString(ToolStatus status) {
         return status != null ? status.name() : null;  // Usa el nombre del enum como String
