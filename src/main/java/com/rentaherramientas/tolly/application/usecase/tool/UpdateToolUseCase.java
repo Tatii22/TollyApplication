@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
+import com.rentaherramientas.tolly.domain.ports.ToolStatusRepository;
 import com.rentaherramientas.tolly.domain.model.Tool;
 import com.rentaherramientas.tolly.domain.model.Supplier;
 import com.rentaherramientas.tolly.application.mapper.ToolMapper;
@@ -14,17 +15,21 @@ import java.util.UUID;
 
 /**
  * UseCase para actualizar una herramienta
- * Solo el SUPPLIER propietario puede actualizar sus propias herramientas
+ * - Solo el SUPPLIER propietario puede actualizar sus propias herramientas
+ * - Valida que el statusId existe
  */
 @Service
 public class UpdateToolUseCase {
     private final ToolRepository toolRepository;
     private final SupplierRepository supplierRepository;
+    private final ToolStatusRepository toolStatusRepository;
     private final ToolMapper toolMapper;
     
-    public UpdateToolUseCase(ToolRepository toolRepository, SupplierRepository supplierRepository, ToolMapper toolMapper) {
+    public UpdateToolUseCase(ToolRepository toolRepository, SupplierRepository supplierRepository, 
+                            ToolStatusRepository toolStatusRepository, ToolMapper toolMapper) {
         this.toolRepository = toolRepository;
         this.supplierRepository = supplierRepository;
+        this.toolStatusRepository = toolStatusRepository;
         this.toolMapper = toolMapper;
     }
     
@@ -43,6 +48,14 @@ public class UpdateToolUseCase {
             throw new DomainException("No tienes permiso para actualizar esta herramienta");
         }
         
+        // Validar que el nuevo supplierId existe
+        supplierRepository.findById(request.supplierId())
+            .orElseThrow(() -> new DomainException("Proveedor con ID " + request.supplierId() + " no existe"));
+        
+        // Validar que el status existe
+        toolStatusRepository.findById(request.statusId())
+            .orElseThrow(() -> new DomainException("Estado con ID " + request.statusId() + " no existe"));
+        
         // Convertir request a Tool y actualizar
         Tool updatedTool = toolMapper.toTool(request);
         updatedTool.setId(id); // Mantener el ID original
@@ -53,4 +66,3 @@ public class UpdateToolUseCase {
         return toolMapper.toToolResponse(saved);
     }
 }
-

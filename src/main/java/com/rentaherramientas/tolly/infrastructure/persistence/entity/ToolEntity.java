@@ -6,6 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
 import java.util.UUID;
 
 @Entity
@@ -30,14 +33,17 @@ public class ToolEntity {
     @Column(name = "available_quantity", nullable = false)
     private Integer availableQuantity;
 
-    @Column(name = "id_tool_status", nullable = false)
-    private Long statusId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_tool_status", nullable = false)
+    private ToolStatusEntity toolStatus;
 
-    @Column(name = "id_supplier", nullable = false)
-    private UUID supplierId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_supplier", nullable = false)
+    private SupplierEntity supplier;
 
-    @Column(name = "id_category", nullable = false)
-    private Long categoryId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_category", nullable = false)
+    private CategoryEntity category;
 
     public ToolEntity() {}
 
@@ -50,9 +56,6 @@ public class ToolEntity {
         this.dailyPrice = dailyPrice;
         this.totalQuantity = totalQuantity;
         this.availableQuantity = availableQuantity;
-        this.statusId = statusId;
-        this.supplierId = supplierId;
-        this.categoryId = categoryId;
     }
 
     public Long getId() {return id;}
@@ -67,8 +70,14 @@ public class ToolEntity {
     public Double getDailyPrice() {return dailyPrice;}
     public void setDailyPrice(Double dailyPrice) {this.dailyPrice = dailyPrice;}
 
-    public Long getStatusId() {return statusId;}
-    public void setStatusId(Long statusId) {this.statusId = statusId;}
+    public Long getStatusId() {return toolStatus != null ? toolStatus.getId() : null;}
+    public void setStatusId(Long statusId) {
+        if (toolStatus == null) toolStatus = new ToolStatusEntity();
+        toolStatus.setId(statusId);
+    }
+
+    public ToolStatusEntity getToolStatus() {return toolStatus;}
+    public void setToolStatus(ToolStatusEntity toolStatus) {this.toolStatus = toolStatus;}
 
     public Integer getTotalQuantity() {return totalQuantity;}
     public void setTotalQuantity(Integer totalQuantity) {this.totalQuantity = totalQuantity;}
@@ -76,9 +85,21 @@ public class ToolEntity {
     public Integer getAvailableQuantity() {return availableQuantity;}
     public void setAvailableQuantity(Integer availableQuantity) {this.availableQuantity = availableQuantity;}
 
-    public UUID getSupplierId() {return supplierId;}
-    public void setSupplierId(UUID supplierId) {this.supplierId = supplierId;}
+    public UUID getSupplierId() {return supplier != null ? supplier.getId() : null;}
+    public void setSupplierId(UUID supplierId) {
+        if (supplier == null) supplier = new SupplierEntity();
+        supplier.setId(supplierId);
+    }
 
-    public Long getCategoryId() {return categoryId;}
-    public void setCategoryId(Long categoryId) {this.categoryId = categoryId;}
+    public SupplierEntity getSupplier() {return supplier;}
+    public void setSupplier(SupplierEntity supplier) {this.supplier = supplier;}
+
+    public Long getCategoryId() {return category != null ? category.getId() : null;}
+    public void setCategoryId(Long categoryId) {
+        if (category == null) category = new CategoryEntity();
+        category.setId(categoryId);
+    }
+
+    public CategoryEntity getCategory() {return category;}
+    public void setCategory(CategoryEntity category) {this.category = category;}
 }
