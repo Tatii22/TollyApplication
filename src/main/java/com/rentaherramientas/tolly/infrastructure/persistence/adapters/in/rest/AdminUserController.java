@@ -53,13 +53,13 @@ public class AdminUserController {
     null,                 // identification
     null
     );
-    return createUserUseCase.execute(clientRequest);
+    return createUserUseCase.execute(clientRequest, true);
   }
 
   @PutMapping("/update")
   @PreAuthorize("hasRole('ADMIN')")
   public UserFullResponse updateUser(
-      @RequestBody UpdateUserRequest request) {
+      @RequestBody UpdateUserRequest request, @RequestParam boolean isAdmin) {
     return updateUserUseCase.execute(request);
   }
 
@@ -85,6 +85,6 @@ public class AdminUserController {
     request.identification(), // identification
     request.contactName()     //
     );
-    return createUserUseCase.execute(supplierRequest);
+    return createUserUseCase.execute(supplierRequest, true);
   }
 }

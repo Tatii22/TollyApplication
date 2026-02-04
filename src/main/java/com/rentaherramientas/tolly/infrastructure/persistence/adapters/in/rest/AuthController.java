@@ -56,7 +56,7 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<UserFullResponse> register(@Valid @RequestBody RegisterRequest request) {
-        UserFullResponse response = createUserUseCase.execute(request);
+        UserFullResponse response = createUserUseCase.execute(request, false);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
