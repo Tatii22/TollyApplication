@@ -6,7 +6,7 @@ import com.rentaherramientas.tolly.application.dto.tool.UpdateToolRequest;
 import com.rentaherramientas.tolly.application.usecase.tool.CreateToolUseCase;
 import com.rentaherramientas.tolly.application.usecase.tool.DeleteToolUseCase;
 import com.rentaherramientas.tolly.application.usecase.tool.GetToolByIdUseCase;
-import com.rentaherramientas.tolly.application.usecase.tool.GetToolUseCase;
+import com.rentaherramientas.tolly.application.usecase.tool.GetToolsUseCase;
 import com.rentaherramientas.tolly.application.usecase.tool.UpdateToolUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controlador REST para gestión de herramientas
@@ -38,14 +39,14 @@ import java.util.List;
 @RequestMapping("/tools")
 public class ToolController {
     
-    private final GetToolUseCase getToolsUseCase;
+    private final GetToolsUseCase getToolsUseCase;
     private final GetToolByIdUseCase getToolByIdUseCase;
     private final CreateToolUseCase createToolUseCase;
     private final UpdateToolUseCase updateToolUseCase;
     private final DeleteToolUseCase deleteToolUseCase;
 
     public ToolController(
-            GetToolUseCase getToolsUseCase,
+            GetToolsUseCase getToolsUseCase,
             GetToolByIdUseCase getToolByIdUseCase,
             CreateToolUseCase createToolUseCase,
             UpdateToolUseCase updateToolUseCase,
@@ -117,7 +118,8 @@ public class ToolController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateToolRequest request,
             Authentication authentication) {
-        ToolResponse tool = updateToolUseCase.execute(id, request);
+        UUID userId = (UUID) authentication.getPrincipal();
+        ToolResponse tool = updateToolUseCase.execute(id, request, userId);
         return ResponseEntity.ok(tool);
     }
 
@@ -135,7 +137,8 @@ public class ToolController {
     public ResponseEntity<Void> delete(
             @PathVariable Long id,
             Authentication authentication) {
-        deleteToolUseCase.execute(id);
+        UUID userId = (UUID) authentication.getPrincipal();
+        deleteToolUseCase.execute(id, userId);
         return ResponseEntity.noContent().build();
     }
 }

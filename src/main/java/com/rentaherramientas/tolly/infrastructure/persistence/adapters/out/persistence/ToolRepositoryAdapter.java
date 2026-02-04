@@ -30,16 +30,23 @@ public class ToolRepositoryAdapter implements ToolRepository {
         return toolJpaRepository.findById(id)
             .map(existing -> {
                 existing.setName(tool.getName());
+                existing.setDescription(tool.getDescription());
+                existing.setDailyPrice(tool.getDailyPrice());
+                existing.setTotalQuantity(tool.getTotalQuantity());
+                existing.setAvailableQuantity(tool.getAvailableQuantity());
+                existing.setStatusId(tool.getStatusId());
+                existing.setSupplierId(tool.getSupplierId());
+                existing.setCategoryId(tool.getCategoryId());
                 ToolEntity updated = toolJpaRepository.save(existing);
                 return ToolRepositoryAdapter.toDomain(updated);
             });
     }
     @Override
     public Tool save(Tool tool) {
-    ToolEntity toolEntity = ToolRepositoryAdapter.toEntity(tool);
-    ToolEntity savedToolEntity = toolJpaRepository.save(toolEntity);
-    return ToolRepositoryAdapter.toDomain(savedToolEntity);
-}
+        ToolEntity toolEntity = ToolRepositoryAdapter.toEntity(tool);
+        ToolEntity savedToolEntity = toolJpaRepository.save(toolEntity);
+        return ToolRepositoryAdapter.toDomain(savedToolEntity);
+    }
     @Override
     public void deleteById(Long id) {
         toolJpaRepository.deleteById(id);
@@ -58,13 +65,14 @@ public class ToolRepositoryAdapter implements ToolRepository {
     public static Tool toDomain(ToolEntity toolEntity) {
         Tool tool = new Tool();
         tool.setId(toolEntity.getId());
-        tool.setSupplierId(toolEntity.getSupplierId());
-        tool.setCategoryId(toolEntity.getCategoryId());
         tool.setName(toolEntity.getName());
         tool.setDescription(toolEntity.getDescription());
-        tool.setDailyCost(toolEntity.getDailyCost());
-        tool.setStatus(toolEntity.getStatus());
-        tool.setStock(toolEntity.getStock());
+        tool.setDailyPrice(toolEntity.getDailyPrice());
+        tool.setStatusId(toolEntity.getStatusId());
+        tool.setTotalQuantity(toolEntity.getTotalQuantity());
+        tool.setAvailableQuantity(toolEntity.getAvailableQuantity());
+        tool.setSupplierId(toolEntity.getSupplierId());
+        tool.setCategoryId(toolEntity.getCategoryId());
         return tool;
     }
 
@@ -72,13 +80,14 @@ public class ToolRepositoryAdapter implements ToolRepository {
     public static ToolEntity toEntity(Tool tool) {
         ToolEntity toolEntity = new ToolEntity();
         toolEntity.setId(tool.getId());
-        toolEntity.setSupplierId(tool.getSupplierId());
-        toolEntity.setCategoryId(tool.getCategoryId());
         toolEntity.setName(tool.getName());
         toolEntity.setDescription(tool.getDescription());
-        toolEntity.setDailyCost(tool.getDailyCost());
-        toolEntity.setStatus(tool.getStatus());
-        toolEntity.setStock(tool.getStock());
+        toolEntity.setDailyPrice(tool.getDailyPrice());
+        toolEntity.setStatusId(tool.getStatusId());
+        toolEntity.setTotalQuantity(tool.getTotalQuantity());
+        toolEntity.setAvailableQuantity(tool.getAvailableQuantity());
+        toolEntity.setSupplierId(tool.getSupplierId());
+        toolEntity.setCategoryId(tool.getCategoryId());
         return toolEntity;
     }
 }

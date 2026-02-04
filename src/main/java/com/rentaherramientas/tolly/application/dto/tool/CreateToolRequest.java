@@ -1,32 +1,49 @@
 package com.rentaherramientas.tolly.application.dto.tool;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import java.util.UUID;
+
 /**
  * DTO para crear una nueva herramienta
- * El estado inicial se asigna automáticamente como AVAIBLE (disponible)
  */
-public class CreateToolRequest {
-    private Long supplierId;
-    private Long categoryId;
-    private String name;
-    private String description;
-    private Double dailyCost;
-    private Integer stock;
-
-    public Long getSupplierId() { return supplierId; }
-    public void setSupplierId(Long supplierId) { this.supplierId = supplierId; }
-
-    public Long getCategoryId() { return categoryId; }
-    public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public Double getDailyCost() { return dailyCost; }
-    public void setDailyCost(Double dailyCost) { this.dailyCost = dailyCost; }
-
-    public Integer getStock() { return stock; }
-    public void setStock(Integer stock) { this.stock = stock; }
-}
+@Schema(description = "Request para crear una herramienta")
+public record CreateToolRequest(
+    @NotBlank(message = "El nombre no puede estar vacío")
+    @Schema(description = "Nombre de la herramienta", example = "Taladro Dewalt")
+    String name,
+    
+    @NotBlank(message = "La descripción no puede estar vacía")
+    @Schema(description = "Descripción de la herramienta", example = "Taladro profesional 20V")
+    String description,
+    
+    @NotNull(message = "El precio diario no puede ser nulo")
+    @Positive(message = "El precio debe ser positivo")
+    @Schema(description = "Precio diario de alquiler", example = "25.50")
+    Double dailyPrice,
+    
+    @NotNull(message = "La cantidad total no puede ser nula")
+    @Positive(message = "La cantidad debe ser positiva")
+    @Schema(description = "Cantidad total de herramientas", example = "10")
+    Integer totalQuantity,
+    
+    @NotNull(message = "La cantidad disponible no puede ser nula")
+    @PositiveOrZero(message = "La cantidad debe ser >= 0")
+    @Schema(description = "Cantidad disponible para alquiler", example = "7")
+    Integer availableQuantity,
+    
+    @NotNull(message = "El estado no puede ser nulo")
+    @Schema(description = "ID del estado de la herramienta", example = "1")
+    Long statusId,
+    
+    @NotNull(message = "El proveedor no puede ser nulo")
+    @Schema(description = "ID del proveedor", example = "847fa560-1ac3-49cb-b435-ad10b20b762d")
+    UUID supplierId,
+    
+    @NotNull(message = "La categoría no puede ser nula")
+    @Schema(description = "ID de la categoría", example = "1")
+    Long categoryId
+) {}

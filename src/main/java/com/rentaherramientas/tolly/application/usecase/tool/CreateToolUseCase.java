@@ -29,11 +29,11 @@ public class CreateToolUseCase {
     @Transactional
     public ToolResponse execute(CreateToolRequest request) {
         // Verificar si la herramienta ya existe con el mismo nombre
-        if (toolRepository.existsByName(request.getName())) {
-            throw new DomainException("Ya existe una herramienta con el nombre: " + request.getName());
+        if (toolRepository.existsByName(request.name())) {
+            throw new DomainException("Ya existe una herramienta con el nombre: " + request.name());
         }
         
-        // Crear la herramienta (ToolMapper asigna status = AVAIBLE automáticamente)
+        // Crear la herramienta
         Tool tool = toolMapper.toTool(request);
         Tool saved = toolRepository.save(tool);
         
