@@ -24,8 +24,8 @@ import org.mapstruct.Mapping;
 public interface UserMapper{
 
   @Mapping(target = "roles", source = "roles")
-  @Mapping(target = "client", expression = "java(user.getClient() != null ? new ClientResponse(user.getClient().getAddress(), user.getClient().getPhone(), user.getClient().getFirstName(), user.getClient().getLastName(), user.getClient().getNational()) : null)")
-@Mapping(target = "supplier", expression = "java(user.getSupplier() != null ? new SupplierResponse(user.getSupplier().getPhone(), user.getSupplier().getCompany(), user.getSupplier().getContactName(), user.getSupplier().getIdentification()) : null)")
+  @Mapping(target = "client", expression = "java(user.getClient() != null ? new ClientResponse(user.getClient().getAddress(), user.getClient().getPhone(), user.getClient().getFirstName(), user.getClient().getLastName(), user.getClient().getDocument()) : null)")
+  @Mapping(target = "supplier", expression = "java(user.getSupplier() != null ? new SupplierResponse(user.getSupplier().getPhone(), user.getSupplier().getCompany(), user.getSupplier().getContactName(), user.getSupplier().getIdentification()) : null)")
 
   UserFullResponse toResponse(User user);
 

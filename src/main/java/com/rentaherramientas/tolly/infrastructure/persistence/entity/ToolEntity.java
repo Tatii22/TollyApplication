@@ -16,6 +16,7 @@ import java.util.UUID;
 public class ToolEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_tool")
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -24,7 +25,7 @@ public class ToolEntity {
     @Column(name = "description", nullable = true)
     private String description;
 
-    @Column(name = "daily_cost", nullable = false)
+    @Column(name = "daily_price", nullable = false)
     private Double dailyPrice;
 
     @Column(name = "total_quantity", nullable = false)
@@ -56,6 +57,9 @@ public class ToolEntity {
         this.dailyPrice = dailyPrice;
         this.totalQuantity = totalQuantity;
         this.availableQuantity = availableQuantity;
+        this.setStatusId(statusId);
+        this.setSupplierId(supplierId);
+        this.setCategoryId(categoryId);
     }
 
     public Long getId() {return id;}

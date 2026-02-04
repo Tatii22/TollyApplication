@@ -1,9 +1,9 @@
 package com.rentaherramientas.tolly.domain.ports;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import com.rentaherramientas.tolly.domain.model.Supplier;
-import com.rentaherramientas.tolly.domain.model.User;
 
 public interface SupplierRepository {
 

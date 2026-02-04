@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
 import com.rentaherramientas.tolly.domain.ports.ToolStatusRepository;
+import com.rentaherramientas.tolly.domain.ports.CategoryRepository;
 import com.rentaherramientas.tolly.domain.model.Tool;
 import com.rentaherramientas.tolly.application.mapper.ToolMapper;
 import com.rentaherramientas.tolly.application.dto.tool.CreateToolRequest;
@@ -22,13 +23,16 @@ public class CreateToolUseCase {
     private final ToolRepository toolRepository;
     private final SupplierRepository supplierRepository;
     private final ToolStatusRepository toolStatusRepository;
+    private final CategoryRepository categoryRepository;
     private final ToolMapper toolMapper;
     
     public CreateToolUseCase(ToolRepository toolRepository, SupplierRepository supplierRepository, 
-                            ToolStatusRepository toolStatusRepository, ToolMapper toolMapper) {
+                            ToolStatusRepository toolStatusRepository, CategoryRepository categoryRepository,
+                            ToolMapper toolMapper) {
         this.toolRepository = toolRepository;
         this.supplierRepository = supplierRepository;
         this.toolStatusRepository = toolStatusRepository;
+        this.categoryRepository = categoryRepository;
         this.toolMapper = toolMapper;
     }
     
@@ -41,6 +45,10 @@ public class CreateToolUseCase {
         // Validar que el status existe
         toolStatusRepository.findById(request.statusId())
             .orElseThrow(() -> new DomainException("Estado con ID " + request.statusId() + " no existe"));
+
+        // Validar que la categoría existe
+        categoryRepository.findById(request.categoryId())
+            .orElseThrow(() -> new DomainException("Categoría con ID " + request.categoryId() + " no existe"));
         
         // Verificar si la herramienta ya existe con el mismo nombre
         if (toolRepository.existsByName(request.name())) {

@@ -4,6 +4,7 @@ import com.rentaherramientas.tolly.application.dto.tool.CreateToolRequest;
 import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
 import com.rentaherramientas.tolly.application.dto.tool.UpdateToolRequest;
 import com.rentaherramientas.tolly.domain.model.Tool;
+import com.rentaherramientas.tolly.domain.model.ToolStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -26,7 +27,7 @@ public interface ToolMapper {
 
     // Convierte ToolStatus a String (almacenado en la base de datos)
     default String toolStatusToString(ToolStatus status) {
-        return status != null ? status.name() : null;  // Usa el nombre del enum como String
+        return status != null ? status.getName() : null;
     }
 
 
