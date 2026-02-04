@@ -1,6 +1,7 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.in.rest;
 
 import com.rentaherramientas.tolly.application.dto.AssignRoleRequest;
+import com.rentaherramientas.tolly.application.dto.UserFullResponse;
 import com.rentaherramientas.tolly.application.dto.UserResponse;
 import com.rentaherramientas.tolly.application.usecase.user.AssignRoleUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.ListUsersUseCase;
@@ -46,8 +47,8 @@ public class UserController {
   @SecurityRequirement(name = "bearerAuth")
   @GetMapping
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<List<UserResponse>> listAllUsers() {
-    List<UserResponse> users = listUsersUseCase.execute();
+  public ResponseEntity<List<UserFullResponse>> listAllUsers() {
+    List<UserFullResponse> users = listUsersUseCase.execute();
     return ResponseEntity.ok(users);
   }
 
@@ -62,10 +63,10 @@ public class UserController {
   @SecurityRequirement(name = "bearerAuth")
   @PutMapping("/{userId}/roles")
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<UserResponse> assignRole(
+  public ResponseEntity<UserFullResponse> assignRole(
       @PathVariable UUID userId,
       @Valid @RequestBody AssignRoleRequest request) {
-    UserResponse response = assignRoleUseCase.execute(userId, request);
+    UserFullResponse response = assignRoleUseCase.execute(userId, request);
     return ResponseEntity.ok(response);
   }
 }

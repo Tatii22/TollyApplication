@@ -1,17 +1,14 @@
 package com.rentaherramientas.tolly.application.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
-import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * DTO para respuesta de usuario
- */
-@Schema(description = "Información del usuario")
-public record UserResponse(
+@Schema(description = "Información completa del usuario registrado")
+public record UserFullResponse(
+
     @Schema(description = "ID del usuario", example = "550e8400-e29b-41d4-a716-446655440000")
-    UUID id,
+    String id,
 
     @Schema(description = "Email del usuario", example = "user@example.com")
     String email,
@@ -19,9 +16,13 @@ public record UserResponse(
     @Schema(description = "Roles asignados al usuario")
     Set<RoleResponse> roles,
 
-    @Schema(description = "Información del cliente, si aplica")
+    @Schema(description = "Estado del usuario")
+    UserStatusResponse status,
+
+    @Schema(description = "Perfil de cliente (solo si es CLIENT)")
     ClientResponse client,
 
-    @Schema(description = "Información del proveedor, si aplica")
+    @Schema(description = "Perfil de proveedor (solo si es SUPPLIER)")
     SupplierResponse supplier
+
 ) {}

@@ -9,17 +9,25 @@ import jakarta.persistence.*;
 public class SupplierEntity {
 
     @Id
-    @Column(columnDefinition = "CHAR(36)")
+    @Column(columnDefinition = "CHAR(36)", name = "id", nullable = false, unique = true)
     private UUID id;
 
-    @Column(name = "user_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
-    private UUID userId;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
+    private UserEntity userId;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10, name = "phone")
     private String phone;
 
-    @Column(nullable = false, length = 20)
-    private String company;
+    @Column(nullable = false, length = 20, name = "company_name")
+    private String companyName;
+
+    @Column(nullable = false, length = 15, name = "identification")
+    private String identification;
+
+    @Column(nullable = false, length = 100, name = "contact_name")
+    private String contactName;
+
 
     public SupplierEntity() {}
 
@@ -27,23 +35,41 @@ public class SupplierEntity {
       return id;
     }
 
-    public SupplierEntity(UUID id, UUID userId, String phone, String company) {
+    public SupplierEntity(UUID id, UserEntity userId, String phone, String company, String identification, String contactName) {
       this.id = id;
       this.userId = userId;
       this.phone = phone;
-      this.company = company;
+      this.companyName = company;
+      this.identification = identification;
+      this.contactName = contactName;
     }
 
     public void setId(UUID id) {
       this.id = id;
     }
 
-    public UUID getUserId() {
+    public UserEntity getUserId() {
       return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(UserEntity userId) {
       this.userId = userId;
+    }
+
+    public String getIdentification() {
+      return identification;
+    }
+
+    public void setIdentification(String identification) {
+      this.identification = identification;
+    }
+
+    public String getContactName() {
+      return contactName;
+    }
+
+    public void setContactName(String contactName) {
+      this.contactName = contactName;
     }
 
     public String getPhone() {
@@ -54,15 +80,13 @@ public class SupplierEntity {
       this.phone = phone;
     }
 
-    public String getCompany() {
-      return company;
+    public String getCompanyName() {
+      return companyName;
     }
 
-    public void setCompany(String company) {
-      this.company = company;
+    public void setCompanyName(String companyName) {
+      this.companyName = companyName;
     }
-
-
 
 
 }

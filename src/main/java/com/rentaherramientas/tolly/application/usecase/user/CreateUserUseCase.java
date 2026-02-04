@@ -1,20 +1,16 @@
 package com.rentaherramientas.tolly.application.usecase.user;
 
-import com.rentaherramientas.tolly.application.dto.UserResponse;
+import com.rentaherramientas.tolly.application.dto.*;
 import com.rentaherramientas.tolly.application.dto.auth.RegisterRequest;
-import com.rentaherramientas.tolly.application.mapper.UserMapper;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
-import com.rentaherramientas.tolly.domain.model.Client;
-import com.rentaherramientas.tolly.domain.model.Role;
-import com.rentaherramientas.tolly.domain.model.Supplier;
-import com.rentaherramientas.tolly.domain.model.User;
-import com.rentaherramientas.tolly.domain.ports.ClientRepository;
-import com.rentaherramientas.tolly.domain.ports.PasswordService;
-import com.rentaherramientas.tolly.domain.ports.RoleRepository;
-import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
-import com.rentaherramientas.tolly.domain.ports.UserRepository;
+import com.rentaherramientas.tolly.domain.model.*;
+import com.rentaherramientas.tolly.domain.ports.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CreateUserUseCase {
@@ -22,85 +18,116 @@ public class CreateUserUseCase {
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final PasswordService passwordService;
-  private final UserMapper userMapper;
   private final ClientRepository clientRepository;
   private final SupplierRepository supplierRepository;
+  private final UserStatusRepository userStatusRepository;
 
-  public CreateUserUseCase(UserRepository userRepository,
+  public CreateUserUseCase(
+      UserRepository userRepository,
       RoleRepository roleRepository,
       PasswordService passwordService,
-      UserMapper userMapper,
       ClientRepository clientRepository,
-      SupplierRepository supplierRepository) {
+      SupplierRepository supplierRepository,
+      UserStatusRepository userStatusRepository) {
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
     this.passwordService = passwordService;
-    this.userMapper = userMapper;
     this.clientRepository = clientRepository;
     this.supplierRepository = supplierRepository;
+    this.userStatusRepository = userStatusRepository;
   }
 
   @Transactional
-  public UserResponse execute(RegisterRequest request) {
+  public UserFullResponse execute(RegisterRequest request) {
 
-    // Verificar si el usuario ya existe
+    // 1️⃣ Validar email único
     if (userRepository.existsByEmail(request.email())) {
       throw new DomainException("El usuario con email " + request.email() + " ya existe");
     }
 
-    // Hashear la contraseña
+    // 2️⃣ Crear User
     String hashedPassword = passwordService.hash(request.password());
+    UserStatus activeStatus = userStatusRepository.findByName("ACTIVE")
+        .orElseThrow(() -> new DomainException("Estado ACTIVE no encontrado"));
 
-    // Crear usuario con email y contraseña
-    User user = User.create(request.email(), hashedPassword);
+    User user = User.create(request.email(), hashedPassword, activeStatus);
 
-    // Validar que el rol sea CLIENT o SUPPLIER
+    // 3️⃣ Validar rol permitido
     String requestedRole = request.role().toUpperCase();
     if (!requestedRole.equals("CLIENT") && !requestedRole.equals("SUPPLIER")) {
-      throw new DomainException("Solo se permite registro como CLIENT o SUPPLIER");
+      throw new DomainException("Solo se permite registro como CLIENT");
     }
 
-    // Asignar rol USER por defecto
+    // 4️⃣ Asignar roles
     Role userRole = roleRepository.findByAuthority("ROLE_USER")
         .orElseThrow(() -> new DomainException("Rol USER no encontrado"));
     user.assignRole(userRole);
 
-    // Asignar rol de negocio según el tipo de usuario
     Role businessRole = roleRepository.findByAuthority("ROLE_" + requestedRole)
         .orElseThrow(() -> new DomainException("Rol de negocio no encontrado"));
     user.assignRole(businessRole);
 
-    // Guardar el usuario en la base de datos
+    // 5️⃣ Persistir User
     User savedUser = userRepository.save(user);
 
-    // Asociar datos específicos según rol y persistir en DB usando adapters
-    switch (requestedRole) {
-      case "CLIENT" -> {
-        if (request.address() == null || request.address().isBlank()) {
-          throw new DomainException("La dirección es obligatoria para CLIENT");
-        }
-        // Crear dominio
-        Client client = Client.create(savedUser.getId(), request.address());
-        // Guardar usando el adapter (convierte a entidad y persiste)
-        clientRepository.save(client);
-        // Asignar al user para el DTO
-        savedUser.setClient(client);
+    // 6️⃣ Crear perfil de negocio y DTO final
+    ClientResponse clientResponse = null;
+    SupplierResponse supplierResponse = null;
+
+    if (requestedRole.equals("CLIENT")) {
+
+      if (request.firstName() == null || request.lastName() == null || request.address() == null) {
+        throw new DomainException("Los campos firstName, lastName y address son obligatorios para CLIENT");
       }
-      case "SUPPLIER" -> {
-        if (request.phone() == null || request.phone().isBlank()
-            || request.company() == null || request.company().isBlank()) {
-          throw new DomainException("Teléfono y compañía son obligatorios para SUPPLIER");
-        }
-        // Crear dominio
-        Supplier supplier = Supplier.create(savedUser.getId(), request.phone(), request.company());
-        // Guardar usando el adapter
-        supplierRepository.save(supplier);
-        // Asignar al user para el DTO
-        savedUser.setSupplier(supplier);
+
+      Client client = Client.create(savedUser,
+          request.firstName(),
+          request.lastName(),
+          request.address(),
+          request.national(),
+          request.phone());
+      clientRepository.save(client);
+
+      clientResponse = new ClientResponse(
+          client.getFirstName(),
+          client.getLastName(),
+          client.getAddress(),
+          client.getDocument(),
+          client.getPhone());
+
+    } else { // SUPPLIER
+
+      if (request.company() == null || request.identification() == null || request.contactName() == null) {
+        throw new DomainException("Los campos company, identification y contactName son obligatorios para SUPPLIER");
       }
+
+      Supplier supplier = Supplier.create(
+          savedUser,
+          request.phone(),
+          request.company(),
+          request.identification(),
+          request.contactName());
+      supplierRepository.save(supplier);
+
+      supplierResponse = new SupplierResponse(
+          supplier.getPhone(),
+          supplier.getCompany(),
+          supplier.getIdentification(),
+          supplier.getContactName());
     }
 
-    // Retornar DTO de usuario con roles y datos de negocio
-    return userMapper.toResponse(savedUser);
+    // 7️⃣ Construir roles para la respuesta
+    Set<RoleResponse> rolesResponse = savedUser.getRoles().stream()
+        .map(r -> new RoleResponse(r.getId(), r.getName(), r.getAuthority()))
+        .collect(Collectors.toSet());
+
+    // 8️⃣ Retornar DTO combinado
+    return new UserFullResponse(
+        savedUser.getId().toString(),
+        savedUser.getEmail(),
+        rolesResponse,
+        new UserStatusResponse(savedUser.getStatus().getStatusName()),
+        clientResponse,
+        supplierResponse);
   }
 }

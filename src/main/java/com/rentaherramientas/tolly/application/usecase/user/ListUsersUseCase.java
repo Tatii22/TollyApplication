@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.rentaherramientas.tolly.application.dto.UserResponse;
+import com.rentaherramientas.tolly.application.dto.UserFullResponse;
 import com.rentaherramientas.tolly.application.mapper.UserMapper;
 import com.rentaherramientas.tolly.domain.ports.UserRepository;
 
@@ -20,7 +20,7 @@ public class ListUsersUseCase {
         this.userMapper = userMapper;
     }
 
-    public List<UserResponse> execute() {
+    public List<UserFullResponse> execute() {
         return userRepository.findAll().stream()
                 .map(userMapper::toResponse)
                 .collect(Collectors.toList());

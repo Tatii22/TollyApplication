@@ -1,13 +1,13 @@
 package com.rentaherramientas.tolly.domain.ports;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import com.rentaherramientas.tolly.domain.model.Client;
+import com.rentaherramientas.tolly.domain.model.User;
 
 public interface ClientRepository {
   void save(Client client);
-  Optional<Client> findByUserId(UUID userId);
+  Optional<Client> findByUserId(User userId);
   void delete(Client client);
 
 }

@@ -2,9 +2,11 @@ package com.rentaherramientas.tolly.infrastructure.config;
 
 import com.rentaherramientas.tolly.domain.model.Role;
 import com.rentaherramientas.tolly.domain.model.User;
+import com.rentaherramientas.tolly.domain.model.UserStatus;
 import com.rentaherramientas.tolly.domain.ports.PasswordService;
 import com.rentaherramientas.tolly.domain.ports.RoleRepository;
 import com.rentaherramientas.tolly.domain.ports.UserRepository;
+import com.rentaherramientas.tolly.domain.ports.UserStatusRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,18 +29,56 @@ public class DataInitializer implements CommandLineRunner {
   private final RoleRepository roleRepository;
   private final UserRepository userRepository;
   private final PasswordService passwordService;
+  private final UserStatusRepository userStatusRepository;
 
   public DataInitializer(RoleRepository roleRepository, UserRepository userRepository,
-      PasswordService passwordService) {
+      PasswordService passwordService, UserStatusRepository userStatusRepository) {
     this.roleRepository = roleRepository;
     this.userRepository = userRepository;
     this.passwordService = passwordService;
+    this.userStatusRepository = userStatusRepository;
   }
 
   @Override
   public void run(String... args) {
+    initializeStatus();
     initializeRoles();
     initializeAdmin();
+  }
+
+  public void initializeStatus() {
+    logger.info("Inicializando estados de usuario...");
+
+    // Crear estado ACTIVE
+    if (!userStatusRepository.existsByName("ACTIVE")) {
+      UserStatus activeStatus = UserStatus.reconstruct(
+          UUID.fromString("550e8400-e29b-41d4-a716-446655440005"),
+          "ACTIVE"
+        );
+      userStatusRepository.save(activeStatus);
+      logger.info("Estado ACTIVE creado");
+    }
+
+    // Crear estado INACTIVE
+    if (!userStatusRepository.existsByName("INACTIVE")) {
+      UserStatus inactiveStatus = UserStatus.reconstruct(
+          UUID.fromString("550e8400-e29b-41d4-a716-446655440006"),
+          "INACTIVE"
+        );
+      userStatusRepository.save(inactiveStatus);
+      logger.info("Estado INACTIVE creado");
+    }
+
+    if (!userStatusRepository.existsByName("BLOCKED")) {
+      UserStatus suspendedStatus = UserStatus.reconstruct(
+          UUID.fromString("550e8400-e29b-41d4-a716-446655440007"),
+          "BLOCKED"
+        );
+      userStatusRepository.save(suspendedStatus);
+      logger.info("Estado BLOCKED creado");
+    }
+
+    logger.info("Inicialización de estados de usuario completada");
   }
 
   private void initializeRoles() {
@@ -95,17 +135,21 @@ public class DataInitializer implements CommandLineRunner {
         return;
     }
 
-    User admin = User.create(
-        adminEmail,
-        passwordService.hash("123456")
-    );
+    UserStatus activeStatus = userStatusRepository.findByName("ACTIVE")
+        .orElseThrow(() -> new RuntimeException("Estado ACTIVE no encontrado"));
 
     Role adminRole = roleRepository.findByAuthority("ROLE_ADMIN")
         .orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"));
 
-    admin.assignRole(adminRole);
-    userRepository.save(admin);
+    User adminUser = User.create(
+        adminEmail,
+        passwordService.hash("123456"),
+        activeStatus
+    );
+    adminUser.assignRole(adminRole);
+    adminUser.assignStatus(activeStatus);
 
+    userRepository.save(adminUser);
     logger.info("Usuario ADMIN creado correctamente");
   }
 
