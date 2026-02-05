@@ -1,6 +1,7 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.in.rest;
 
 import com.rentaherramientas.tolly.application.dto.tool.CreateToolRequest;
+import com.rentaherramientas.tolly.application.dto.tool.ToolPublicResponse;
 import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
 import com.rentaherramientas.tolly.application.dto.tool.UpdateToolRequest;
 import com.rentaherramientas.tolly.application.usecase.tool.CreateToolUseCase;
@@ -58,28 +59,51 @@ public class ToolController {
         this.deleteToolUseCase = deleteToolUseCase;
     }
 
-    @Operation(summary = "Listar herramientas", description = "Obtiene la lista completa de herramientas o solo las disponibles si se indica")
+    @Operation(summary = "Listar herramientas", description = "Obtiene la lista completa de herramientas. Permite filtrar por disponibilidad y categoría")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista de herramientas obtenida exitosamente", 
-                    content = @Content(schema = @Schema(implementation = ToolResponse.class)))
+                    content = @Content(schema = @Schema(oneOf = {ToolResponse.class, ToolPublicResponse.class})))
     })
     @GetMapping
-    public ResponseEntity<List<ToolResponse>> findAll(
-            @RequestParam(name = "availableOnly", defaultValue = "false") boolean availableOnly) {
-        List<ToolResponse> tools = getToolsUseCase.execute(availableOnly);
+    public ResponseEntity<List<?>> findAll(
+            @RequestParam(name = "availableOnly", defaultValue = "false") boolean availableOnly,
+            @RequestParam(name = "categoryId", required = false) Long categoryId,
+            Authentication authentication) {
+        if (isClient(authentication)) {
+            List<ToolPublicResponse> tools = getToolsUseCase.executePublic(availableOnly, categoryId);
+            return ResponseEntity.ok(tools);
+        }
+
+        List<ToolResponse> tools = getToolsUseCase.execute(availableOnly, categoryId);
         return ResponseEntity.ok(tools);
     }
 
     @Operation(summary = "Obtener herramienta por ID", description = "Obtiene los detalles de una herramienta específica")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Herramienta obtenida exitosamente", 
-                    content = @Content(schema = @Schema(implementation = ToolResponse.class))),
+                    content = @Content(schema = @Schema(oneOf = {ToolResponse.class, ToolPublicResponse.class}))),
         @ApiResponse(responseCode = "404", description = "Herramienta no encontrada")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ToolResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(
+            @PathVariable Long id,
+            Authentication authentication) {
+        if (isClient(authentication)) {
+            ToolPublicResponse tool = getToolByIdUseCase.executePublic(id);
+            return ResponseEntity.ok(tool);
+        }
+
         ToolResponse tool = getToolByIdUseCase.execute(id);
         return ResponseEntity.ok(tool);
+    }
+
+    private boolean isClient(Authentication authentication) {
+        if (authentication == null || authentication.getAuthorities() == null) {
+            return false;
+        }
+
+        return authentication.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_CLIENT".equals(authority.getAuthority()));
     }
 
     @Operation(summary = "Crear nueva herramienta", 

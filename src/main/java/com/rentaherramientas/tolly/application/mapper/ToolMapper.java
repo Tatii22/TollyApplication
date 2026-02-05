@@ -1,6 +1,7 @@
 package com.rentaherramientas.tolly.application.mapper;
 
 import com.rentaherramientas.tolly.application.dto.tool.CreateToolRequest;
+import com.rentaherramientas.tolly.application.dto.tool.ToolPublicResponse;
 import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
 import com.rentaherramientas.tolly.application.dto.tool.UpdateToolRequest;
 import com.rentaherramientas.tolly.domain.model.Tool;
@@ -18,6 +19,11 @@ public interface ToolMapper {
      * Convierte Tool de dominio a ToolResponse (DTO)
      */
     ToolResponse toToolResponse(Tool tool);
+
+    /**
+     * Convierte Tool de dominio a ToolPublicResponse (DTO)
+     */
+    ToolPublicResponse toToolPublicResponse(Tool tool);
 
     /**
      * Convierte CreateToolRequest (DTO) a Tool de dominio

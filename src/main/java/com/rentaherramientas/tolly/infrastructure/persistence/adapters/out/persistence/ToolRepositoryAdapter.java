@@ -75,6 +75,29 @@ public class ToolRepositoryAdapter implements ToolRepository {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Tool> findByCategoryId(Long categoryId) {
+        return toolJpaRepository.findByCategoryId(categoryId)
+            .stream()
+            .map(ToolRepositoryAdapter::toDomain)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Tool> findByCategoryIdAndStatusName(
+        Long categoryId,
+        String statusName,
+        Integer minAvailableQuantity) {
+        return toolJpaRepository
+            .findByCategoryIdAndStatusName(
+                categoryId,
+                statusName,
+                minAvailableQuantity)
+            .stream()
+            .map(ToolRepositoryAdapter::toDomain)
+            .collect(Collectors.toList());
+    }
+
     public static Tool toDomain(ToolEntity toolEntity) {
         Tool tool = new Tool();
         tool.setId(toolEntity.getId());

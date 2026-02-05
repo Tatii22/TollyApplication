@@ -1,5 +1,6 @@
 package com.rentaherramientas.tolly.application.usecase.tool;
 
+import com.rentaherramientas.tolly.application.dto.tool.ToolPublicResponse;
 import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
 import com.rentaherramientas.tolly.application.mapper.ToolMapper;
 import com.rentaherramientas.tolly.domain.ports.ToolRepository;
@@ -27,19 +28,76 @@ public class GetToolsUseCase {
     }
 
     public List<ToolResponse> execute(boolean availableOnly) {
-        List<ToolResponse> toolResponses = availableOnly
-            ? toolRepository
+        return execute(availableOnly, null);
+    }
+
+    public List<ToolResponse> execute(boolean availableOnly, Long categoryId) {
+        if (availableOnly && categoryId != null) {
+            return toolRepository
+                .findByCategoryIdAndStatusName(
+                    categoryId,
+                    AVAILABLE_STATUS_NAME,
+                    MIN_AVAILABLE_QUANTITY)
+                .stream()
+                .map(toolMapper::toToolResponse)
+                .toList();
+        }
+
+        if (availableOnly) {
+            return toolRepository
                 .findByStatusName(
                     AVAILABLE_STATUS_NAME,
                     MIN_AVAILABLE_QUANTITY)
                 .stream()
                 .map(toolMapper::toToolResponse)
-                .toList()
-            : toolRepository.findAll()
+                .toList();
+        }
+
+        if (categoryId != null) {
+            return toolRepository.findByCategoryId(categoryId)
                 .stream()
                 .map(toolMapper::toToolResponse)
                 .toList();
+        }
 
-        return toolResponses;
+        return toolRepository.findAll()
+            .stream()
+            .map(toolMapper::toToolResponse)
+            .toList();
+    }
+
+    public List<ToolPublicResponse> executePublic(boolean availableOnly, Long categoryId) {
+        if (availableOnly && categoryId != null) {
+            return toolRepository
+                .findByCategoryIdAndStatusName(
+                    categoryId,
+                    AVAILABLE_STATUS_NAME,
+                    MIN_AVAILABLE_QUANTITY)
+                .stream()
+                .map(toolMapper::toToolPublicResponse)
+                .toList();
+        }
+
+        if (availableOnly) {
+            return toolRepository
+                .findByStatusName(
+                    AVAILABLE_STATUS_NAME,
+                    MIN_AVAILABLE_QUANTITY)
+                .stream()
+                .map(toolMapper::toToolPublicResponse)
+                .toList();
+        }
+
+        if (categoryId != null) {
+            return toolRepository.findByCategoryId(categoryId)
+                .stream()
+                .map(toolMapper::toToolPublicResponse)
+                .toList();
+        }
+
+        return toolRepository.findAll()
+            .stream()
+            .map(toolMapper::toToolPublicResponse)
+            .toList();
     }
 }

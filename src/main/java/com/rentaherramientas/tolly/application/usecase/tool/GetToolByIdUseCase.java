@@ -1,5 +1,6 @@
 package com.rentaherramientas.tolly.application.usecase.tool;
 
+import com.rentaherramientas.tolly.application.dto.tool.ToolPublicResponse;
 import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
 import com.rentaherramientas.tolly.application.mapper.ToolMapper;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
@@ -23,6 +24,12 @@ public class GetToolByIdUseCase {
     public ToolResponse execute(Long id) {
         return toolRepository.findById(id)
             .map(toolMapper::toToolResponse)
+            .orElseThrow(() -> new DomainException("Herramienta con ID " + id + " no encontrada"));
+    }
+
+    public ToolPublicResponse executePublic(Long id) {
+        return toolRepository.findById(id)
+            .map(toolMapper::toToolPublicResponse)
             .orElseThrow(() -> new DomainException("Herramienta con ID " + id + " no encontrada"));
     }
 }
