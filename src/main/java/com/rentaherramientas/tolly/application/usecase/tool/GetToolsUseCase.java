@@ -11,7 +11,9 @@ import java.util.List;
  */
 @Service
 public class GetToolsUseCase {
-    
+    private static final String AVAILABLE_STATUS_NAME = "AVAILABLE";
+    private static final int MIN_AVAILABLE_QUANTITY = 0;
+
     private final ToolRepository toolRepository;
     private final ToolMapper toolMapper;
     
@@ -21,9 +23,23 @@ public class GetToolsUseCase {
     }
     
     public List<ToolResponse> execute() {
-        return toolRepository.findAll()
-            .stream()
-            .map(toolMapper::toToolResponse)
-            .toList();
+        return execute(false);
+    }
+
+    public List<ToolResponse> execute(boolean availableOnly) {
+        List<ToolResponse> toolResponses = availableOnly
+            ? toolRepository
+                .findByStatusName(
+                    AVAILABLE_STATUS_NAME,
+                    MIN_AVAILABLE_QUANTITY)
+                .stream()
+                .map(toolMapper::toToolResponse)
+                .toList()
+            : toolRepository.findAll()
+                .stream()
+                .map(toolMapper::toToolResponse)
+                .toList();
+
+        return toolResponses;
     }
 }

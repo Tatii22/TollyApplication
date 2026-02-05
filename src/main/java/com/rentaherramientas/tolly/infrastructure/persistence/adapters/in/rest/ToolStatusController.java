@@ -44,7 +44,7 @@ public class ToolStatusController {
     }
     
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPPLIER')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Crear nuevo estado de herramienta", 
               description = "Solo ADMIN puede crear nuevos estados globales del sistema")

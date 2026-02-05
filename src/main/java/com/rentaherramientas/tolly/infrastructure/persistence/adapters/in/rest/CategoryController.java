@@ -91,7 +91,7 @@ public class CategoryController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPPLIER')")
     public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CreateCategoryRequest request) {
         CategoryResponse category = createCategoryUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
@@ -108,7 +108,7 @@ public class CategoryController {
     })
     @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPPLIER')")
     public ResponseEntity<CategoryResponse> update(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCategoryRequest request) {
