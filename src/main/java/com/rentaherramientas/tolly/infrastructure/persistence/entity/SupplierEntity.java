@@ -9,23 +9,23 @@ import jakarta.persistence.*;
 public class SupplierEntity {
 
     @Id
-    @Column(columnDefinition = "CHAR(36)", name = "id", nullable = false, unique = true)
+    @Column(columnDefinition = "CHAR(36)", name = "id_supplier", nullable = false, unique = true)
     private UUID id;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
     private UserEntity userId;
 
-    @Column(nullable = false, length = 10, name = "phone")
+    @Column(nullable = false, length = 20, name = "phone")
     private String phone;
 
-    @Column(nullable = false, length = 20, name = "company_name")
+    @Column(nullable = false, length = 150, name = "company_name")
     private String companyName;
 
-    @Column(nullable = false, length = 15, name = "identification")
+    @Column(nullable = false, length = 30, name = "identification", unique = true)
     private String identification;
 
-    @Column(nullable = false, length = 100, name = "contact_name")
+    @Column(nullable = true, length = 150, name = "contact_name")
     private String contactName;
 
 

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.rentaherramientas.tolly.application.mapper.SupplierMapper;
 import com.rentaherramientas.tolly.domain.model.Supplier;
-import com.rentaherramientas.tolly.domain.model.User;
 import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.SupplierEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserEntity;
@@ -46,9 +45,15 @@ public class SupplierRepositoryAdapter implements SupplierRepository {
   }
 
   @Override
-  public Optional<Supplier> findByUserId(User user) {
+  public Optional<Supplier> findByUserId(UUID userId) {
+    return userRepository.findById(userId)
+        .flatMap(supplierRepository::findByUserId)
+        .map(mapper::toDomain);
+  }
 
-    return userRepository.findById(user.getId()).flatMap(supplierRepository::findByUserId).map(mapper::toDomain);
+  @Override
+  public Optional<Supplier> findById(UUID id) {
+    return supplierRepository.findById(id).map(mapper::toDomain);
   }
 
   @Override
