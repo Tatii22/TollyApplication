@@ -2,7 +2,6 @@ package com.rentaherramientas.tolly.application.usecase.auth;
 
 import com.rentaherramientas.tolly.application.dto.auth.LoginResponse;
 import com.rentaherramientas.tolly.application.dto.auth.RefreshTokenRequest;
-import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 import com.rentaherramientas.tolly.domain.exceptions.InvalidCredentialsException;
 import com.rentaherramientas.tolly.domain.exceptions.UserNotFoundException;
 import com.rentaherramientas.tolly.domain.model.RefreshToken;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 
 /**
  * Caso de uso: Refrescar token
@@ -22,12 +20,12 @@ import java.time.LocalDateTime;
  */
 @Service
 public class RefreshTokenUseCase {
-    
+
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final Long accessTokenExpiration;
-    
+
     public RefreshTokenUseCase(
             RefreshTokenRepository refreshTokenRepository,
             UserRepository userRepository,
@@ -38,34 +36,34 @@ public class RefreshTokenUseCase {
         this.tokenService = tokenService;
         this.accessTokenExpiration = accessTokenExpiration;
     }
-    
+
     @Transactional
     public LoginResponse execute(RefreshTokenRequest request) {
         // Buscar refresh token
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
             .orElseThrow(() -> new InvalidCredentialsException("Refresh token inválido"));
-        
+
         // Verificar si es válido
         if (!refreshToken.isValid()) {
             throw new InvalidCredentialsException("Refresh token expirado o revocado");
         }
-        
+
         // Buscar usuario
         User user = userRepository.findById(refreshToken.getUserId())
             .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-        
+
         // Verificar si está activo
         if (!user.isActive()) {
             throw new InvalidCredentialsException("Usuario bloqueado o inactivo");
         }
-        
+
         // Generar nuevo access token
         String accessToken = tokenService.generateAccessToken(
             user.getId(),
             user.getEmail(),
             user.getRoles()
         );
-        
+
         // Retornar nuevo access token con el mismo refresh token
         return LoginResponse.of(accessToken, request.refreshToken(), accessTokenExpiration / 1000);
     }

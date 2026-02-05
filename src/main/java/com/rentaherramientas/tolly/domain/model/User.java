@@ -27,6 +27,10 @@ public class User {
     this.roles = new HashSet<>();
   }
 
+  public User(UUID id){
+    this.id = id;
+  }
+
   /**
    * Factory method para crear un nuevo usuario
    */

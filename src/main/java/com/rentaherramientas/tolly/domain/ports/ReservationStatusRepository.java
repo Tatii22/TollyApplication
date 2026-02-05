@@ -12,7 +12,7 @@ public interface ReservationStatusRepository {
     ReservationStatus save(ReservationStatus reservationStatus);
 
     // Buscar por nombre
-    Optional<ReservationStatus> findByName(String name);
+    Optional<ReservationStatus> findByStatusName(String statusName);
 
     // Buscar por ID
     Optional<ReservationStatus> findById(UUID id);

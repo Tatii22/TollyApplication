@@ -6,7 +6,9 @@ import com.rentaherramientas.tolly.domain.model.Supplier;
 import com.rentaherramientas.tolly.domain.model.User;
 import com.rentaherramientas.tolly.domain.model.UserStatus;
 import com.rentaherramientas.tolly.domain.ports.UserRepository;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.ClientEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.RoleEntity;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.SupplierEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserStatusEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ClientJpaRepository;
@@ -34,8 +36,7 @@ public class UserRepositoryAdapter implements UserRepository {
   public UserRepositoryAdapter(
       UserJpaRepository jpaRepository,
       ClientJpaRepository clientJpaRepository,
-      SupplierJpaRepository supplierJpaRepository
-  ) {
+      SupplierJpaRepository supplierJpaRepository) {
     this.jpaRepository = jpaRepository;
     this.clientJpaRepository = clientJpaRepository;
     this.supplierJpaRepository = supplierJpaRepository;
@@ -77,24 +78,23 @@ public class UserRepositoryAdapter implements UserRepository {
         .collect(Collectors.toList());
   }
 
-  /* =========================
-     MAPPERS PRIVADOS
-     ========================= */
+  /*
+   * =========================
+   * MAPPERS PRIVADOS
+   * =========================
+   */
 
   private UserEntity toEntity(User user) {
     Set<RoleEntity> roleEntities = user.getRoles().stream()
         .map(this::roleToEntity)
         .collect(Collectors.toSet());
 
-
-
     return new UserEntity(
         user.getId(),
         user.getEmail(),
         user.getPassword(),
         roleEntities,
-        user.getStatus() != null ? statusToEntity(user.getStatus()) : null
-    );
+        user.getStatus() != null ? statusToEntity(user.getStatus()) : null);
   }
 
   private User toDomain(UserEntity entity) {
@@ -102,43 +102,34 @@ public class UserRepositoryAdapter implements UserRepository {
         .map(this::roleToDomain)
         .collect(Collectors.toSet());
 
-
     User user = User.reconstruct(
         entity.getId(),
         entity.getEmail(),
         entity.getPassword(),
         roles,
-        entity.getStatus() != null ? statusToDomain(entity.getStatus()) : null
-    );
+        entity.getStatus() != null ? statusToDomain(entity.getStatus()) : null);
 
     // ✅ CLIENT
     clientJpaRepository.findByUserId(entity)
-        .ifPresent(client ->
-            user.setClient(
-                Client.restore(client.getId(),
+        .ifPresent(client -> user.setClient(
+            Client.restore(client.getId(),
                 user,
                 client.getAddress(),
                 client.getPhoneNumber(),
                 client.getFirstName(),
                 client.getLastName(),
-                client.getNationalId())
-            )
-        );
+                client.getNationalId())));
 
     // ✅ SUPPLIER
     supplierJpaRepository.findByUserId(entity)
-        .ifPresent(supplier ->
-            user.setSupplier(
-                Supplier.restore(
-                    supplier.getId(),
-                    user,
-                    supplier.getPhone(),
-                    supplier.getCompanyName(),
-                    supplier.getIdentification(),
-                    supplier.getContactName()
-                )
-            )
-        );
+        .ifPresent(supplier -> user.setSupplier(
+            Supplier.restore(
+                supplier.getId(),
+                user,
+                supplier.getPhone(),
+                supplier.getCompanyName(),
+                supplier.getIdentification(),
+                supplier.getContactName())));
 
     return user;
   }
@@ -147,28 +138,25 @@ public class UserRepositoryAdapter implements UserRepository {
     return new RoleEntity(
         role.getId(),
         role.getName(),
-        role.getAuthority()
-    );
+        role.getAuthority());
   }
 
   private Role roleToDomain(RoleEntity entity) {
     return Role.reconstruct(
         entity.getId(),
         entity.getName(),
-        entity.getAuthority()
-    );
+        entity.getAuthority());
   }
 
   private UserStatusEntity statusToEntity(UserStatus status) {
     return new UserStatusEntity(
         status.getId(),
-        status.getStatusName()
-    );
+        status.getStatusName());
   }
+
   private UserStatus statusToDomain(UserStatusEntity entity) {
     return UserStatus.reconstruct(
         entity.getId(),
-        entity.getName()
-    );
+        entity.getName());
   }
 }

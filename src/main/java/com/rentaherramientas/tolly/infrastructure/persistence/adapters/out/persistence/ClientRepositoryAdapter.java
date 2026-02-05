@@ -1,7 +1,6 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.persistence;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 

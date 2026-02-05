@@ -33,7 +33,7 @@ public class ReservationStatusRepositoryAdapter implements ReservationStatusRepo
   }
 
   @Override
-  public Optional<ReservationStatus> findByName(String name) {
+  public Optional<ReservationStatus> findByStatusName(String name) {
     return jpaRepository.findByStatusName(name)
         .map(ReservationStatusMapper::toDomain);
   }
