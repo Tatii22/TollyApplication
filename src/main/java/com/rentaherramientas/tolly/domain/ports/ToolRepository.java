@@ -10,6 +10,8 @@ public interface ToolRepository {
     Optional<Tool> findByName(String name);
     List<Tool> findAll();
     List<Tool> findByStatusName(String statusName, Integer minAvailableQuantity);
+    List<Tool> findByCategoryId(Long categoryId);
+    List<Tool> findByCategoryIdAndStatusName(Long categoryId, String statusName, Integer minAvailableQuantity);
     boolean existsByName(String name);
     void deleteById(Long id);
     Optional<Tool> update(Long id, Tool tool);

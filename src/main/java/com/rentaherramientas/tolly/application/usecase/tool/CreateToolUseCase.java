@@ -20,6 +20,7 @@ import com.rentaherramientas.tolly.domain.exceptions.DomainException;
  */
 @Service
 public class CreateToolUseCase {
+    private static final Long DEFAULT_AVAILABLE_STATUS_ID = 1L;
     private final ToolRepository toolRepository;
     private final SupplierRepository supplierRepository;
     private final ToolStatusRepository toolStatusRepository;
@@ -38,13 +39,15 @@ public class CreateToolUseCase {
     
     @Transactional
     public ToolResponse execute(CreateToolRequest request) {
+        Long statusId = request.statusId() != null ? request.statusId() : DEFAULT_AVAILABLE_STATUS_ID;
+
         // Validar que el supplier existe
         supplierRepository.findById(request.supplierId())
             .orElseThrow(() -> new DomainException("Proveedor con ID " + request.supplierId() + " no existe"));
         
         // Validar que el status existe
-        toolStatusRepository.findById(request.statusId())
-            .orElseThrow(() -> new DomainException("Estado con ID " + request.statusId() + " no existe"));
+        toolStatusRepository.findById(statusId)
+            .orElseThrow(() -> new DomainException("Estado con ID " + statusId + " no existe"));
 
         // Validar que la categoría existe
         categoryRepository.findById(request.categoryId())
@@ -57,6 +60,7 @@ public class CreateToolUseCase {
         
         // Crear la herramienta
         Tool tool = toolMapper.toTool(request);
+        tool.setStatusId(statusId);
         Tool saved = toolRepository.save(tool);
         
         return toolMapper.toToolResponse(saved);
