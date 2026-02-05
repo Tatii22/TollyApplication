@@ -13,9 +13,11 @@ public class ReservationDetail {
   private int rentalDay;
   private BigDecimal subTotal;
 
-  /* =======================
-     CONSTRUCTORES
-     ======================= */
+  /*
+   * =======================
+   * CONSTRUCTORES
+   * =======================
+   */
 
   private ReservationDetail() {
   }
@@ -26,8 +28,7 @@ public class ReservationDetail {
       Reservation reservation,
       Double dailyPrice,
       int rentalDay,
-      BigDecimal subTotal
-  ) {
+      BigDecimal subTotal) {
     this.id = id;
     this.tool = tool;
     this.reservation = reservation;
@@ -36,24 +37,26 @@ public class ReservationDetail {
     this.subTotal = subTotal;
   }
 
-  /* =======================
-     MÉTODOS DE FÁBRICA
-     ======================= */
+  /*
+   * =======================
+   * MÉTODOS DE FÁBRICA
+   * =======================
+   */
 
   public static ReservationDetail create(
       Tool tool,
       Reservation reservation,
       Double dailyPrice,
-      int rentalDay
-  ) {
+      int rentalDay,
+      BigDecimal subTotal) {
     validateTool(tool);
     validateReservation(reservation);
     validateDailyPrice(dailyPrice);
     validateRentalDay(rentalDay);
 
-    BigDecimal subTotal =
-        BigDecimal.valueOf(dailyPrice)
-            .multiply(BigDecimal.valueOf(rentalDay));
+    BigDecimal subTotal1 = BigDecimal.valueOf(
+        Objects.requireNonNull(dailyPrice, "El precio diario no puede ser nulo"))
+        .multiply(BigDecimal.valueOf(rentalDay));
 
     return new ReservationDetail(
         null,
@@ -61,8 +64,7 @@ public class ReservationDetail {
         reservation,
         dailyPrice,
         rentalDay,
-        subTotal
-    );
+        subTotal1);
   }
 
   public static ReservationDetail reconstruct(
@@ -71,8 +73,7 @@ public class ReservationDetail {
       Reservation reservation,
       Double dailyPrice,
       int rentalDay,
-      BigDecimal subTotal
-  ) {
+      BigDecimal subTotal) {
     validateTool(tool);
     validateReservation(reservation);
     validateDailyPrice(dailyPrice);
@@ -84,13 +85,14 @@ public class ReservationDetail {
         reservation,
         dailyPrice,
         rentalDay,
-        subTotal
-    );
+        subTotal);
   }
 
-  /* =======================
-     VALIDACIONES
-     ======================= */
+  /*
+   * =======================
+   * VALIDACIONES
+   * =======================
+   */
 
   private static void validateTool(Tool tool) {
     if (tool == null) {
@@ -116,9 +118,11 @@ public class ReservationDetail {
     }
   }
 
-  /* =======================
-     GETTERS
-     ======================= */
+  /*
+   * =======================
+   * GETTERS
+   * =======================
+   */
 
   public Long getId() {
     return id;
@@ -144,14 +148,18 @@ public class ReservationDetail {
     return subTotal;
   }
 
-  /* =======================
-     EQUALS & HASHCODE
-     ======================= */
+  /*
+   * =======================
+   * EQUALS & HASHCODE
+   * =======================
+   */
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ReservationDetail)) return false;
+    if (this == o)
+      return true;
+    if (!(o instanceof ReservationDetail))
+      return false;
     ReservationDetail that = (ReservationDetail) o;
     return Objects.equals(id, that.id);
   }

@@ -41,7 +41,7 @@ public class Tool {
         if (dailyPrice == null || dailyPrice < 0) {
             throw new IllegalArgumentException("El costo diario no puede ser nulo o negativo");
         }
-        
+
         this.id = id;
         this.name = name;
         this.description = description;
@@ -52,6 +52,30 @@ public class Tool {
         this.supplierId = supplierId;
         this.categoryId = categoryId;
     }
+
+    public static Tool reconstruct(
+        Long id,
+        String name,
+        String description,
+        Double dailyPrice,
+        Integer totalQuantity,
+        Integer availableQuantity,
+        Long statusId,
+        UUID supplierId,
+        Long categoryId
+) {
+    Tool tool = new Tool();
+    tool.id = id;
+    tool.name = name;
+    tool.description = description;
+    tool.dailyPrice = dailyPrice;
+    tool.totalQuantity = totalQuantity;
+    tool.availableQuantity = availableQuantity;
+    tool.statusId = statusId;
+    tool.supplierId = supplierId;
+    tool.categoryId = categoryId;
+    return tool;
+}
 
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}

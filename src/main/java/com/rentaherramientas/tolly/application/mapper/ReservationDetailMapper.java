@@ -3,6 +3,7 @@ package com.rentaherramientas.tolly.application.mapper;
 import com.rentaherramientas.tolly.domain.model.ReservationDetail;
 import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.model.Tool;
+import com.rentaherramientas.tolly.domain.model.ReservationStatus;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationDetailEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ToolEntity;
@@ -17,10 +18,8 @@ public class ReservationDetailMapper {
    * ENTITY → DOMAIN
    * =========================
    */
-
   public static ReservationDetail toDomain(ReservationDetailEntity entity) {
-    if (entity == null)
-      return null;
+    if (entity == null) return null;
 
     return ReservationDetail.reconstruct(
         entity.getId(),
@@ -28,7 +27,8 @@ public class ReservationDetailMapper {
         toReservationDomain(entity.getReservation()),
         entity.getDailyPrice(),
         entity.getRentalDay(),
-        entity.getSubTotal());
+        entity.getSubTotal()
+    );
   }
 
   /*
@@ -36,10 +36,8 @@ public class ReservationDetailMapper {
    * DOMAIN → ENTITY
    * =========================
    */
-
   public static ReservationDetailEntity toEntity(ReservationDetail domain) {
-    if (domain == null)
-      return null;
+    if (domain == null) return null;
 
     ReservationDetailEntity entity = new ReservationDetailEntity();
     entity.setId(domain.getId());
@@ -66,8 +64,7 @@ public class ReservationDetailMapper {
    */
 
   private static Tool toToolDomain(ToolEntity entity) {
-    if (entity == null)
-      return null;
+    if (entity == null) return null;
 
     return Tool.reconstruct(
         entity.getId(),
@@ -78,12 +75,15 @@ public class ReservationDetailMapper {
         entity.getAvailableQuantity(),
         entity.getToolStatus().getId(),
         entity.getSupplier().getId(),
-        entity.getCategory().getId());
+        entity.getCategory().getId()
+    );
   }
 
   private static Reservation toReservationDomain(ReservationEntity entity) {
-    if (entity == null)
-      return null;
+    if (entity == null) return null;
+
+    ReservationStatus status =
+        ReservationStatusMapper.toDomain(entity.getReservationStatus());
 
     return Reservation.reconstruct(
         entity.getId(),
@@ -91,7 +91,8 @@ public class ReservationDetailMapper {
         entity.getStartDate(),
         entity.getEndDate(),
         entity.getTotalPrice(),
-        entity.getReservationStatus().getId(),
-        entity.getCreatedAt());
+        status,
+        entity.getCreatedAt()
+    );
   }
 }
