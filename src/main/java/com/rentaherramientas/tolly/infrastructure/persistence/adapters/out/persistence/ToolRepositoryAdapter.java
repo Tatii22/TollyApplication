@@ -62,6 +62,19 @@ public class ToolRepositoryAdapter implements ToolRepository {
         return toolJpaRepository.existsByName(name);
     }
 
+    @Override
+    public List<Tool> findByStatusName(
+        String statusName,
+        Integer minAvailableQuantity) {
+        return toolJpaRepository
+            .findByToolStatus(
+                statusName,
+                minAvailableQuantity)
+            .stream()
+            .map(ToolRepositoryAdapter::toDomain)
+            .collect(Collectors.toList());
+    }
+
     public static Tool toDomain(ToolEntity toolEntity) {
         Tool tool = new Tool();
         tool.setId(toolEntity.getId());

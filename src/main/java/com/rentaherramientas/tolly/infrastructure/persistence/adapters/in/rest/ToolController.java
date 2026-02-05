@@ -58,14 +58,15 @@ public class ToolController {
         this.deleteToolUseCase = deleteToolUseCase;
     }
 
-    @Operation(summary = "Listar todas las herramientas", description = "Obtiene la lista completa de herramientas disponibles")
+    @Operation(summary = "Listar herramientas", description = "Obtiene la lista completa de herramientas o solo las disponibles si se indica")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista de herramientas obtenida exitosamente", 
                     content = @Content(schema = @Schema(implementation = ToolResponse.class)))
     })
     @GetMapping
-    public ResponseEntity<List<ToolResponse>> findAll() {
-        List<ToolResponse> tools = getToolsUseCase.execute();
+    public ResponseEntity<List<ToolResponse>> findAll(
+            @RequestParam(name = "availableOnly", defaultValue = "false") boolean availableOnly) {
+        List<ToolResponse> tools = getToolsUseCase.execute(availableOnly);
         return ResponseEntity.ok(tools);
     }
 
