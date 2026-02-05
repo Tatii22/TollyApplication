@@ -7,7 +7,6 @@ import com.rentaherramientas.tolly.infrastructure.persistence.entity.ClientEntit
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ClientJpaRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ReservationJpaRepository;
-import com.rentaherramientas.tolly.infrastructure.persistence.repository.ReservationStatusJpaRespository;
 import com.rentaherramientas.tolly.application.mapper.ReservationMapper;
 
 import java.util.List;
