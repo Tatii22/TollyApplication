@@ -14,7 +14,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 
 /**
  * Inicializador de datos para roles
@@ -51,29 +50,20 @@ public class DataInitializer implements CommandLineRunner {
 
     // Crear estado ACTIVE
     if (!userStatusRepository.existsByName("ACTIVE")) {
-      UserStatus activeStatus = UserStatus.reconstruct(
-          UUID.fromString("550e8400-e29b-41d4-a716-446655440005"),
-          "ACTIVE"
-        );
+      UserStatus activeStatus = UserStatus.create("ACTIVE");
       userStatusRepository.save(activeStatus);
       logger.info("Estado ACTIVE creado");
     }
 
     // Crear estado INACTIVE
     if (!userStatusRepository.existsByName("INACTIVE")) {
-      UserStatus inactiveStatus = UserStatus.reconstruct(
-          UUID.fromString("550e8400-e29b-41d4-a716-446655440006"),
-          "INACTIVE"
-        );
+      UserStatus inactiveStatus = UserStatus.create("INACTIVE");
       userStatusRepository.save(inactiveStatus);
       logger.info("Estado INACTIVE creado");
     }
 
     if (!userStatusRepository.existsByName("BLOCKED")) {
-      UserStatus suspendedStatus = UserStatus.reconstruct(
-          UUID.fromString("550e8400-e29b-41d4-a716-446655440007"),
-          "BLOCKED"
-        );
+      UserStatus suspendedStatus = UserStatus.create("BLOCKED");
       userStatusRepository.save(suspendedStatus);
       logger.info("Estado BLOCKED creado");
     }
@@ -86,39 +76,27 @@ public class DataInitializer implements CommandLineRunner {
 
     // Crear rol USER
     if (!roleRepository.existsByAuthority("ROLE_USER")) {
-      Role userRole = Role.reconstruct(
-          UUID.fromString("550e8400-e29b-41d4-a716-446655440001"),
-          "USER",
-          "ROLE_USER");
+      Role userRole = Role.create("USER", "ROLE_USER");
       roleRepository.save(userRole);
       logger.info("Rol USER creado");
     }
 
     // Crear rol ADMIN
     if (!roleRepository.existsByAuthority("ROLE_ADMIN")) {
-      Role adminRole = Role.reconstruct(
-          UUID.fromString("550e8400-e29b-41d4-a716-446655440002"),
-          "ADMIN",
-          "ROLE_ADMIN");
+      Role adminRole = Role.create("ADMIN", "ROLE_ADMIN");
       roleRepository.save(adminRole);
       logger.info("Rol ADMIN creado");
     }
 
     // Crear rol MODERATOR
     if (!roleRepository.existsByAuthority("ROLE_SUPPLIER")) {
-      Role moderatorRole = Role.reconstruct(
-          UUID.fromString("550e8400-e29b-41d4-a716-446655440003"),
-          "SUPPLIER",
-          "ROLE_SUPPLIER");
+      Role moderatorRole = Role.create("SUPPLIER", "ROLE_SUPPLIER");
       roleRepository.save(moderatorRole);
       logger.info("Rol SUPPLIER creado");
     }
 
     if (!roleRepository.existsByAuthority("ROLE_CLIENT")) {
-      Role moderatorRole = Role.reconstruct(
-          UUID.fromString("550e8400-e29b-41d4-a716-446655440004"),
-          "CLIENT",
-          "ROLE_CLIENT");
+      Role moderatorRole = Role.create("CLIENT", "ROLE_CLIENT");
       roleRepository.save(moderatorRole);
       logger.info("Rol CLIENT creado");
     }

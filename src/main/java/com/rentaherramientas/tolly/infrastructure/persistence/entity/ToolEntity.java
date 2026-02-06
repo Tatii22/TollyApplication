@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.FetchType;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tools")
@@ -50,7 +49,7 @@ public class ToolEntity {
 
     public ToolEntity(Long id, String name, String description, Double dailyPrice,
                         Integer totalQuantity, Integer availableQuantity, Long statusId,
-                        UUID supplierId, Long categoryId) {
+                        Long supplierId, Long categoryId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -89,8 +88,8 @@ public class ToolEntity {
     public Integer getAvailableQuantity() {return availableQuantity;}
     public void setAvailableQuantity(Integer availableQuantity) {this.availableQuantity = availableQuantity;}
 
-    public UUID getSupplierId() {return supplier != null ? supplier.getId() : null;}
-    public void setSupplierId(UUID supplierId) {
+    public Long getSupplierId() {return supplier != null ? supplier.getId() : null;}
+    public void setSupplierId(Long supplierId) {
         if (supplier == null) supplier = new SupplierEntity();
         supplier.setId(supplierId);
     }

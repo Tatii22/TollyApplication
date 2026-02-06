@@ -1,6 +1,5 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.persistence;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,7 +43,7 @@ public class ReservationDetailRepositoryAdapter
    * =========================
    */
   @Override
-  public Optional<ReservationDetail> findById(BigDecimal id) {
+  public Optional<ReservationDetail> findById(Long id) {
     return jpaRepository.findById(id)
         .map(ReservationDetailMapper::toDomain);
   }

@@ -19,7 +19,7 @@ public class UpdateReservationDetailRentalDaysUseCase {
     this.reservationDetailRepository = reservationDetailRepository;
   }
 
-  public ReservationDetail execute(BigDecimal detailId, int newRentalDays) {
+  public ReservationDetail execute(Long detailId, int newRentalDays) {
 
     ReservationDetail detail = reservationDetailRepository.findById(detailId)
         .orElseThrow(() -> new RuntimeException("Detalle no encontrado"));

@@ -2,12 +2,11 @@ package com.rentaherramientas.tolly.domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class Reservation {
 
   private Long id;
-  private UUID clientId;
+  private Long clientId;
   private LocalDate startDate;
   private LocalDate endDate;
   private BigDecimal total;
@@ -17,7 +16,7 @@ public class Reservation {
   public Reservation() {
   }
 
-  public static Reservation reconstruct(Long id, UUID clientId, LocalDate startDate,
+  public static Reservation reconstruct(Long id, Long clientId, LocalDate startDate,
       LocalDate endDate, BigDecimal total,
       ReservationStatus status, LocalDate createdAt) {
     Reservation reservation = new Reservation();
@@ -31,7 +30,7 @@ public class Reservation {
     return reservation;
   }
 
-  public static Reservation create(UUID clientId, LocalDate startDate,
+  public static Reservation create(Long clientId, LocalDate startDate,
       LocalDate endDate, BigDecimal total,
       ReservationStatus status, LocalDate createdAt) {
     Reservation reservation = new Reservation();
@@ -66,11 +65,11 @@ public class Reservation {
     this.id = id;
   }
 
-  public UUID getClientId() {
+  public Long getClientId() {
     return clientId;
   }
 
-  public void setClientId(UUID clientId) {
+  public void setClientId(Long clientId) {
     this.clientId = clientId;
   }
 

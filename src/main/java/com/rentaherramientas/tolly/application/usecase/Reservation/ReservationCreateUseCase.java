@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.model.ReservationStatus;
-import com.rentaherramientas.tolly.domain.model.User;
 import com.rentaherramientas.tolly.domain.ports.ClientRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationStatusRepository;
@@ -33,8 +32,7 @@ public class ReservationCreateUseCase {
   @Transactional
   public ReservationResponse createReservation(ReservationRequest request) {
     // 1️⃣ Verificar que el cliente exista usando ClientRepository
-    User user = new User(request.clientId());
-    clientRepository.findByUserId(user)
+    clientRepository.findById(request.clientId())
         .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + request.clientId()));
 
     // 2️⃣ Buscar o crear el estado de la reserva

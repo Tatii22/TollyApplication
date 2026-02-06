@@ -6,6 +6,7 @@ import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.model.ReservationStatus;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ClientEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationEntity;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationStatusEntity;
 
 @Component
 public class ReservationMapper {
@@ -18,7 +19,7 @@ public class ReservationMapper {
 
         return Reservation.reconstruct(
                 entity.getId(),
-                entity.getClient() != null ? entity.getClient().getId() : null, // UUID del cliente
+                entity.getClient() != null ? entity.getClient().getId() : null, // ID del cliente
                 entity.getStartDate(), // LocalDate directo
                 entity.getEndDate(),   // LocalDate directo
                 entity.getTotalPrice(),
@@ -28,7 +29,7 @@ public class ReservationMapper {
     }
 
     // De Dominio a Entity
-    public static ReservationEntity toEntity(Reservation domain, ClientEntity clientEntity) {
+    public static ReservationEntity toEntity(Reservation domain, ClientEntity clientEntity, ReservationStatusEntity statusEntity) {
         if (domain == null) return null;
 
         ReservationEntity entity = new ReservationEntity();
@@ -37,7 +38,7 @@ public class ReservationMapper {
         entity.setStartDate(domain.getStartDate()); // LocalDate directo
         entity.setEndDate(domain.getEndDate());     // LocalDate directo
         entity.setTotalPrice(domain.getTotal());
-        entity.setReservationStatus(ReservationStatusMapper.toEntity(domain.getStatus()));
+        entity.setReservationStatus(statusEntity);
         entity.setCreatedAt(domain.getCreatedAt()); // LocalDate directo
 
         return entity;

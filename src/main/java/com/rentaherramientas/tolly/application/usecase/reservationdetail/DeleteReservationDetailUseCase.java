@@ -1,6 +1,5 @@
 package com.rentaherramientas.tolly.application.usecase.reservationdetail;
 
-import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,7 @@ public class DeleteReservationDetailUseCase {
     this.reservationDetailRepository = reservationDetailRepository;
   }
 
-  public void execute(BigDecimal detailId) {
+  public void execute(Long detailId) {
 
     ReservationDetail detail = reservationDetailRepository.findById(detailId)
         .orElseThrow(() -> new RuntimeException("Detalle no encontrado"));

@@ -1,6 +1,5 @@
 package com.rentaherramientas.tolly.application.usecase.reservationdetail;
 
-import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,7 @@ public class UpdateReservationDetailUseCase {
   }
 
   public ReservationDetail execute(
-      BigDecimal detailId,
+      Long detailId,
       int newRentalDays) {
 
     // 1️ Buscar el detalle existente

@@ -1,6 +1,5 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.in.rest;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -73,7 +72,7 @@ public class ReservationDetailController {
   @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
   @PutMapping("/{detailId}")
   public ResponseEntity<ReservationDetail> update(
-      @PathVariable BigDecimal detailId,
+      @PathVariable Long detailId,
       @RequestParam int rentalDays) {
 
     return ResponseEntity.ok(
@@ -88,7 +87,7 @@ public class ReservationDetailController {
   @PreAuthorize("hasAnyRole('ADMIN')")
   @DeleteMapping("/{detailId}")
   public ResponseEntity<Void> delete(
-      @PathVariable BigDecimal detailId) {
+      @PathVariable Long detailId) {
 
     deleteUseCase.execute(detailId);
     return ResponseEntity.noContent().build();

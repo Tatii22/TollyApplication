@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import java.util.UUID;
 
 /**
  * DTO para crear una nueva herramienta
@@ -40,8 +39,8 @@ public record CreateToolRequest(
     Long statusId,
     
     @NotNull(message = "El proveedor no puede ser nulo")
-    @Schema(description = "ID del proveedor", example = "847fa560-1ac3-49cb-b435-ad10b20b762d")
-    UUID supplierId,
+    @Schema(description = "ID del proveedor", example = "1")
+    Long supplierId,
     
     @NotNull(message = "La categoría no puede ser nula")
     @Schema(description = "ID de la categoría", example = "1")

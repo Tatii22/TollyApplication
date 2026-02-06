@@ -2,9 +2,11 @@ package com.rentaherramientas.tolly.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "reservation_details")
+@Table(name = "reservation_detail")
 public class ReservationDetailEntity {
 
   @Id
@@ -23,20 +25,21 @@ public class ReservationDetailEntity {
 
   // Muchas filas del detalle pueden apuntar a una reserva
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "reservation_id", nullable = false)
+  @JoinColumn(name = "id_reservation", nullable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private ReservationEntity reservation;
 
   /* =========================
      ATRIBUTOS PROPIOS
      ========================= */
 
-  @Column(name = "daily_price", nullable = false)
-  private Double dailyPrice;
+  @Column(name = "daily_price", nullable = false, precision = 10, scale = 2)
+  private BigDecimal dailyPrice;
 
-  @Column(name = "rental_day", nullable = false)
+  @Column(name = "rental_days", nullable = false)
   private Integer rentalDay;
 
-  @Column(name = "sub_total", nullable = false, precision = 38, scale = 2)
+  @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
   private BigDecimal subTotal;
 
   /* =========================
@@ -50,7 +53,7 @@ public class ReservationDetailEntity {
       Long id,
       Long toolId,
       Long reservationId,
-      Double dailyPrice,
+      BigDecimal dailyPrice,
       Integer rentalDay,
       BigDecimal subTotal
   ) {
@@ -103,11 +106,11 @@ public class ReservationDetailEntity {
   }
 
   // -------- DATA --------
-  public Double getDailyPrice() {
+  public BigDecimal getDailyPrice() {
     return dailyPrice;
   }
 
-  public void setDailyPrice(Double dailyPrice) {
+  public void setDailyPrice(BigDecimal dailyPrice) {
     this.dailyPrice = dailyPrice;
   }
 

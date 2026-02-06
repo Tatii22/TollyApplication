@@ -1,7 +1,5 @@
 package com.rentaherramientas.tolly.domain.model;
 
-import java.util.UUID;
-
 public class Tool {
     private Long id;
     private String name;
@@ -10,7 +8,7 @@ public class Tool {
     private Integer totalQuantity;
     private Integer availableQuantity;
     private Long statusId;
-    private UUID supplierId;
+    private Long supplierId;
     private Long categoryId;
 
     public Tool() {
@@ -23,7 +21,7 @@ public class Tool {
                 Integer totalQuantity,
                 Integer availableQuantity,
                 Long statusId,
-                UUID supplierId,
+                Long supplierId,
                 Long categoryId) {
 
         if (supplierId == null) {
@@ -61,7 +59,7 @@ public class Tool {
         Integer totalQuantity,
         Integer availableQuantity,
         Long statusId,
-        UUID supplierId,
+        Long supplierId,
         Long categoryId
 ) {
     Tool tool = new Tool();
@@ -89,8 +87,8 @@ public class Tool {
     public Double getDailyPrice() {return dailyPrice;}
     public void setDailyPrice(Double dailyPrice) {this.dailyPrice = dailyPrice;}
 
-    public UUID getSupplierId() {return supplierId;}
-    public void setSupplierId(UUID supplierId) {this.supplierId = supplierId;}
+    public Long getSupplierId() {return supplierId;}
+    public void setSupplierId(Long supplierId) {this.supplierId = supplierId;}
 
     public Long getCategoryId() {return categoryId;}
     public void setCategoryId(Long categoryId) {this.categoryId = categoryId;}

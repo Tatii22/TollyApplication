@@ -13,7 +13,7 @@ public interface ReservationDetailRepository {
   ReservationDetail save(ReservationDetail reservationDetail);
 
   // READ
-  Optional<ReservationDetail> findById(BigDecimal id);
+  Optional<ReservationDetail> findById(Long id);
 
   List<ReservationDetail> findAll();
 

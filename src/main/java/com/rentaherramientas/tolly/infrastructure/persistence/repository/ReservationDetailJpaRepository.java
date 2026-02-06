@@ -1,6 +1,5 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +17,7 @@ public interface ReservationDetailJpaRepository
   // Detalles por herramienta
   List<ReservationDetailEntity> findByTool_Id(Long toolId);
 
-  Optional<ReservationDetailEntity> findById(BigDecimal id);
+  Optional<ReservationDetailEntity> findById(Long id);
 
   // Eliminar todos los detalles de una reserva
   void deleteByReservation_Id(Long reservationId);

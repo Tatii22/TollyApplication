@@ -1,21 +1,19 @@
 package com.rentaherramientas.tolly.domain.model;
 
-import java.util.UUID;
-
 public class UserStatus {
 
-  private UUID id;
+  private Long id;
   private String statusName;
 
   private UserStatus() {
   }
 
-  public UserStatus(UUID id, String statusName) {
+  public UserStatus(Long id, String statusName) {
     this.id = id;
     this.statusName = statusName;
   }
 
-  public static UserStatus reconstruct(UUID id, String statusName) {
+  public static UserStatus reconstruct(Long id, String statusName) {
     UserStatus userStatus = new UserStatus();
     userStatus.id = id;
     userStatus.statusName = statusName;
@@ -27,7 +25,7 @@ public class UserStatus {
       throw new IllegalArgumentException("El nombre del estado de usuario no puede estar vacío");
     }
     UserStatus userStatus = new UserStatus();
-    userStatus.id = UUID.randomUUID();
+    userStatus.id = null;
     userStatus.statusName = statusName;
     return userStatus;
   }
@@ -51,11 +49,11 @@ public class UserStatus {
     return id != null ? id.hashCode() : 0;
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

@@ -1,7 +1,5 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.entity;
 
-import java.util.UUID;
-
 import jakarta.persistence.*;
 
 
@@ -10,8 +8,9 @@ import jakarta.persistence.*;
 public class ReservationStatusEntity {
 
   @Id
-  @Column(name = "id_reservation_status", columnDefinition = "CHAR(36)", nullable = false)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_reservation_status", nullable = false)
+  private Long id;
 
   @Column(name = "status_name", nullable = false, length = 50)
   private String statusName;
@@ -19,11 +18,11 @@ public class ReservationStatusEntity {
   public ReservationStatusEntity() {
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

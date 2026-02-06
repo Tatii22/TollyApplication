@@ -2,7 +2,6 @@ package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.pers
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
@@ -39,7 +38,7 @@ public class ReservationStatusRepositoryAdapter implements ReservationStatusRepo
   }
 
   @Override
-  public Optional<ReservationStatus> findById (UUID id) {
+  public Optional<ReservationStatus> findById (Long id) {
     return jpaRepository.findById(id)
         .map(ReservationStatusMapper::toDomain);
   }

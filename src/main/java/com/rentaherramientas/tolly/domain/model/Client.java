@@ -1,11 +1,10 @@
 package com.rentaherramientas.tolly.domain.model;
 
-import java.util.UUID;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 
 public class Client {
 
-  private UUID id;
+  private Long id;
   private User userId;
   private String address;
   private String phone;
@@ -17,7 +16,7 @@ public class Client {
   private Client() {
   }
 
-  private Client(UUID id, User userId, String address, String phoneNumber, String name, String lastName,
+  private Client(Long id, User userId, String address, String phoneNumber, String name, String lastName,
       String national) {
     this.id = id;
     this.userId = userId;
@@ -40,7 +39,7 @@ public class Client {
     }
 
     Client client = new Client();
-    client.id = UUID.randomUUID();
+    client.id = null;
     client.userId = userId;
     client.address = address.trim();
     client.phone = phoneNumber.trim();
@@ -79,7 +78,7 @@ public class Client {
     this.phone = newPhone.trim();
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
@@ -91,7 +90,7 @@ public class Client {
     return address;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -135,7 +134,7 @@ public class Client {
     this.document = national;
   }
 
-  public static Client restore(UUID id, User userId, String address, String phoneNumber, String name, String lastName,
+  public static Client restore(Long id, User userId, String address, String phoneNumber, String name, String lastName,
       String national) {
     return new Client(id, userId, address, phoneNumber, name, lastName, national);
   }

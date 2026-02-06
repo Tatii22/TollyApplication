@@ -12,11 +12,11 @@ public class ReservationEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "reservation_id")
+  @Column(name = "id_reservation")
   private Long id;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "id", nullable = false, columnDefinition = "CHAR(36)")
+  @JoinColumn(name = "client_id", nullable = false)
   private ClientEntity client;
 
   @Column(name = "start_date", nullable = false)
@@ -29,7 +29,7 @@ public class ReservationEntity {
   private BigDecimal totalPrice;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "id_reservation_status", nullable = false, columnDefinition = "CHAR(36)")
+  @JoinColumn(name = "id_reservation_status", nullable = false)
   private ReservationStatusEntity reservationStatus;
 
   @Column(name = "created_at", nullable = false, length = 50)

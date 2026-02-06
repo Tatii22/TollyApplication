@@ -7,6 +7,7 @@ import com.rentaherramientas.tolly.domain.model.ReservationStatus;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationDetailEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ToolEntity;
+import java.math.BigDecimal;
 
 public class ReservationDetailMapper {
 
@@ -25,7 +26,7 @@ public class ReservationDetailMapper {
         entity.getId(),
         toToolDomain(entity.getTool()),
         toReservationDomain(entity.getReservation()),
-        entity.getDailyPrice(),
+        entity.getDailyPrice() != null ? entity.getDailyPrice().doubleValue() : null,
         entity.getRentalDay(),
         entity.getSubTotal()
     );
@@ -50,7 +51,9 @@ public class ReservationDetailMapper {
       entity.setReservationId(domain.getReservation().getId());
     }
 
-    entity.setDailyPrice(domain.getDailyPrice());
+    entity.setDailyPrice(
+        domain.getDailyPrice() != null ? BigDecimal.valueOf(domain.getDailyPrice()) : null
+    );
     entity.setRentalDay(domain.getRentalDay());
     entity.setSubTotal(domain.getSubTotal());
 

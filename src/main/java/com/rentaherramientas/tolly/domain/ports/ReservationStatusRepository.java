@@ -2,7 +2,6 @@ package com.rentaherramientas.tolly.domain.ports;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import com.rentaherramientas.tolly.domain.model.ReservationStatus;
 
@@ -15,7 +14,7 @@ public interface ReservationStatusRepository {
     Optional<ReservationStatus> findByStatusName(String statusName);
 
     // Buscar por ID
-    Optional<ReservationStatus> findById(UUID id);
+    Optional<ReservationStatus> findById(Long id);
 
     // Listar todos los estados
     List<ReservationStatus> findAll();

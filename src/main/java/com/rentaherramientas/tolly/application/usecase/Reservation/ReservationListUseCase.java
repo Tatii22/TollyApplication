@@ -1,12 +1,10 @@
 package com.rentaherramientas.tolly.application.usecase.Reservation;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import com.rentaherramientas.tolly.domain.model.Reservation;
-import com.rentaherramientas.tolly.domain.model.User;
 import com.rentaherramientas.tolly.domain.ports.ClientRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.application.dto.reservation.ReservationResponse;
@@ -24,10 +22,9 @@ public class ReservationListUseCase {
     }
 
     // --------------------- LISTAR RESERVAS DE UN CLIENTE ---------------------
-    public List<ReservationResponse> getReservationsByClient(UUID clientId) {
+    public List<ReservationResponse> getReservationsByClient(Long clientId) {
         // 1️⃣ Verificar que el cliente exista
-        User user = new User(clientId);
-        clientRepository.findByUserId(user)
+        clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + clientId));
 
         // 2️⃣ Buscar todas las reservas del cliente

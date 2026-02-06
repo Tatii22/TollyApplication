@@ -2,7 +2,6 @@ package com.rentaherramientas.tolly.domain.ports;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import com.rentaherramientas.tolly.domain.model.Reservation;
 
@@ -21,6 +20,6 @@ public interface ReservationRepository {
     List<Reservation> findAll();
 
     // Listar por cliente
-    List<Reservation> findByClientId(UUID clientId);
+    List<Reservation> findByClientId(Long clientId);
 
 }

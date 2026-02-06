@@ -45,6 +45,11 @@ public class ClientRepositoryAdapter implements ClientRepository {
   }
 
   @Override
+  public Optional<Client> findById(Long id) {
+    return clientRepository.findById(id).map(mapper::toDomain);
+  }
+
+  @Override
 public Optional<Client> findByUserId(User user) {
 
   return userRepository.findById(user.getId())
