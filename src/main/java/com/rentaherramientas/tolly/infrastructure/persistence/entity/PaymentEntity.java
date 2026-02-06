@@ -7,12 +7,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "payment")
+@Table(name = "payments")
 public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +24,10 @@ public class PaymentEntity {
     @JoinColumn(name = "id_reservation", nullable = false)
     private ReservationEntity reservation;
     
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Column     (name = "payment_date", nullable = false)
+    @Column(name = "payment_date")
     private LocalDateTime paymentDate;      
 
     @ManyToOne(optional = false)
@@ -64,6 +65,12 @@ public class PaymentEntity {
     public PaymentStatusEntity getStatus() {
         return status;
     }
-        
+    
+    @PrePersist
+    public void prePersist() {
+        if (paymentDate == null) {
+            paymentDate = LocalDateTime.now();
+        }
+    }
 
 }
