@@ -31,11 +31,9 @@ public class ReservationDetailRepositoryAdapter
    */
   @Override
   public ReservationDetail save(ReservationDetail reservationDetail) {
-    ReservationDetailEntity entity =
-        ReservationDetailMapper.toEntity(reservationDetail);
+    ReservationDetailEntity entity = ReservationDetailMapper.toEntity(reservationDetail);
 
-    ReservationDetailEntity saved =
-        jpaRepository.save(entity);
+    ReservationDetailEntity saved = jpaRepository.save(entity);
 
     return ReservationDetailMapper.toDomain(saved);
   }
@@ -82,13 +80,19 @@ public class ReservationDetailRepositoryAdapter
    */
   @Override
   public void delete(ReservationDetail reservationDetail) {
-    ReservationDetailEntity entity =
-        ReservationDetailMapper.toEntity(reservationDetail);
+    ReservationDetailEntity entity = ReservationDetailMapper.toEntity(reservationDetail);
     jpaRepository.delete(entity);
   }
 
   @Override
   public void deleteByReservationId(Long reservationId) {
     jpaRepository.deleteByReservation_Id(reservationId);
+  }
+
+  @Override
+  public boolean existsByReservationIdAndToolId(Long reservationId, Long toolId) {
+    return jpaRepository.existsByReservation_IdAndTool_Id(
+        reservationId,
+        toolId);
   }
 }

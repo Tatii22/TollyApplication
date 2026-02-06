@@ -103,4 +103,9 @@ public class ToolRepositoryAdapter implements ToolRepository {
         toolEntity.setCategoryId(tool.getCategoryId());
         return toolEntity;
     }
+    @Override
+    public List<Tool> findByAvailableQuantityGreaterThan(int quantity) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'findByAvailableQuantityGreaterThan'");
+    }
 }

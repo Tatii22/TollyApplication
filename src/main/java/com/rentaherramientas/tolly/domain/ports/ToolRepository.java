@@ -13,4 +13,5 @@ public interface ToolRepository {
     boolean existsByName(String name);
     void deleteById(Long id);
     Optional<Tool> update(Long id, Tool tool);
+    List<Tool> findByAvailableQuantityGreaterThan(int quantity);
 }

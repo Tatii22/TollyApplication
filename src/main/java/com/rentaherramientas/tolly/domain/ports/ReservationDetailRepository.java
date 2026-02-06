@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+
 import com.rentaherramientas.tolly.domain.model.ReservationDetail;
 
 public interface ReservationDetailRepository {
@@ -21,6 +22,8 @@ public interface ReservationDetailRepository {
 
   // Detalles por herramienta
   List<ReservationDetail> findByToolId(Long toolId);
+
+  boolean existsByReservationIdAndToolId(Long reservationId, Long toolId);
 
   // DELETE
   void delete(ReservationDetail reservationDetail);

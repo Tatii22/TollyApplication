@@ -22,6 +22,7 @@ public interface ReservationDetailJpaRepository
 
   // Eliminar todos los detalles de una reserva
   void deleteByReservation_Id(Long reservationId);
+  boolean existsByReservation_IdAndTool_Id(Long reservationId, Long toolId);
 
 
 }
