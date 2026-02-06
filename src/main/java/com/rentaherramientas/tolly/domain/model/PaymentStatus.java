@@ -4,8 +4,9 @@ import java.util.Objects;
 
 public class PaymentStatus {
 
-    public static final String PENDIENTE = "PENDIENTE";
-    public static final String PAGADO = "PAGADO";
+    public static final String PENDING = "PENDING";
+    public static final String PAID = "PAID";
+    public static final String CANCELLED = "CANCELLED";
 
     private final Long id;
     private final String name;
@@ -27,11 +28,15 @@ public class PaymentStatus {
     }
 
     public boolean isPaid() {
-        return PAGADO.equalsIgnoreCase(name);
+        return PAID.equalsIgnoreCase(name);
     }
 
     public boolean isPending() {
-        return PENDIENTE.equalsIgnoreCase(name);
+        return PENDING.equalsIgnoreCase(name);
+    }
+
+    public boolean isCancelled() {
+        return CANCELLED.equalsIgnoreCase(name);
     }
 
     @Override

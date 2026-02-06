@@ -1,54 +1,60 @@
 package com.rentaherramientas.tolly.application.usecase.reservation;
 
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rentaherramientas.tolly.application.dto.reservation.ReservationResponse;
+import com.rentaherramientas.tolly.domain.model.Payment;
+import com.rentaherramientas.tolly.domain.model.PaymentStatus;
 import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.model.ReservationStatus;
+import com.rentaherramientas.tolly.domain.ports.PaymentRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationStatusRepository;
-import com.rentaherramientas.tolly.application.dto.reservation.ReservationResponse;
 
 @Service
 public class ReservationCancelledUseCase {
 
     private final ReservationRepository reservationRepository;
     private final ReservationStatusRepository reservationStatusRepository;
+    private final PaymentRepository paymentRepository;
 
     public ReservationCancelledUseCase(ReservationRepository reservationRepository,
-                              ReservationStatusRepository reservationStatusRepository) {
+                                       ReservationStatusRepository reservationStatusRepository,
+                                       PaymentRepository paymentRepository) {
         this.reservationRepository = reservationRepository;
         this.reservationStatusRepository = reservationStatusRepository;
+        this.paymentRepository = paymentRepository;
     }
 
-    // --------------------- CANCELAR RESERVA ---------------------
     @Transactional
     public ReservationResponse cancelReservation(Long reservationId) {
-        // 1️⃣ Buscar la reserva
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + reservationId));
 
-        // 2️⃣ Verificar que la reserva esté en IN_PROGRESS
         if (!"IN_PROGRESS".equalsIgnoreCase(reservation.getStatus().getName())) {
             throw new IllegalStateException("Solo se pueden cancelar reservas en estado IN_PROGRESS");
         }
 
-        // 3️⃣ Obtener el estado FINISHED de la tabla de estados
-        ReservationStatus finishedStatus = reservationStatusRepository.findByStatusName("FINISHED")
-                .orElseThrow(() -> new IllegalArgumentException("Estado FINISHED no encontrado en la base de datos"));
+        paymentRepository.findByReservationId(reservationId)
+                .filter(Payment::isPaid)
+                .ifPresent(payment -> paymentRepository.save(new Payment(
+                        payment.getId(),
+                        reservation,
+                        payment.getAmount(),
+                        null,
+                        new PaymentStatus(null, PaymentStatus.CANCELLED)
+                )));
 
-        // 4️⃣ Actualizar el estado de la reserva
-        reservation.setStatus(finishedStatus);
+        ReservationStatus cancelledStatus = reservationStatusRepository.findByStatusName("CANCELLED")
+                .orElseThrow(() -> new IllegalArgumentException("Estado CANCELLED no encontrado en la base de datos"));
+        reservation.setStatus(cancelledStatus);
 
-        // 5️⃣ Guardar la reserva con el nuevo estado
         Reservation updated = reservationRepository.save(reservation);
 
-        // 6️⃣ Devolver DTO actualizado
         return mapToResponse(updated);
     }
 
-    // --------------------- MAPPER INTERNO ---------------------
     private ReservationResponse mapToResponse(Reservation reservation) {
         return new ReservationResponse(
                 reservation.getId(),

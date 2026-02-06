@@ -35,16 +35,26 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
 
         Long reservationId = payment.getReservation().getId();
 
+        PaymentStatusEntity statusEntity = paymentStatusJpaRepository
+                .findByNameIgnoreCase(payment.getStatus().getName())
+                .orElseThrow(() -> new IllegalArgumentException("PaymentStatus not found: " + payment.getStatus().getName()));
+
+        if (payment.getId() != null) {
+            PaymentEntity existing = paymentJpaRepository.findById(payment.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Payment not found: " + payment.getId()));
+            existing.setAmount(payment.getAmount());
+            existing.setPaymentDate(payment.getPaymentDate());
+            existing.setStatus(statusEntity);
+            PaymentEntity saved = paymentJpaRepository.save(existing);
+            return PaymentMapper.toDomain(saved);
+        }
+
         if (paymentJpaRepository.existsByReservation_Id(reservationId)) {
             throw new IllegalStateException("Payment already exists for reservation " + reservationId);
         }
 
         ReservationEntity reservationEntity = reservationJpaRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + reservationId));
-
-        PaymentStatusEntity statusEntity = paymentStatusJpaRepository
-                .findByNameIgnoreCase(payment.getStatus().getName())
-                .orElseThrow(() -> new IllegalArgumentException("PaymentStatus not found: " + payment.getStatus().getName()));
 
         PaymentEntity entity = new PaymentEntity(
                 null,
@@ -77,6 +87,22 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
     @Override
     public List<Payment> findAll() {
         return paymentJpaRepository.findAll()
+                .stream()
+                .map(PaymentMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Payment> findByClientId(Long clientId) {
+        return paymentJpaRepository.findByReservation_Client_Id(clientId)
+                .stream()
+                .map(PaymentMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Payment> findByStatusName(String statusName) {
+        return paymentJpaRepository.findByStatus_NameIgnoreCase(statusName)
                 .stream()
                 .map(PaymentMapper::toDomain)
                 .toList();

@@ -24,7 +24,7 @@ public class Payment {
         this.id = id;
         this.reservation = reservation;
         this.amount = amount;
-        this.paymentDate = paymentDate != null ? paymentDate : LocalDateTime.now();
+        this.paymentDate = paymentDate;
         this.status = status;
     }
 

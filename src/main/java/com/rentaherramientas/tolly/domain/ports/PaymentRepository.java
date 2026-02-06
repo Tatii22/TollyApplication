@@ -15,5 +15,9 @@ public interface PaymentRepository {
 
     boolean existsByReservationId(Long reservationId);
 
+    List<Payment> findByClientId(Long clientId);
+
+    List<Payment> findByStatusName(String statusName);
+
     List<Payment> findAll();
 }

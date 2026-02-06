@@ -54,21 +54,37 @@ public class PaymentEntity {
         return reservation;
     }
 
+    public void setReservation(ReservationEntity reservation) {
+        this.reservation = reservation;
+    }
+
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public LocalDateTime getPaymentDate() {
         return paymentDate;
     }
 
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
     public PaymentStatusEntity getStatus() {
         return status;
+    }
+
+    public void setStatus(PaymentStatusEntity status) {
+        this.status = status;
     }
     
     @PrePersist
     public void prePersist() {
-        if (paymentDate == null) {
+        if (paymentDate == null && status != null && "PAID".equalsIgnoreCase(status.getName())) {
             paymentDate = LocalDateTime.now();
         }
     }

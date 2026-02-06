@@ -42,18 +42,12 @@ public class CreatePaymentUseCase {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new DomainException("Reservation not found: " + reservationId));
 
-        // 2) Validar estado permitido (esto depende de tu ReservationStatus)
-        // Ajusta esta validación según tu modelo
-        if (!reservation.getStatus().getName().equalsIgnoreCase("RESERVED")) {
-            throw new DomainException("Only RESERVED reservations can generate payments");
-        }
-
-        // 3) Evitar duplicados
+        // 2) Evitar duplicados
         if (paymentRepository.existsByReservationId(reservationId)) {
             throw new DomainException("Payment already exists for reservation: " + reservationId);
         }
 
-        // 4) Validar monto (sale del total de la reserva)
+        // 3) Validar monto (sale del total de la reserva)
         BigDecimal expected = reservation.getTotal();
 
         if (expected == null || expected.compareTo(BigDecimal.ZERO) <= 0) {
@@ -65,13 +59,13 @@ public class CreatePaymentUseCase {
             throw new DomainException("Amount does not match reservation total");
         }
 
-        // 5) Crear pago (lo dejamos PAGADO directo para cumplir el flujo)
+        // 4) Crear pago con estado inicial PENDING
         Payment payment = new Payment(
                 null,
                 reservation,
                 expected,
                 null,
-                new PaymentStatus(null, PaymentStatus.PAGADO)
+                new PaymentStatus(null, PaymentStatus.PENDING)
         );
 
         return paymentRepository.save(payment);
