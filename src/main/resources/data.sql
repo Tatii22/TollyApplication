@@ -23,3 +23,8 @@ VALUES
     ('FINISHED'),
     ('CANCELLED');
 
+INSERT IGNORE INTO payment_status (name) 
+VALUES 
+    ('PENDING'),
+    ('PAID'),
+    ('CANCELLED');
