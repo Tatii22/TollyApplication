@@ -1,4 +1,4 @@
-package com.rentaherramientas.tolly.application.usecase.Reservation;
+package com.rentaherramientas.tolly.application.usecase.reservation;
 
 
 import org.springframework.stereotype.Service;

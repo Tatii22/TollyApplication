@@ -1,4 +1,4 @@
-package com.rentaherramientas.tolly.application.usecase.Reservation;
+package com.rentaherramientas.tolly.application.usecase.reservation;
 
 import java.util.List;
 import java.util.stream.Collectors;
