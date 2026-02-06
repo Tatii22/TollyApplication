@@ -4,7 +4,12 @@ package com.rentaherramientas.tolly.infrastructure.persistence.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "user_statuses")
+@Table(
+    name = "user_statuses",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_user_statuses_name", columnNames = "name")
+    }
+)
 public class UserStatusEntity {
 
   @Id
@@ -12,7 +17,7 @@ public class UserStatusEntity {
   @Column(name = "user_status_id")
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String name;
   // Constructores
   public UserStatusEntity() {
