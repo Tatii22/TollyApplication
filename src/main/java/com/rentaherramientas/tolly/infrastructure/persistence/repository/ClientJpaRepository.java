@@ -7,10 +7,9 @@ import com.rentaherramientas.tolly.infrastructure.persistence.entity.ClientEntit
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserEntity;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface ClientJpaRepository extends JpaRepository<ClientEntity, UUID> {
+public interface ClientJpaRepository extends JpaRepository<ClientEntity, Long> {
 
   Optional<ClientEntity> findByUserId(UserEntity userId);
 

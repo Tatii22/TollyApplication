@@ -1,7 +1,5 @@
 package com.rentaherramientas.tolly.domain.model;
 
-import java.util.UUID;
-
 public class Tool {
     private Long id;
     private String name;
@@ -10,7 +8,7 @@ public class Tool {
     private Integer totalQuantity;
     private Integer availableQuantity;
     private Long statusId;
-    private UUID supplierId;
+    private Long supplierId;
     private Long categoryId;
 
     public Tool() {
@@ -23,7 +21,7 @@ public class Tool {
                 Integer totalQuantity,
                 Integer availableQuantity,
                 Long statusId,
-                UUID supplierId,
+                Long supplierId,
                 Long categoryId) {
 
         if (supplierId == null) {
@@ -41,7 +39,7 @@ public class Tool {
         if (dailyPrice == null || dailyPrice < 0) {
             throw new IllegalArgumentException("El costo diario no puede ser nulo o negativo");
         }
-        
+
         this.id = id;
         this.name = name;
         this.description = description;
@@ -52,6 +50,30 @@ public class Tool {
         this.supplierId = supplierId;
         this.categoryId = categoryId;
     }
+
+    public static Tool reconstruct(
+        Long id,
+        String name,
+        String description,
+        Double dailyPrice,
+        Integer totalQuantity,
+        Integer availableQuantity,
+        Long statusId,
+        Long supplierId,
+        Long categoryId
+) {
+    Tool tool = new Tool();
+    tool.id = id;
+    tool.name = name;
+    tool.description = description;
+    tool.dailyPrice = dailyPrice;
+    tool.totalQuantity = totalQuantity;
+    tool.availableQuantity = availableQuantity;
+    tool.statusId = statusId;
+    tool.supplierId = supplierId;
+    tool.categoryId = categoryId;
+    return tool;
+}
 
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
@@ -65,8 +87,8 @@ public class Tool {
     public Double getDailyPrice() {return dailyPrice;}
     public void setDailyPrice(Double dailyPrice) {this.dailyPrice = dailyPrice;}
 
-    public UUID getSupplierId() {return supplierId;}
-    public void setSupplierId(UUID supplierId) {this.supplierId = supplierId;}
+    public Long getSupplierId() {return supplierId;}
+    public void setSupplierId(Long supplierId) {this.supplierId = supplierId;}
 
     public Long getCategoryId() {return categoryId;}
     public void setCategoryId(Long categoryId) {this.categoryId = categoryId;}

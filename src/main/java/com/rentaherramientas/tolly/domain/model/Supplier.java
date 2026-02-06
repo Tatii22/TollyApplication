@@ -1,11 +1,10 @@
 package com.rentaherramientas.tolly.domain.model;
 
-import java.util.UUID;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 
 public class Supplier {
 
-  private UUID id;
+  private Long id;
   private User userId;
   private String identification;
   private String phone;
@@ -16,7 +15,7 @@ public class Supplier {
   private Supplier() {
   }
 
-  public Supplier(UUID id, User userId, String phone, String company, String identification, String contactName) {
+  public Supplier(Long id, User userId, String phone, String company, String identification, String contactName) {
     this.id = id;
     this.userId = userId;
     this.phone = phone;
@@ -41,7 +40,7 @@ public class Supplier {
     }
 
     Supplier supplier = new Supplier();
-    supplier.id = UUID.randomUUID();
+    supplier.id = null;
     supplier.userId = userId;
     supplier.phone = phone.trim();
     supplier.company = company.trim();
@@ -73,16 +72,16 @@ public class Supplier {
     this.company = newCompany.trim();
   }
 
-  public static Supplier restore(UUID id, User userId, String phone, String company, String identification,
+  public static Supplier restore(Long id, User userId, String phone, String company, String identification,
       String contactName) {
     return new Supplier(id, userId, phone, company, identification, contactName);
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

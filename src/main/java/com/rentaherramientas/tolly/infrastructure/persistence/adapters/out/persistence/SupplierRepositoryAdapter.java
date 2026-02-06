@@ -52,7 +52,7 @@ public class SupplierRepositoryAdapter implements SupplierRepository {
   }
 
   @Override
-  public Optional<Supplier> findById(UUID id) {
+  public Optional<Supplier> findById(Long id) {
     return supplierRepository.findById(id).map(mapper::toDomain);
   }
 

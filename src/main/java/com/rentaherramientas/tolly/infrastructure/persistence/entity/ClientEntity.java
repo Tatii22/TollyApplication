@@ -1,7 +1,5 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.entity;
 
-import java.util.UUID;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -9,8 +7,9 @@ import jakarta.persistence.*;
 public class ClientEntity {
 
   @Id
-  @Column(columnDefinition = "CHAR(36)", nullable = false, unique = true, name = "id")
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, unique = true, name = "id")
+  private Long id;
 
   @OneToOne(optional = false)
   @JoinColumn(name = "user_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
@@ -35,11 +34,11 @@ public class ClientEntity {
   public ClientEntity() {
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

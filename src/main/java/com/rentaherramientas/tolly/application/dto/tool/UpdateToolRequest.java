@@ -37,8 +37,8 @@ public record UpdateToolRequest(
     Long statusId,
     
     @NotNull(message = "El ID del proveedor no puede ser nulo")
-    @Schema(description = "ID del proveedor", example = "847fa560-1ac3-49cb-b435-ad10b20b762d")
-    java.util.UUID supplierId,
+    @Schema(description = "ID del proveedor", example = "1")
+    Long supplierId,
     
     @NotNull(message = "El ID de la categoría no puede ser nulo")
     @Positive(message = "El ID de la categoría debe ser positivo")

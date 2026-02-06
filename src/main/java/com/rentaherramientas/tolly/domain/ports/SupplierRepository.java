@@ -11,7 +11,7 @@ public interface SupplierRepository {
 
   Optional<Supplier> findByUserId(UUID userId);
 
-  Optional<Supplier> findById(UUID id);
+  Optional<Supplier> findById(Long id);
 
   void delete(Supplier supplier);
 }

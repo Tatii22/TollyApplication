@@ -1,7 +1,6 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.persistence;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -43,6 +42,11 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
     // 3️⃣ Guardar
     clientRepository.save(entity);
+  }
+
+  @Override
+  public Optional<Client> findById(Long id) {
+    return clientRepository.findById(id).map(mapper::toDomain);
   }
 
   @Override

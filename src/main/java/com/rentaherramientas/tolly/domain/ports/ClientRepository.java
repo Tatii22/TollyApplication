@@ -7,7 +7,9 @@ import com.rentaherramientas.tolly.domain.model.User;
 
 public interface ClientRepository {
   void save(Client client);
+  Optional<Client> findById(Long id);
   Optional<Client> findByUserId(User userId);
   void delete(Client client);
+  //Optional<Client> findByDocument(String document);
 
 }

@@ -1,8 +1,6 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.entity;
 
 
-import java.util.UUID;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -10,8 +8,9 @@ import jakarta.persistence.*;
 public class UserStatusEntity {
 
   @Id
-  @Column(columnDefinition = "CHAR(36)", length = 36, name = "user_status_id" )
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "user_status_id")
+  private Long id;
 
   @Column(nullable = false)
   private String name;
@@ -21,16 +20,16 @@ public class UserStatusEntity {
 
 
 
-  public UserStatusEntity(UUID id, String name) {
+  public UserStatusEntity(Long id, String name) {
     this.id = id;
     this.name = name;
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

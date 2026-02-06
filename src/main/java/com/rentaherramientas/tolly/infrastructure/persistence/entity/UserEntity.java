@@ -24,7 +24,7 @@ public class UserEntity {
   private String password;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "user_status_id", nullable = false, columnDefinition = "CHAR(36)")
+  @JoinColumn(name = "user_status_id", nullable = false)
   private UserStatusEntity status;
 
   @ManyToMany(fetch = FetchType.LAZY)

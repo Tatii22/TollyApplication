@@ -1,7 +1,6 @@
 package com.rentaherramientas.tolly.domain.model;
 
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
-import java.util.UUID;
 
 /**
  * Entidad de dominio Role
@@ -9,7 +8,7 @@ import java.util.UUID;
  */
 public class Role {
 
-    private UUID id;
+    private Long id;
     private String name;
     private String authority;
 
@@ -29,7 +28,7 @@ public class Role {
         }
 
         Role role = new Role();
-        role.id = UUID.randomUUID();
+        role.id = null;
         role.name = name.toUpperCase().trim();
         role.authority = authority.toUpperCase().trim();
 
@@ -39,7 +38,7 @@ public class Role {
     /**
      * Factory method para reconstruir desde persistencia
      */
-    public static Role reconstruct(UUID id, String name, String authority) {
+    public static Role reconstruct(Long id, String name, String authority) {
         Role role = new Role();
         role.id = id;
         role.name = name;
@@ -59,7 +58,7 @@ public class Role {
     }
 
     // Getters
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 

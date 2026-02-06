@@ -2,7 +2,6 @@ package com.rentaherramientas.tolly.domain.ports;
 
 import com.rentaherramientas.tolly.domain.model.Role;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Puerto de salida para persistencia de roles
@@ -27,7 +26,7 @@ public interface RoleRepository {
     /**
      * Busca un rol por ID
      */
-    Optional<Role> findById(UUID id);
+    Optional<Role> findById(Long id);
     
     /**
      * Verifica si existe un rol con el nombre dado
