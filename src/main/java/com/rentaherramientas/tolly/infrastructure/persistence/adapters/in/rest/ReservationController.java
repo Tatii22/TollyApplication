@@ -8,10 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.rentaherramientas.tolly.application.dto.reservation.ReservationRequest;
 import com.rentaherramientas.tolly.application.dto.reservation.ReservationResponse;
-import com.rentaherramientas.tolly.application.usecase.Reservation.ReservationCancelledUseCase;
-import com.rentaherramientas.tolly.application.usecase.Reservation.CreateReservationUseCase;
-import com.rentaherramientas.tolly.application.usecase.Reservation.ReservationListUseCase;
-import com.rentaherramientas.tolly.application.usecase.Reservation.ReservationStatusUseCase;
+import com.rentaherramientas.tolly.application.usecase.reservation.ReservationCancelledUseCase;
+import com.rentaherramientas.tolly.application.usecase.reservation.CreateReservationUseCase;
+import com.rentaherramientas.tolly.application.usecase.reservation.ReservationListUseCase;
+import com.rentaherramientas.tolly.application.usecase.reservation.ReservationStatusUseCase;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
