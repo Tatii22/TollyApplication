@@ -11,9 +11,7 @@ public class Supplier {
   private String contactName;
   private String company;
 
-  // Constructor privado
-  private Supplier() {
-  }
+  private Supplier() {}
 
   public Supplier(Long id, User userId, String phone, String company, String identification, String contactName) {
     this.id = id;
@@ -73,58 +71,24 @@ public class Supplier {
   }
 
   public static Supplier restore(Long id, User userId, String phone, String company, String identification,
-      String contactName) {
-    return new Supplier(id, userId, phone, company, identification, contactName);
-  }
+      String contactName) {return new Supplier(id, userId, phone, company, identification, contactName);}
 
-  public Long getId() {
-    return id;
-  }
+  public Long getId() {return id;}
+  public void setId(Long id) {this.id = id;}
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+  public User getUserId() {return userId;}
+  public void setUserId(User userId) {this.userId = userId;}
 
-  public User getUserId() {
-    return userId;
-  }
+  public String getIdentification() {return identification;}
+  public void setIdentification(String identification) {this.identification = identification;}
 
-  public void setUserId(User userId) {
-    this.userId = userId;
-  }
+  public String getPhone() {return phone;}
+  public void setPhone(String phone) {this.phone = phone;}
 
-  public String getIdentification() {
-    return identification;
-  }
+  public String getContactName() {return contactName;}
+  public void setContactName(String contactName) {this.contactName = contactName;}
 
-  public void setIdentification(String identification) {
-    this.identification = identification;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public String getContactName() {
-    return contactName;
-  }
-
-  public void setContactName(String contactName) {
-    this.contactName = contactName;
-  }
-
-  public String getCompany() {
-    return company;
-  }
-
-  public void setCompany(String company) {
-    this.company = company;
-  }
-
-  
+  public String getCompany() {return company;}
+  public void setCompany(String company) {this.company = company;}
 
 }
