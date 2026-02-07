@@ -123,7 +123,8 @@ public class ToolController {
     public ResponseEntity<ToolResponse> create(
             @Valid @RequestBody CreateToolRequest request,
             Authentication authentication) {
-        ToolResponse tool = createToolUseCase.execute(request);
+        UUID userId = (UUID) authentication.getPrincipal();
+        ToolResponse tool = createToolUseCase.execute(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(tool);
     }
 
