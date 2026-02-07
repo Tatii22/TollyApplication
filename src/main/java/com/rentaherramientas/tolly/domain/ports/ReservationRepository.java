@@ -2,6 +2,7 @@ package com.rentaherramientas.tolly.domain.ports;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
 
 import com.rentaherramientas.tolly.domain.model.Reservation;
 
@@ -21,5 +22,9 @@ public interface ReservationRepository {
 
     // Listar por cliente
     List<Reservation> findByClientId(Long clientId);
+
+    List<Reservation> findByStartDateRange(LocalDate from, LocalDate to);
+
+    List<Object[]> findFrequentClients(LocalDate from, LocalDate to);
 
 }

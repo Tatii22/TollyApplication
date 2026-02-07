@@ -3,6 +3,7 @@ package com.rentaherramientas.tolly.infrastructure.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -45,4 +46,14 @@ public interface PaymentJpaRepository extends JpaRepository<PaymentEntity, Long>
         @Param("from") LocalDateTime from,
         @Param("to") LocalDateTime to,
         @Param("statusName") String statusName);
+
+    @Query("""
+        SELECT COALESCE(SUM(p.amount), 0) FROM PaymentEntity p
+        WHERE LOWER(p.status.name) = 'paid'
+          AND (:from IS NULL OR p.paymentDate >= :from)
+          AND (:to IS NULL OR p.paymentDate <= :to)
+        """)
+    BigDecimal sumPaidAmountBetweenDates(
+        @Param("from") LocalDateTime from,
+        @Param("to") LocalDateTime to);
 }
