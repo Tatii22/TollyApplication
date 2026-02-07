@@ -39,6 +39,9 @@ public class ReservationDetailEntity {
   @Column(name = "rental_days", nullable = false)
   private Integer rentalDay;
 
+  @Column(name = "quantity", nullable = false, columnDefinition = "INT DEFAULT 1")
+  private Integer quantity;
+
   @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
   private BigDecimal subTotal;
 
@@ -55,6 +58,7 @@ public class ReservationDetailEntity {
       Long reservationId,
       BigDecimal dailyPrice,
       Integer rentalDay,
+      Integer quantity,
       BigDecimal subTotal
   ) {
     this.id = id;
@@ -62,6 +66,7 @@ public class ReservationDetailEntity {
     setReservationId(reservationId);
     this.dailyPrice = dailyPrice;
     this.rentalDay = rentalDay;
+    this.quantity = quantity;
     this.subTotal = subTotal;
   }
 
@@ -120,6 +125,14 @@ public class ReservationDetailEntity {
 
   public void setRentalDay(Integer rentalDay) {
     this.rentalDay = rentalDay;
+  }
+
+  public Integer getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(Integer quantity) {
+    this.quantity = quantity;
   }
 
   public BigDecimal getSubTotal() {

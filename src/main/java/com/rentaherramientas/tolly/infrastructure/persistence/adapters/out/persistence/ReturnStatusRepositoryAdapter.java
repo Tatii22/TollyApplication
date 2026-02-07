@@ -23,6 +23,11 @@ public class ReturnStatusRepositoryAdapter implements ReturnStatusRepository {
     }
 
     @Override
+    public Optional<ReturnStatus> findByName(String name) {
+        return jpaRepository.findByName(name).map(this::toDomain);
+    }
+
+    @Override
     public ReturnStatus save(ReturnStatus returnStatus) {
         ReturnStatusEntity entity = new ReturnStatusEntity();
         entity.setName(returnStatus.getName());

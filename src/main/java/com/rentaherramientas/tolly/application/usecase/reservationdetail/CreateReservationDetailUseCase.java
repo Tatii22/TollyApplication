@@ -30,17 +30,33 @@ public class CreateReservationDetailUseCase {
     this.toolRepository = toolRepository;
   }
 
-  public ReservationDetail execute(Long reservationId, Long toolId) {
+  public ReservationDetail execute(Long reservationId, Long toolId, int quantity) {
 
-    // 1️⃣ Obtener la reserva 🧾
     Reservation reservation = reservationRepository.findById(reservationId)
         .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
-    // 2️⃣ Obtener la herramienta 🛠️
+    if (reservation.getStatus() != null) {
+      String statusName = reservation.getStatus().getName();
+      if ("CANCELLED".equalsIgnoreCase(statusName)
+          || "FINISHED".equalsIgnoreCase(statusName)
+          || "IN_INCIDENT".equalsIgnoreCase(statusName)) {
+        throw new RuntimeException("No se puede agregar detalles a una reserva " + statusName);
+      }
+    }
+
     Tool tool = toolRepository.findById(toolId)
         .orElseThrow(() -> new RuntimeException("Herramienta no encontrada"));
 
-    // 3️⃣ Calcular días de alquiler 📆
+    if (quantity < 1) {
+      throw new RuntimeException("La cantidad debe ser mayor a 0");
+    }
+    if (tool.getAvailableQuantity() == null) {
+      throw new RuntimeException("La herramienta no tiene cantidad disponible definida");
+    }
+    if (quantity > tool.getAvailableQuantity()) {
+      throw new RuntimeException("La cantidad solicitada excede la disponibilidad de la herramienta");
+    }
+
     long rentalDays = ChronoUnit.DAYS.between(
         reservation.getStartDate(),
         reservation.getEndDate());
@@ -50,24 +66,27 @@ public class CreateReservationDetailUseCase {
     }
 
     if (rentalDays > Integer.MAX_VALUE) {
-      throw new RuntimeException("El número de días es demasiado grande");
+      throw new RuntimeException("El numero de dias es demasiado grande");
     }
 
     int rentalDaysInt = (int) rentalDays;
-
-    // 4️⃣ Obtener precio diario como Double 💰
     Double dailyPrice = tool.getDailyPrice();
 
-    // 5️⃣ Crear detalle (EL DOMINIO CALCULA EL SUBTOTAL) 🧩
     ReservationDetail detail = ReservationDetail.create(
         tool,
         reservation,
         dailyPrice,
         rentalDaysInt,
-        null // ⚠️ este valor NO se usa, el dominio recalcula
+        quantity,
+        null
     );
 
-    // 6️⃣ Guardar 💾
-    return reservationDetailRepository.save(detail);
+    ReservationDetail saved = reservationDetailRepository.save(detail);
+
+    tool.setAvailableQuantity(tool.getAvailableQuantity() - quantity);
+    toolRepository.update(tool.getId(), tool)
+        .orElseThrow(() -> new RuntimeException("No se pudo actualizar la disponibilidad de la herramienta"));
+
+    return saved;
   }
 }

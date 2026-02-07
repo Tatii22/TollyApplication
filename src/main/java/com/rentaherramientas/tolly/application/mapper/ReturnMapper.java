@@ -20,7 +20,6 @@ public interface ReturnMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "reservationId", source = "reservationId")
-    @Mapping(target = "clientId", source = "clientId")
     @Mapping(target = "status", source = "returnStatusId")
     Return toReturn(CreateReturnRequest request);
 

@@ -15,12 +15,12 @@ import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 /**
  * UseCase para crear una nueva herramienta
  * - Valida que el supplierId existe
- * - Valida que el statusId existe
+ * - Fuerza estado AVAILABLE al crear
  * - Valida que no exista otra herramienta con el mismo nombre
  */
 @Service
 public class CreateToolUseCase {
-    private static final Long DEFAULT_AVAILABLE_STATUS_ID = 1L;
+    private static final String DEFAULT_AVAILABLE_STATUS_NAME = "AVAILABLE";
     private final ToolRepository toolRepository;
     private final SupplierRepository supplierRepository;
     private final ToolStatusRepository toolStatusRepository;
@@ -39,15 +39,15 @@ public class CreateToolUseCase {
     
     @Transactional
     public ToolResponse execute(CreateToolRequest request) {
-        Long statusId = request.statusId() != null ? request.statusId() : DEFAULT_AVAILABLE_STATUS_ID;
+        Long statusId = toolStatusRepository.findByName(DEFAULT_AVAILABLE_STATUS_NAME)
+            .orElseThrow(() -> new DomainException("Estado AVAILABLE no encontrado"))
+            .getId();
 
         // Validar que el supplier existe
         supplierRepository.findById(request.supplierId())
             .orElseThrow(() -> new DomainException("Proveedor con ID " + request.supplierId() + " no existe"));
         
-        // Validar que el status existe
-        toolStatusRepository.findById(statusId)
-            .orElseThrow(() -> new DomainException("Estado con ID " + statusId + " no existe"));
+        // Forzar estado AVAILABLE al crear herramienta
 
         // Validar que la categoría existe
         categoryRepository.findById(request.categoryId())

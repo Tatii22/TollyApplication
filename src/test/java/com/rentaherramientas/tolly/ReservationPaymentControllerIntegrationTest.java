@@ -238,6 +238,7 @@ class ReservationPaymentControllerIntegrationTest {
         detail.setToolId(tool.getId());
         detail.setDailyPrice(BigDecimal.valueOf(10));
         detail.setRentalDay(2);
+        detail.setQuantity(1);
         detail.setSubTotal(BigDecimal.valueOf(20));
         return reservationDetailJpaRepository.save(detail);
     }

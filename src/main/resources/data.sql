@@ -30,3 +30,19 @@ VALUES
     ('PENDING'),
     ('PAID'),
     ('CANCELLED');
+
+-- Insertar estados de devolucion iniciales si no existen
+INSERT IGNORE INTO return_status (name)
+VALUES
+    ('PENDING'),
+    ('SENT'),
+    ('RECEIVED'),
+    ('DAMAGED');
+
+-- Insertar estados de herramienta iniciales si no existen
+INSERT IGNORE INTO tool_status (name)
+VALUES
+    ('AVAILABLE'),
+    ('RENTED'),
+    ('UNDER_REPAIR'),
+    ('UNAVAILABLE');

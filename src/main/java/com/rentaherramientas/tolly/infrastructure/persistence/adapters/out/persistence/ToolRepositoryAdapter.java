@@ -6,14 +6,19 @@ import java.util.stream.Collectors;
 import com.rentaherramientas.tolly.domain.model.Tool;
 import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ToolEntity;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.ToolStatusEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ToolJpaRepository;
+import com.rentaherramientas.tolly.infrastructure.persistence.repository.ToolStatusJpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class ToolRepositoryAdapter implements ToolRepository {
     private final ToolJpaRepository toolJpaRepository;
-    public ToolRepositoryAdapter(ToolJpaRepository toolJpaRepository) {
+    private final ToolStatusJpaRepository toolStatusJpaRepository;
+    public ToolRepositoryAdapter(ToolJpaRepository toolJpaRepository,
+                                 ToolStatusJpaRepository toolStatusJpaRepository) {
         this.toolJpaRepository = toolJpaRepository;
+        this.toolStatusJpaRepository = toolStatusJpaRepository;
     }
     @Override
     public List<Tool> findAll() {
@@ -34,7 +39,11 @@ public class ToolRepositoryAdapter implements ToolRepository {
                 existing.setDailyPrice(tool.getDailyPrice());
                 existing.setTotalQuantity(tool.getTotalQuantity());
                 existing.setAvailableQuantity(tool.getAvailableQuantity());
-                existing.setStatusId(tool.getStatusId());
+                if (tool.getStatusId() != null) {
+                    ToolStatusEntity status = toolStatusJpaRepository.findById(tool.getStatusId())
+                        .orElseThrow(() -> new IllegalArgumentException("Estado de herramienta no encontrado"));
+                    existing.setToolStatus(status);
+                }
                 existing.setSupplierId(tool.getSupplierId());
                 existing.setCategoryId(tool.getCategoryId());
                 ToolEntity updated = toolJpaRepository.save(existing);

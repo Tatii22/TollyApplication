@@ -104,7 +104,7 @@ Headers:
 - `Content-Type: application/json`
 
 ```json
-{ "name": "CORRECT" }
+{ "name": "PENDING" }
 ```
 
 ## 9) Crear RETURN (cliente)
@@ -117,9 +117,10 @@ Headers:
 ```json
 {
   "reservationId": 1,
-  "clientId": 1,
   "returnDate": "2026-02-03",
-  "returnStatusId": 1,
+  "details": [
+    { "toolId": 1, "quantity": 1, "observations": "Sin novedades" }
+  ],
   "observations": "OK"
 }
 ```
@@ -133,5 +134,6 @@ Headers:
 ---
 
 Notas:
-- Si el `clientId` o `reservationId` son distintos en tu BD, usa los que te devuelva la API.
+- El `clientId` se toma del token, no se envia en el body.
+- Si el `reservationId` o `toolId` son distintos en tu BD, usa los que te devuelva la API.
 - El telefono debe tener 10 digitos y empezar por 3.

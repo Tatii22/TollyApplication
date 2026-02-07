@@ -109,7 +109,7 @@ public class ToolController {
     @Operation(summary = "Crear nueva herramienta", 
             description = "Crea una nueva herramienta. Solo SUPPLIERS pueden crear herramientas. " +
                             "La herramienta se asocia automáticamente al supplier autenticado. " +
-                            "El estado inicial es AVAIBLE (disponible).")
+                            "El estado inicial es AVAILABLE (disponible).")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Herramienta creada exitosamente", 
                     content = @Content(schema = @Schema(implementation = ToolResponse.class))),
