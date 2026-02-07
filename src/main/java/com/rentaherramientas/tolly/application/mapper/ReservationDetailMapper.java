@@ -28,6 +28,7 @@ public class ReservationDetailMapper {
         toReservationDomain(entity.getReservation()),
         entity.getDailyPrice() != null ? entity.getDailyPrice().doubleValue() : null,
         entity.getRentalDay(),
+        entity.getQuantity() != null ? entity.getQuantity() : 1,
         entity.getSubTotal()
     );
   }
@@ -55,6 +56,7 @@ public class ReservationDetailMapper {
         domain.getDailyPrice() != null ? BigDecimal.valueOf(domain.getDailyPrice()) : null
     );
     entity.setRentalDay(domain.getRentalDay());
+    entity.setQuantity(domain.getQuantity());
     entity.setSubTotal(domain.getSubTotal());
 
     return entity;
