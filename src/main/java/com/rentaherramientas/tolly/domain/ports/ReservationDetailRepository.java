@@ -1,8 +1,10 @@
 package com.rentaherramientas.tolly.domain.ports;
 
-import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
+import java.util.Collection;
 
 
 import com.rentaherramientas.tolly.domain.model.ReservationDetail;
@@ -24,6 +26,12 @@ public interface ReservationDetailRepository {
   List<ReservationDetail> findByToolId(Long toolId);
 
   boolean existsByReservationIdAndToolId(Long reservationId, Long toolId);
+
+  Integer sumReservedQuantityForToolBetweenDates(
+      Long toolId,
+      LocalDate startDate,
+      LocalDate endDate,
+      Collection<String> excludedStatuses);
 
   // DELETE
   void delete(ReservationDetail reservationDetail);

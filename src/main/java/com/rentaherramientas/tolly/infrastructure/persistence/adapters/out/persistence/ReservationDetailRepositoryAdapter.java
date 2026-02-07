@@ -3,6 +3,8 @@ package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.pers
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.Collection;
 
 import org.springframework.stereotype.Repository;
 
@@ -93,5 +95,18 @@ public class ReservationDetailRepositoryAdapter
     return jpaRepository.existsByReservation_IdAndTool_Id(
         reservationId,
         toolId);
+  }
+
+  @Override
+  public Integer sumReservedQuantityForToolBetweenDates(
+      Long toolId,
+      LocalDate startDate,
+      LocalDate endDate,
+      Collection<String> excludedStatuses) {
+    return jpaRepository.sumReservedQuantityForToolBetweenDates(
+        toolId,
+        startDate,
+        endDate,
+        excludedStatuses);
   }
 }

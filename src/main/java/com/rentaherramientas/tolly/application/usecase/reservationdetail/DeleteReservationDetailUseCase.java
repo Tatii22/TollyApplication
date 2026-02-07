@@ -8,7 +8,6 @@ import com.rentaherramientas.tolly.domain.model.ReservationDetail;
 import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.ports.ReservationDetailRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
-import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 
 @Service
 @Transactional
@@ -16,15 +15,11 @@ public class DeleteReservationDetailUseCase {
 
   private final ReservationDetailRepository reservationDetailRepository;
   private final ReservationRepository reservationRepository;
-  private final ToolRepository toolRepository;
-
   public DeleteReservationDetailUseCase(
       ReservationDetailRepository reservationDetailRepository,
-      ReservationRepository reservationRepository,
-      ToolRepository toolRepository) {
+      ReservationRepository reservationRepository) {
     this.reservationDetailRepository = reservationDetailRepository;
     this.reservationRepository = reservationRepository;
-    this.toolRepository = toolRepository;
   }
 
   public void execute(Long detailId) {
@@ -48,13 +43,6 @@ public class DeleteReservationDetailUseCase {
 
     reservationDetailRepository.delete(detail);
 
-    if (detail.getTool() != null && detail.getTool().getId() != null) {
-      toolRepository.findById(detail.getTool().getId())
-          .ifPresent(tool -> {
-            Integer available = tool.getAvailableQuantity() != null ? tool.getAvailableQuantity() : 0;
-            tool.setAvailableQuantity(available + detail.getQuantity());
-            toolRepository.update(tool.getId(), tool);
-          });
-    }
+    // No se ajusta availableQuantity: la disponibilidad se calcula por fechas
   }
 }
