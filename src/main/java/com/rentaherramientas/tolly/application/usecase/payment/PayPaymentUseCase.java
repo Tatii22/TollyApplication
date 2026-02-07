@@ -16,6 +16,7 @@ import com.rentaherramientas.tolly.domain.ports.ClientRepository;
 import com.rentaherramientas.tolly.domain.ports.PaymentRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationStatusRepository;
+import com.rentaherramientas.tolly.application.usecase.invoice.GenerateInvoiceForPaymentUseCase;
 
 @Service
 public class PayPaymentUseCase {
@@ -24,15 +25,18 @@ public class PayPaymentUseCase {
     private final ReservationRepository reservationRepository;
     private final ClientRepository clientRepository;
     private final ReservationStatusRepository reservationStatusRepository;
+    private final GenerateInvoiceForPaymentUseCase generateInvoiceForPaymentUseCase;
 
     public PayPaymentUseCase(PaymentRepository paymentRepository,
                              ReservationRepository reservationRepository,
                              ClientRepository clientRepository,
-                             ReservationStatusRepository reservationStatusRepository) {
+                             ReservationStatusRepository reservationStatusRepository,
+                             GenerateInvoiceForPaymentUseCase generateInvoiceForPaymentUseCase) {
         this.paymentRepository = paymentRepository;
         this.reservationRepository = reservationRepository;
         this.clientRepository = clientRepository;
         this.reservationStatusRepository = reservationStatusRepository;
+        this.generateInvoiceForPaymentUseCase = generateInvoiceForPaymentUseCase;
     }
 
     @Transactional
@@ -83,6 +87,8 @@ public class PayPaymentUseCase {
                     reservation.setStatus(status);
                     reservationRepository.save(reservation);
                 });
+
+        generateInvoiceForPaymentUseCase.execute(savedPayment);
 
         return savedPayment;
     }

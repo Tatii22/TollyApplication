@@ -23,6 +23,7 @@ import com.rentaherramientas.tolly.application.usecase.reservation.ReservationCa
 import com.rentaherramientas.tolly.domain.model.Payment;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.CategoryEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ClientEntity;
+import com.rentaherramientas.tolly.infrastructure.persistence.entity.InvoiceEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.PaymentEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.PaymentStatusEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReservationDetailEntity;
@@ -35,6 +36,7 @@ import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.entity.UserStatusEntity;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.CategoryJpaRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ClientJpaRepository;
+import com.rentaherramientas.tolly.infrastructure.persistence.repository.InvoiceJpaRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.PaymentJpaRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.PaymentStatusJpaRepository;
 import com.rentaherramientas.tolly.infrastructure.persistence.repository.ReservationDetailJpaRepository;
@@ -68,12 +70,17 @@ class ReservationPaymentIntegrationTest {
     @Autowired private ReservationDetailJpaRepository reservationDetailJpaRepository;
     @Autowired private PaymentStatusJpaRepository paymentStatusJpaRepository;
     @Autowired private PaymentJpaRepository paymentJpaRepository;
+    @Autowired private InvoiceJpaRepository invoiceJpaRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Test
     void payReservationMovesToInProgressAndMarksPaid() {
+        UserEntity supplierUser = createUser("supplier-payment@test.com");
+        SupplierEntity supplier = createSupplier(supplierUser);
+        ToolEntity tool = createTool(supplier);
+
         UserEntity clientUser = createUser("client1@test.com");
         ClientEntity client = createClient(clientUser);
 
@@ -83,17 +90,21 @@ class ReservationPaymentIntegrationTest {
         ensurePaymentStatus("PAID");
 
         ReservationEntity reservation = createReservation(client, reserved, LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
+        createReservationDetail(reservation, tool);
         PaymentEntity payment = createPayment(reservation, "PENDING");
 
         Payment paid = payPaymentUseCase.execute(reservation.getId(), clientUser.getId());
 
         ReservationEntity updatedReservation = reservationJpaRepository.findById(reservation.getId()).orElseThrow();
         PaymentEntity updatedPayment = paymentJpaRepository.findById(payment.getId()).orElseThrow();
+        InvoiceEntity invoice = invoiceJpaRepository.findByPayment_Id(payment.getId()).orElseThrow();
 
         assertThat(paid.getStatus().getName()).isEqualTo("PAID");
         assertThat(updatedPayment.getStatus().getName()).isEqualTo("PAID");
         assertThat(updatedPayment.getPaymentDate()).isNotNull();
         assertThat(updatedReservation.getReservationStatus().getStatusName()).isEqualTo(inProgress.getStatusName());
+        assertThat(invoice.getTotal()).isEqualByComparingTo(updatedPayment.getAmount());
+        assertThat(invoice.getDetails()).isNotEmpty();
     }
 
     @Test
