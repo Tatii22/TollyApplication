@@ -36,7 +36,7 @@ public class ReceiveReturnUseCase {
     private static final String STATUS_DAMAGED = "DAMAGED";
 
     private static final String TOOL_AVAILABLE = "AVAILABLE";
-    private static final String TOOL_UNDER_REPAIR = "UNDER_REPAIR";
+    private static final String TOOL_UNAVAILABLE = "UNAVAILABLE";
 
     private final ReturnRepository returnRepository;
     private final ReturnStatusRepository returnStatusRepository;
@@ -148,7 +148,7 @@ public class ReceiveReturnUseCase {
     }
 
     private ToolStatus resolveToolStatus(String returnStatusName) {
-        String toolStatusName = STATUS_DAMAGED.equals(returnStatusName) ? TOOL_UNDER_REPAIR : TOOL_AVAILABLE;
+        String toolStatusName = STATUS_DAMAGED.equals(returnStatusName) ? TOOL_UNAVAILABLE : TOOL_AVAILABLE;
         return toolStatusRepository.findByName(toolStatusName)
             .orElseThrow(() -> new DomainException("Estado de herramienta no encontrado: " + toolStatusName));
     }

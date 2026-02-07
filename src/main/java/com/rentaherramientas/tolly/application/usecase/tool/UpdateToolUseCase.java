@@ -64,6 +64,36 @@ public class UpdateToolUseCase {
         categoryRepository.findById(request.categoryId())
             .orElseThrow(() -> new DomainException("Categoría con ID " + request.categoryId() + " no existe"));
         
+        // Validar transiciones de estado (flujo de reparacion)
+        Long currentStatusId = existing.getStatusId();
+        Long requestedStatusId = request.statusId();
+
+        if (currentStatusId != null && requestedStatusId != null && !currentStatusId.equals(requestedStatusId)) {
+            String currentStatusName = toolStatusRepository.findById(currentStatusId)
+                .map(status -> status.getName().toUpperCase())
+                .orElse(null);
+            String nextStatusName = toolStatusRepository.findById(requestedStatusId)
+                .map(status -> status.getName().toUpperCase())
+                .orElse(null);
+
+            if (currentStatusName != null && nextStatusName != null) {
+                boolean involvesRepairFlow =
+                    "UNAVAILABLE".equals(currentStatusName)
+                    || "UNDER_REPAIR".equals(currentStatusName)
+                    || "UNAVAILABLE".equals(nextStatusName)
+                    || "UNDER_REPAIR".equals(nextStatusName);
+
+                if (involvesRepairFlow) {
+                    boolean validRepairFlow =
+                        ("UNAVAILABLE".equals(currentStatusName) && "UNDER_REPAIR".equals(nextStatusName))
+                        || ("UNDER_REPAIR".equals(currentStatusName) && "AVAILABLE".equals(nextStatusName));
+                    if (!validRepairFlow) {
+                        throw new DomainException("Transicion de estado no permitida: " + currentStatusName + " -> " + nextStatusName);
+                    }
+                }
+            }
+        }
+
         // Convertir request a Tool y actualizar
         Tool updatedTool = toolMapper.toTool(request);
         updatedTool.setId(id); // Mantener el ID original
