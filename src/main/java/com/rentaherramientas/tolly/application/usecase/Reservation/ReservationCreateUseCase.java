@@ -38,8 +38,8 @@ public class ReservationCreateUseCase {
     clientRepository.findById(request.clientId())
         .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + request.clientId()));
 
-    ReservationStatus status = reservationStatusRepository.findByStatusName(request.statusName())
-        .orElseGet(() -> ReservationStatus.create(request.statusName()));
+    ReservationStatus status = reservationStatusRepository.findByStatusName("RESERVED")
+        .orElseGet(() -> ReservationStatus.create("RESERVED"));
 
     status = reservationStatusRepository.save(status);
 

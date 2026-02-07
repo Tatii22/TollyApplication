@@ -42,8 +42,8 @@ public class CreateReservationUseCase {
         .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + request.clientId()));
 
     // 2ï¸âƒ£ Buscar o crear el estado de reserva
-    ReservationStatus status = reservationStatusRepository.findByStatusName(request.statusName())
-        .orElseGet(() -> ReservationStatus.create(request.statusName()));
+    ReservationStatus status = reservationStatusRepository.findByStatusName("RESERVED")
+        .orElseGet(() -> ReservationStatus.create("RESERVED"));
 
     // Guardar el estado si es nuevo
     status = reservationStatusRepository.save(status);
