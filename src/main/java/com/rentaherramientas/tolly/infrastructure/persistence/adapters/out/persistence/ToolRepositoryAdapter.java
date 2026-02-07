@@ -107,6 +107,24 @@ public class ToolRepositoryAdapter implements ToolRepository {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Tool> findByFilters(
+        Long categoryId,
+        String statusName,
+        Integer minAvailableQuantity,
+        Double minPrice,
+        Double maxPrice) {
+        return toolJpaRepository.findByFilters(
+                categoryId,
+                statusName,
+                minAvailableQuantity,
+                minPrice,
+                maxPrice)
+            .stream()
+            .map(ToolRepositoryAdapter::toDomain)
+            .collect(Collectors.toList());
+    }
+
     public static Tool toDomain(ToolEntity toolEntity) {
         Tool tool = new Tool();
         tool.setId(toolEntity.getId());
