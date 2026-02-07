@@ -4,6 +4,7 @@ import com.rentaherramientas.tolly.domain.model.Payment;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 public interface PaymentRepository {
 
@@ -20,4 +21,8 @@ public interface PaymentRepository {
     List<Payment> findByStatusName(String statusName);
 
     List<Payment> findAll();
+
+    List<Payment> findBySupplierIdAndDateRange(Long supplierId, LocalDateTime from, LocalDateTime to);
+
+    List<Payment> findByDateRange(LocalDateTime from, LocalDateTime to, String statusName);
 }

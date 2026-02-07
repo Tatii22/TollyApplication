@@ -2,6 +2,7 @@ package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.pers
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Repository;
 
@@ -103,6 +104,22 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
     @Override
     public List<Payment> findByStatusName(String statusName) {
         return paymentJpaRepository.findByStatus_NameIgnoreCase(statusName)
+                .stream()
+                .map(PaymentMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Payment> findBySupplierIdAndDateRange(Long supplierId, LocalDateTime from, LocalDateTime to) {
+        return paymentJpaRepository.findBySupplierIdAndDateRange(supplierId, from, to)
+                .stream()
+                .map(PaymentMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Payment> findByDateRange(LocalDateTime from, LocalDateTime to, String statusName) {
+        return paymentJpaRepository.findByDateRange(from, to, statusName)
                 .stream()
                 .map(PaymentMapper::toDomain)
                 .toList();

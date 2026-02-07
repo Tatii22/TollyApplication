@@ -10,11 +10,15 @@ import com.rentaherramientas.tolly.application.mapper.PaymentMapper;
 import com.rentaherramientas.tolly.application.usecase.payment.GetPaymentByReservationUseCase;
 import com.rentaherramientas.tolly.application.usecase.payment.GetPaymentsByClientUseCase;
 import com.rentaherramientas.tolly.application.usecase.payment.GetPaymentsByStatusUseCase;
+import com.rentaherramientas.tolly.application.usecase.payment.GetPaymentsBySupplierUseCase;
+import com.rentaherramientas.tolly.application.usecase.payment.SearchPaymentsUseCase;
 import com.rentaherramientas.tolly.application.usecase.payment.PayPaymentUseCase;
 import com.rentaherramientas.tolly.domain.model.Payment;
 
 import java.util.List;
 import java.util.UUID;
+import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @RestController
 @RequestMapping("/payments")
@@ -24,15 +28,21 @@ public class PaymentController {
     private final GetPaymentByReservationUseCase getPaymentByReservationUseCase;
     private final GetPaymentsByClientUseCase getPaymentsByClientUseCase;
     private final GetPaymentsByStatusUseCase getPaymentsByStatusUseCase;
+    private final GetPaymentsBySupplierUseCase getPaymentsBySupplierUseCase;
+    private final SearchPaymentsUseCase searchPaymentsUseCase;
 
     public PaymentController(PayPaymentUseCase payPaymentUseCase,
                              GetPaymentByReservationUseCase getPaymentByReservationUseCase,
                              GetPaymentsByClientUseCase getPaymentsByClientUseCase,
-                             GetPaymentsByStatusUseCase getPaymentsByStatusUseCase) {
+                             GetPaymentsByStatusUseCase getPaymentsByStatusUseCase,
+                             GetPaymentsBySupplierUseCase getPaymentsBySupplierUseCase,
+                             SearchPaymentsUseCase searchPaymentsUseCase) {
         this.payPaymentUseCase = payPaymentUseCase;
         this.getPaymentByReservationUseCase = getPaymentByReservationUseCase;
         this.getPaymentsByClientUseCase = getPaymentsByClientUseCase;
         this.getPaymentsByStatusUseCase = getPaymentsByStatusUseCase;
+        this.getPaymentsBySupplierUseCase = getPaymentsBySupplierUseCase;
+        this.searchPaymentsUseCase = searchPaymentsUseCase;
     }
 
     @PostMapping("/reservation/{reservationId}/pay")
@@ -77,12 +87,43 @@ public class PaymentController {
         return ResponseEntity.ok(toResponses(payments));
     }
 
+    @GetMapping("/supplier/{supplierId}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER')")
+    public ResponseEntity<List<PaymentResponse>> getBySupplier(
+            @PathVariable Long supplierId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
+            Authentication authentication) {
+        boolean validateOwner = isSupplier(authentication);
+        UUID userId = validateOwner ? (UUID) authentication.getPrincipal() : null;
+        List<Payment> payments = getPaymentsBySupplierUseCase.execute(supplierId, userId, validateOwner, from, to);
+        return ResponseEntity.ok(toResponses(payments));
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PaymentResponse>> searchPayments(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
+            @RequestParam(required = false) String status) {
+        List<Payment> payments = searchPaymentsUseCase.execute(from, to, status);
+        return ResponseEntity.ok(toResponses(payments));
+    }
+
     private boolean isClient(Authentication authentication) {
         if (authentication == null || authentication.getAuthorities() == null) {
             return false;
         }
         return authentication.getAuthorities().stream()
                 .anyMatch(authority -> "ROLE_CLIENT".equals(authority.getAuthority()));
+    }
+
+    private boolean isSupplier(Authentication authentication) {
+        if (authentication == null || authentication.getAuthorities() == null) {
+            return false;
+        }
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_SUPPLIER".equals(authority.getAuthority()));
     }
 
     private List<PaymentResponse> toResponses(List<Payment> payments) {
