@@ -38,6 +38,7 @@ public class InvoiceRenderService {
 
     sb.append("<h1>Factura</h1>");
     sb.append("<div><strong>ID:</strong> ").append(invoice.getId()).append("</div>");
+    sb.append("<div><strong>Codigo:</strong> ").append(invoice.getCode()).append("</div>");
     sb.append("<div><strong>Fecha:</strong> ").append(invoice.getIssueDate()).append("</div>");
     if (reservation != null) {
       sb.append("<div><strong>Reserva:</strong> ").append(reservation.getId()).append("</div>");
@@ -79,6 +80,7 @@ public class InvoiceRenderService {
       Font titleFont = new Font(Font.HELVETICA, 16, Font.BOLD);
       doc.add(new Paragraph("Factura", titleFont));
       doc.add(new Paragraph("ID: " + invoice.getId()));
+      doc.add(new Paragraph("Codigo: " + invoice.getCode()));
       doc.add(new Paragraph("Fecha: " + invoice.getIssueDate()));
 
       Reservation reservation = invoice.getReservation();

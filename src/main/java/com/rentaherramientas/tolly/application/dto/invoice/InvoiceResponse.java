@@ -7,6 +7,7 @@ import java.util.List;
 public class InvoiceResponse {
 
   private Long id;
+  private String code;
   private Long paymentId;
   private Long reservationId;
   private Long clientId;
@@ -15,6 +16,7 @@ public class InvoiceResponse {
   private List<InvoiceDetailResponse> details;
 
   public InvoiceResponse(Long id,
+                         String code,
                          Long paymentId,
                          Long reservationId,
                          Long clientId,
@@ -22,6 +24,7 @@ public class InvoiceResponse {
                          BigDecimal total,
                          List<InvoiceDetailResponse> details) {
     this.id = id;
+    this.code = code;
     this.paymentId = paymentId;
     this.reservationId = reservationId;
     this.clientId = clientId;
@@ -32,6 +35,10 @@ public class InvoiceResponse {
 
   public Long getId() {
     return id;
+  }
+
+  public String getCode() {
+    return code;
   }
 
   public Long getPaymentId() {

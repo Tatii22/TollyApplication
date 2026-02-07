@@ -26,6 +26,9 @@ public class InvoiceEntity {
   @Column(name = "id_invoice")
   private Long id;
 
+  @Column(name = "code", nullable = false, unique = true, length = 30)
+  private String code;
+
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "id_payment", nullable = false)
   private PaymentEntity payment;
@@ -48,6 +51,14 @@ public class InvoiceEntity {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
   }
 
   public PaymentEntity getPayment() {

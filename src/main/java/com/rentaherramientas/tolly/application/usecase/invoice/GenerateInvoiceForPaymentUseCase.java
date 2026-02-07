@@ -2,7 +2,9 @@ package com.rentaherramientas.tolly.application.usecase.invoice;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,8 +76,11 @@ public class GenerateInvoiceForPaymentUseCase {
         ? payment.getPaymentDate()
         : LocalDateTime.now();
 
+    String code = generateCode(issueDate);
+
     Invoice invoice = new Invoice(
         null,
+        code,
         reservation,
         payment,
         issueDate,
@@ -84,5 +89,11 @@ public class GenerateInvoiceForPaymentUseCase {
     );
 
     return invoiceRepository.save(invoice);
+  }
+
+  private String generateCode(LocalDateTime issueDate) {
+    String date = issueDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
+    return "INV-" + date + "-" + suffix;
   }
 }

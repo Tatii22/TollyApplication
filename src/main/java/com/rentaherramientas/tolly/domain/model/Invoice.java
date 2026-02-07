@@ -8,6 +8,7 @@ import java.util.Objects;
 public class Invoice {
 
   private final Long id;
+  private final String code;
   private final Reservation reservation;
   private final Payment payment;
   private final LocalDateTime issueDate;
@@ -15,6 +16,7 @@ public class Invoice {
   private final List<InvoiceDetail> details;
 
   public Invoice(Long id,
+                 String code,
                  Reservation reservation,
                  Payment payment,
                  LocalDateTime issueDate,
@@ -26,6 +28,9 @@ public class Invoice {
     if (payment == null) {
       throw new IllegalArgumentException("Payment is required");
     }
+    if (code == null || code.isBlank()) {
+      throw new IllegalArgumentException("Invoice code is required");
+    }
     if (issueDate == null) {
       throw new IllegalArgumentException("Issue date is required");
     }
@@ -36,6 +41,7 @@ public class Invoice {
       throw new IllegalArgumentException("Invoice details are required");
     }
     this.id = id;
+    this.code = code;
     this.reservation = reservation;
     this.payment = payment;
     this.issueDate = issueDate;
@@ -45,6 +51,10 @@ public class Invoice {
 
   public Long getId() {
     return id;
+  }
+
+  public String getCode() {
+    return code;
   }
 
   public Reservation getReservation() {

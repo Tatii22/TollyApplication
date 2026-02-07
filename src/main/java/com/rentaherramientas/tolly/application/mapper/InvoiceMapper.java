@@ -28,6 +28,7 @@ public class InvoiceMapper {
 
     return new Invoice(
         entity.getId(),
+        entity.getCode(),
         reservation,
         payment,
         entity.getIssueDate(),
@@ -51,6 +52,7 @@ public class InvoiceMapper {
 
     return new InvoiceResponse(
         invoice.getId(),
+        invoice.getCode(),
         paymentId,
         reservationId,
         clientId,

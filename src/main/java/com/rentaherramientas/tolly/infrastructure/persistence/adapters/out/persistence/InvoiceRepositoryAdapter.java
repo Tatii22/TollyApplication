@@ -42,12 +42,14 @@ public class InvoiceRepositoryAdapter implements InvoiceRepository {
     if (invoice.getId() != null) {
       entity = invoiceJpaRepository.findById(invoice.getId())
           .orElseThrow(() -> new IllegalArgumentException("Invoice not found: " + invoice.getId()));
+      entity.setCode(invoice.getCode());
       entity.setIssueDate(invoice.getIssueDate());
       entity.setTotal(invoice.getTotal());
       entity.setPayment(paymentEntity);
       entity.getDetails().clear();
     } else {
       entity = new InvoiceEntity();
+      entity.setCode(invoice.getCode());
       entity.setPayment(paymentEntity);
       entity.setIssueDate(invoice.getIssueDate());
       entity.setTotal(invoice.getTotal());

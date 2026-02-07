@@ -76,21 +76,22 @@ public class ReservationDetailMapper {
         entity.getDailyPrice(),
         entity.getTotalQuantity(),
         entity.getAvailableQuantity(),
-        entity.getToolStatus().getId(),
-        entity.getSupplier().getId(),
-        entity.getCategory().getId()
+        entity.getToolStatus() != null ? entity.getToolStatus().getId() : null,
+        entity.getSupplier() != null ? entity.getSupplier().getId() : null,
+        entity.getCategory() != null ? entity.getCategory().getId() : null
     );
   }
 
   private static Reservation toReservationDomain(ReservationEntity entity) {
     if (entity == null) return null;
 
-    ReservationStatus status =
-        ReservationStatusMapper.toDomain(entity.getReservationStatus());
+    ReservationStatus status = entity.getReservationStatus() != null
+        ? ReservationStatusMapper.toDomain(entity.getReservationStatus())
+        : null;
 
     return Reservation.reconstruct(
         entity.getId(),
-        entity.getClient().getId(),
+        entity.getClient() != null ? entity.getClient().getId() : null,
         entity.getStartDate(),
         entity.getEndDate(),
         entity.getTotalPrice(),
