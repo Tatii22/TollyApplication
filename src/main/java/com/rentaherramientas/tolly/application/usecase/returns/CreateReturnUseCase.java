@@ -7,6 +7,7 @@ import com.rentaherramientas.tolly.application.dto.returns.CreateReturnRequest;
 import com.rentaherramientas.tolly.application.dto.returns.ReturnResponse;
 import com.rentaherramientas.tolly.application.mapper.ReturnMapper;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
+import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.model.Return;
 import com.rentaherramientas.tolly.domain.model.ReturnStatus;
 import com.rentaherramientas.tolly.domain.ports.ClientRepository;
@@ -18,6 +19,7 @@ import com.rentaherramientas.tolly.domain.ports.ReturnStatusRepository;
 public class CreateReturnUseCase {
 
     private static final String STATUS_PENDING = "PENDING";
+    private static final String RESERVATION_IN_PROGRESS = "IN_PROGRESS";
 
     private final ReturnRepository returnRepository;
     private final ReturnStatusRepository returnStatusRepository;
@@ -40,10 +42,15 @@ public class CreateReturnUseCase {
 
     @Transactional
     public ReturnResponse execute(CreateReturnRequest request) {
-        reservationRepository.findById(request.reservationId())
+        Reservation reservation = reservationRepository.findById(request.reservationId())
             .orElseThrow(() -> new DomainException("Reserva no encontrada con ID: " + request.reservationId()));
         clientRepository.findById(request.clientId())
             .orElseThrow(() -> new DomainException("Cliente no encontrado con ID: " + request.clientId()));
+
+        if (reservation.getStatus() == null
+            || !RESERVATION_IN_PROGRESS.equalsIgnoreCase(reservation.getStatus().getName())) {
+            throw new DomainException("La reserva no esta en estado IN_PROGRESS");
+        }
 
         ReturnStatus status = returnStatusRepository.findByName(STATUS_PENDING)
             .orElseThrow(() -> new DomainException("Estado PENDING no encontrado"));

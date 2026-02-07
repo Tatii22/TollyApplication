@@ -8,29 +8,24 @@ import com.rentaherramientas.tolly.application.dto.returns.UpdateReturnRequest;
 import com.rentaherramientas.tolly.application.mapper.ReturnMapper;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 import com.rentaherramientas.tolly.domain.model.Return;
-import com.rentaherramientas.tolly.domain.model.ReturnStatus;
 import com.rentaherramientas.tolly.domain.ports.ClientRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.domain.ports.ReturnRepository;
-import com.rentaherramientas.tolly.domain.ports.ReturnStatusRepository;
 
 @Service
 public class UpdateReturnUseCase {
 
     private final ReturnRepository returnRepository;
-    private final ReturnStatusRepository returnStatusRepository;
     private final ReservationRepository reservationRepository;
     private final ClientRepository clientRepository;
     private final ReturnMapper returnMapper;
 
     public UpdateReturnUseCase(
         ReturnRepository returnRepository,
-        ReturnStatusRepository returnStatusRepository,
         ReservationRepository reservationRepository,
         ClientRepository clientRepository,
         ReturnMapper returnMapper) {
         this.returnRepository = returnRepository;
-        this.returnStatusRepository = returnStatusRepository;
         this.reservationRepository = reservationRepository;
         this.clientRepository = clientRepository;
         this.returnMapper = returnMapper;
@@ -41,18 +36,24 @@ public class UpdateReturnUseCase {
         Return existing = returnRepository.findById(id)
             .orElseThrow(() -> new DomainException("Devolucion no encontrada con ID: " + id));
 
-        reservationRepository.findById(request.reservationId())
-            .orElseThrow(() -> new DomainException("Reserva no encontrada con ID: " + request.reservationId()));
-        clientRepository.findById(request.clientId())
-            .orElseThrow(() -> new DomainException("Cliente no encontrado con ID: " + request.clientId()));
+        if (!existing.getReservationId().equals(request.reservationId())) {
+            throw new DomainException("No se permite cambiar la reserva de una devolucion");
+        }
+        if (!existing.getClientId().equals(request.clientId())) {
+            throw new DomainException("No se permite cambiar el cliente de una devolucion");
+        }
 
-        ReturnStatus status = returnStatusRepository.findById(request.returnStatusId())
-            .orElseThrow(() -> new DomainException("Estado de devolucion no encontrado con ID: " + request.returnStatusId()));
+        reservationRepository.findById(existing.getReservationId())
+            .orElseThrow(() -> new DomainException("Reserva no encontrada con ID: " + existing.getReservationId()));
+        clientRepository.findById(existing.getClientId())
+            .orElseThrow(() -> new DomainException("Cliente no encontrado con ID: " + existing.getClientId()));
 
-        existing.setReservationId(request.reservationId());
-        existing.setClientId(request.clientId());
+        if (existing.getStatus() == null || request.returnStatusId() == null
+            || !existing.getStatus().getId().equals(request.returnStatusId())) {
+            throw new DomainException("No se permite cambiar el estado en este endpoint");
+        }
+
         existing.setReturnDate(request.returnDate());
-        existing.setStatus(status);
         existing.setObservations(request.observations());
 
         Return saved = returnRepository.save(existing);

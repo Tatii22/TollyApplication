@@ -19,8 +19,7 @@ public record CreateReturnRequest(
     @Schema(description = "Fecha de devolucion", example = "2026-02-10")
     LocalDate returnDate,
 
-    @NotNull(message = "El estado de devolucion es obligatorio")
-    @Schema(description = "ID del estado de devolucion", example = "1")
+    @Schema(description = "ID del estado de devolucion (se asigna automaticamente a PENDING)", example = "1")
     Long returnStatusId,
 
     @Schema(description = "Observaciones", example = "Entrega completa sin novedades")
