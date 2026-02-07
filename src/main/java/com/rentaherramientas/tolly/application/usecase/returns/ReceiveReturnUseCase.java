@@ -16,6 +16,7 @@ import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 import com.rentaherramientas.tolly.domain.model.Return;
 import com.rentaherramientas.tolly.domain.model.ReturnDetail;
 import com.rentaherramientas.tolly.domain.model.ReturnStatus;
+import com.rentaherramientas.tolly.domain.model.ReservationDetail;
 import com.rentaherramientas.tolly.domain.model.Supplier;
 import com.rentaherramientas.tolly.domain.model.Tool;
 import com.rentaherramientas.tolly.domain.model.ToolStatus;
@@ -86,10 +87,11 @@ public class ReceiveReturnUseCase {
             throw new DomainException("Estado de devolucion invalido: " + request.returnStatusName());
         }
 
+        java.util.Map<Long, Integer> reservedCounts = loadReservedCounts(existing.getReservationId());
         if (!isAdmin) {
-            validateSupplierOwnership(existing.getReservationId(), request.details(), userId);
+            validateSupplierOwnership(existing.getReservationId(), request.details(), userId, reservedCounts);
         } else {
-            validateToolsInReservation(existing.getReservationId(), request.details());
+            validateToolsInReservation(existing.getReservationId(), request.details(), reservedCounts);
         }
 
         ReturnStatus newStatus = returnStatusRepository.findByName(statusName)
@@ -128,17 +130,16 @@ public class ReceiveReturnUseCase {
             Tool tool = toolRepository.findById(detail.toolId())
                 .orElseThrow(() -> new DomainException("Herramienta no encontrada con ID: " + detail.toolId()));
 
-            if (returnDetailRepository.existsByReturnIdAndToolId(saved.getId(), tool.getId())) {
-                throw new DomainException("La herramienta ya fue registrada en esta devolucion: " + tool.getId());
+            boolean alreadyRegistered = returnDetailRepository.existsByReturnIdAndToolId(saved.getId(), tool.getId());
+            if (!alreadyRegistered) {
+                ReturnDetail returnDetail = ReturnDetail.create(
+                    saved,
+                    tool,
+                    detail.quantity(),
+                    detail.observations()
+                );
+                returnDetailRepository.save(returnDetail);
             }
-
-            ReturnDetail returnDetail = ReturnDetail.create(
-                saved,
-                tool,
-                detail.quantity(),
-                detail.observations()
-            );
-            returnDetailRepository.save(returnDetail);
 
             tool.setStatusId(toolStatus.getId());
             toolRepository.update(tool.getId(), tool)
@@ -152,7 +153,11 @@ public class ReceiveReturnUseCase {
             .orElseThrow(() -> new DomainException("Estado de herramienta no encontrado: " + toolStatusName));
     }
 
-    private void validateSupplierOwnership(Long reservationId, List<ReturnDetailRequest> details, UUID userId) {
+    private void validateSupplierOwnership(
+        Long reservationId,
+        List<ReturnDetailRequest> details,
+        UUID userId,
+        java.util.Map<Long, Integer> reservedCounts) {
         if (userId == null) {
             throw new DomainException("Usuario no autenticado");
         }
@@ -170,19 +175,47 @@ public class ReceiveReturnUseCase {
             if (!reservationDetailRepository.existsByReservationIdAndToolId(reservationId, tool.getId())) {
                 throw new DomainException("La herramienta no pertenece a la reserva: " + tool.getId());
             }
+
+            validateQuantity(detail, reservedCounts);
         }
     }
 
-    private void validateToolsInReservation(Long reservationId, List<ReturnDetailRequest> details) {
+    private void validateToolsInReservation(
+        Long reservationId,
+        List<ReturnDetailRequest> details,
+        java.util.Map<Long, Integer> reservedCounts) {
         for (ReturnDetailRequest detail : details) {
             if (!reservationDetailRepository.existsByReservationIdAndToolId(reservationId, detail.toolId())) {
                 throw new DomainException("La herramienta no pertenece a la reserva: " + detail.toolId());
             }
+            validateQuantity(detail, reservedCounts);
         }
     }
 
     private String normalizeStatus(String statusName) {
         if (statusName == null) return "";
         return statusName.trim().toUpperCase();
+    }
+
+    private java.util.Map<Long, Integer> loadReservedCounts(Long reservationId) {
+        java.util.Map<Long, Integer> counts = new java.util.HashMap<>();
+        for (ReservationDetail detail : reservationDetailRepository.findByReservationId(reservationId)) {
+            if (detail.getTool() == null || detail.getTool().getId() == null) {
+                continue;
+            }
+            Long toolId = detail.getTool().getId();
+            counts.put(toolId, counts.getOrDefault(toolId, 0) + detail.getQuantity());
+        }
+        return counts;
+    }
+
+    private void validateQuantity(ReturnDetailRequest detail, java.util.Map<Long, Integer> reservedCounts) {
+        int reserved = reservedCounts.getOrDefault(detail.toolId(), 0);
+        if (reserved < 1) {
+            throw new DomainException("La herramienta no tiene unidades reservadas: " + detail.toolId());
+        }
+        if (detail.quantity() > reserved) {
+            throw new DomainException("La cantidad excede lo reservado para la herramienta: " + detail.toolId());
+        }
     }
 }
