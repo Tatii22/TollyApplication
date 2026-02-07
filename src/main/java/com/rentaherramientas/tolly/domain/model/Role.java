@@ -1,21 +1,22 @@
 package com.rentaherramientas.tolly.domain.model;
 
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
+import java.util.UUID;
 
 /**
  * Entidad de dominio Role
  * Representa un rol del sistema
  */
 public class Role {
-
-    private Long id;
+    
+    private UUID id;
     private String name;
     private String authority;
-
+    
     // Constructor privado para forzar uso de factory methods
     private Role() {
     }
-
+    
     /**
      * Factory method para crear un nuevo rol
      */
@@ -26,50 +27,46 @@ public class Role {
         if (authority == null || authority.isBlank()) {
             throw new DomainException("El authority del rol no puede estar vacío");
         }
-
+        
         Role role = new Role();
-        role.id = null;
+        role.id = UUID.randomUUID();
         role.name = name.toUpperCase().trim();
         role.authority = authority.toUpperCase().trim();
-
+        
         return role;
     }
-
+    
     /**
      * Factory method para reconstruir desde persistencia
      */
-    public static Role reconstruct(Long id, String name, String authority) {
+    public static Role reconstruct(UUID id, String name, String authority) {
         Role role = new Role();
         role.id = id;
         role.name = name;
         role.authority = authority;
         return role;
     }
-
+    
     /**
      * Verifica si el rol tiene un authority específico
-     * CASO DE USO ROLE_ADMIN
-     *ROLE_SUPPLIER
-     *ROLE_CLIENT
-
      */
     public boolean hasAuthority(String authority) {
         return this.authority.equalsIgnoreCase(authority);
     }
-
+    
     // Getters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public String getAuthority() {
         return authority;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,7 +74,7 @@ public class Role {
         Role role = (Role) o;
         return id != null && id.equals(role.id);
     }
-
+    
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
