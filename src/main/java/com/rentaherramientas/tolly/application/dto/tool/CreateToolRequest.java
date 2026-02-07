@@ -34,8 +34,7 @@ public record CreateToolRequest(
     @Schema(description = "Cantidad disponible para alquiler", example = "7")
     Integer availableQuantity,
     
-    @NotNull(message = "El proveedor no puede ser nulo")
-    @Schema(description = "ID del proveedor", example = "1")
+    @Schema(description = "ID del proveedor (se toma del token)", hidden = true)
     Long supplierId,
     
     @NotNull(message = "La categoría no puede ser nula")

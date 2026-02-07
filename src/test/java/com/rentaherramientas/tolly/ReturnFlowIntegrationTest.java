@@ -210,7 +210,7 @@ class ReturnFlowIntegrationTest {
         ensureReturnStatus("PENDING");
         ensureReturnStatus("SENT");
         ensureReturnStatus("DAMAGED");
-        ensureToolStatus("UNDER_REPAIR");
+        ensureToolStatus("UNAVAILABLE");
         ensurePaymentStatus("PAID");
 
         ReservationEntity reservation = createReservation(
@@ -257,7 +257,7 @@ class ReturnFlowIntegrationTest {
         ReservationEntity updatedReservation = reservationJpaRepository.findById(reservation.getId()).orElseThrow();
         ToolEntity updatedTool = toolJpaRepository.findById(tool.getId()).orElseThrow();
         org.junit.jupiter.api.Assertions.assertEquals("IN_INCIDENT", updatedReservation.getReservationStatus().getStatusName());
-        org.junit.jupiter.api.Assertions.assertEquals("UNDER_REPAIR", updatedTool.getToolStatus().getName());
+        org.junit.jupiter.api.Assertions.assertEquals("UNAVAILABLE", updatedTool.getToolStatus().getName());
     }
 
     @Test
@@ -421,7 +421,7 @@ class ReturnFlowIntegrationTest {
         client.setUserId(user);
         client.setFirstName("Test");
         client.setLastName("Client");
-        client.setNationalId(UUID.randomUUID().toString().substring(0, 10));
+        client.setDocumentId(UUID.randomUUID().toString().substring(0, 10));
         client.setAddress("Address 123");
         client.setPhoneNumber("3101234567");
         return clientJpaRepository.save(client);

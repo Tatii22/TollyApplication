@@ -118,7 +118,7 @@ public class UserRepositoryAdapter implements UserRepository {
                 client.getPhoneNumber(),
                 client.getFirstName(),
                 client.getLastName(),
-                client.getNationalId())));
+                client.getDocumentId())));
 
     // ✅ SUPPLIER
     supplierJpaRepository.findByUserId(entity)

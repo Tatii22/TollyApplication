@@ -12,6 +12,7 @@ public interface ToolRepository {
     List<Tool> findByStatusName(String statusName, Integer minAvailableQuantity);
     List<Tool> findByCategoryId(Long categoryId);
     List<Tool> findByCategoryIdAndStatusName(Long categoryId, String statusName, Integer minAvailableQuantity);
+    List<Tool> findByFilters(Long categoryId, String statusName, Integer minAvailableQuantity, Double minPrice, Double maxPrice);
     boolean existsByName(String name);
     void deleteById(Long id);
     Optional<Tool> update(Long id, Tool tool);

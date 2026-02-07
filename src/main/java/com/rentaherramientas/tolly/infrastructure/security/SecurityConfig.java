@@ -58,8 +58,8 @@ public class SecurityConfig {
           // 🔐 ADMIN
           auth.requestMatchers("/admin/**").hasRole("ADMIN");
 
-          // 🔐 SUPPLIER
-          auth.requestMatchers("/provider/**").hasRole("PROVIDER");
+          // 🔐 SUPPLIER (PROVEEDOR)
+          auth.requestMatchers("/supplier/**").hasRole("SUPPLIER");
 
           // 🔐 CLIENT
           auth.requestMatchers("/client/**").hasRole("CLIENT");

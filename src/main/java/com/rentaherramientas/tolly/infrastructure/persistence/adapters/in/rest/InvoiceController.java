@@ -27,8 +27,14 @@ import com.rentaherramientas.tolly.application.usecase.invoice.SearchInvoicesByS
 import com.rentaherramientas.tolly.application.usecase.invoice.SearchInvoicesUseCase;
 import com.rentaherramientas.tolly.domain.model.Invoice;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/invoices")
+@Tag(name = "Facturación", description = "Endpoints para gestión y descarga de facturas")
 public class InvoiceController {
 
   private final GetInvoiceByPaymentUseCase getInvoiceByPaymentUseCase;
@@ -63,6 +69,9 @@ public class InvoiceController {
 
   @GetMapping("/{invoiceId}")
   @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER','CLIENT')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Obtener factura por ID")
+  @ApiResponse(responseCode = "200", description = "Factura obtenida exitosamente")
   public ResponseEntity<InvoiceResponse> getById(
       @PathVariable Long invoiceId,
       Authentication authentication) {
@@ -75,6 +84,9 @@ public class InvoiceController {
 
   @GetMapping("/payment/{paymentId}")
   @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Obtener factura por pago")
+  @ApiResponse(responseCode = "200", description = "Factura obtenida exitosamente")
   public ResponseEntity<InvoiceResponse> getByPayment(
       @PathVariable Long paymentId,
       Authentication authentication) {
@@ -86,6 +98,9 @@ public class InvoiceController {
 
   @GetMapping("/{invoiceId}/html")
   @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER','CLIENT')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Descargar factura HTML")
+  @ApiResponse(responseCode = "200", description = "Factura HTML generada")
   public ResponseEntity<String> downloadHtml(
       @PathVariable Long invoiceId,
       Authentication authentication) {
@@ -102,6 +117,9 @@ public class InvoiceController {
 
   @GetMapping("/{invoiceId}/pdf")
   @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER','CLIENT')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Descargar factura PDF")
+  @ApiResponse(responseCode = "200", description = "Factura PDF generada")
   public ResponseEntity<byte[]> downloadPdf(
       @PathVariable Long invoiceId,
       Authentication authentication) {
@@ -118,6 +136,9 @@ public class InvoiceController {
 
   @GetMapping("/client/{clientId}")
   @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar facturas por cliente")
+  @ApiResponse(responseCode = "200", description = "Facturas obtenidas exitosamente")
   public ResponseEntity<List<InvoiceResponse>> getByClient(
       @PathVariable Long clientId,
       Authentication authentication) {
@@ -129,6 +150,9 @@ public class InvoiceController {
 
   @GetMapping("/client/{clientId}/search")
   @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Buscar facturas por cliente")
+  @ApiResponse(responseCode = "200", description = "Facturas obtenidas exitosamente")
   public ResponseEntity<List<InvoiceResponse>> searchByClient(
       @PathVariable Long clientId,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
@@ -144,6 +168,9 @@ public class InvoiceController {
 
   @GetMapping("/supplier/{supplierId}")
   @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar facturas por proveedor")
+  @ApiResponse(responseCode = "200", description = "Facturas obtenidas exitosamente")
   public ResponseEntity<List<InvoiceResponse>> getBySupplier(
       @PathVariable Long supplierId,
       Authentication authentication) {
@@ -155,6 +182,9 @@ public class InvoiceController {
 
   @GetMapping("/supplier/{supplierId}/search")
   @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Buscar facturas por proveedor")
+  @ApiResponse(responseCode = "200", description = "Facturas obtenidas exitosamente")
   public ResponseEntity<List<InvoiceResponse>> searchBySupplier(
       @PathVariable Long supplierId,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
@@ -170,6 +200,9 @@ public class InvoiceController {
 
   @GetMapping
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar todas las facturas")
+  @ApiResponse(responseCode = "200", description = "Facturas obtenidas exitosamente")
   public ResponseEntity<List<InvoiceResponse>> getAll() {
     List<Invoice> invoices = getAllInvoicesUseCase.execute();
     return ResponseEntity.ok(toResponses(invoices));
@@ -177,6 +210,9 @@ public class InvoiceController {
 
   @GetMapping("/search")
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Buscar facturas")
+  @ApiResponse(responseCode = "200", description = "Facturas obtenidas exitosamente")
   public ResponseEntity<List<InvoiceResponse>> searchAll(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,

@@ -7,10 +7,12 @@ import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
 import com.rentaherramientas.tolly.domain.ports.ToolStatusRepository;
 import com.rentaherramientas.tolly.domain.ports.CategoryRepository;
 import com.rentaherramientas.tolly.domain.model.Tool;
+import com.rentaherramientas.tolly.domain.model.Supplier;
 import com.rentaherramientas.tolly.application.mapper.ToolMapper;
 import com.rentaherramientas.tolly.application.dto.tool.CreateToolRequest;
 import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
 import com.rentaherramientas.tolly.domain.exceptions.DomainException;
+import java.util.UUID;
 
 /**
  * UseCase para crear una nueva herramienta
@@ -38,14 +40,17 @@ public class CreateToolUseCase {
     }
     
     @Transactional
-    public ToolResponse execute(CreateToolRequest request) {
+    public ToolResponse execute(CreateToolRequest request, UUID userId) {
+        if (userId == null) {
+            throw new DomainException("UserId is required");
+        }
+
         Long statusId = toolStatusRepository.findByName(DEFAULT_AVAILABLE_STATUS_NAME)
             .orElseThrow(() -> new DomainException("Estado AVAILABLE no encontrado"))
             .getId();
 
-        // Validar que el supplier existe
-        supplierRepository.findById(request.supplierId())
-            .orElseThrow(() -> new DomainException("Proveedor con ID " + request.supplierId() + " no existe"));
+        Supplier supplier = supplierRepository.findByUserId(userId)
+            .orElseThrow(() -> new DomainException("Usuario no tiene perfil de SUPPLIER"));
         
         // Forzar estado AVAILABLE al crear herramienta
 
@@ -60,6 +65,7 @@ public class CreateToolUseCase {
         
         // Crear la herramienta
         Tool tool = toolMapper.toTool(request);
+        tool.setSupplierId(supplier.getId());
         tool.setStatusId(statusId);
         Tool saved = toolRepository.save(tool);
         

@@ -2,6 +2,8 @@ package com.rentaherramientas.tolly.infrastructure.persistence.adapters.out.pers
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import org.springframework.stereotype.Repository;
 
@@ -106,5 +108,26 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
                 .stream()
                 .map(PaymentMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<Payment> findBySupplierIdAndDateRange(Long supplierId, LocalDateTime from, LocalDateTime to) {
+        return paymentJpaRepository.findBySupplierIdAndDateRange(supplierId, from, to)
+                .stream()
+                .map(PaymentMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Payment> findByDateRange(LocalDateTime from, LocalDateTime to, String statusName) {
+        return paymentJpaRepository.findByDateRange(from, to, statusName)
+                .stream()
+                .map(PaymentMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public BigDecimal sumPaidAmountBetweenDates(LocalDateTime from, LocalDateTime to) {
+        return paymentJpaRepository.sumPaidAmountBetweenDates(from, to);
     }
 }

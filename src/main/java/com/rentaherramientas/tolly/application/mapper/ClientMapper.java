@@ -21,7 +21,7 @@ public class ClientMapper {
     entity.setPhoneNumber(client.getPhone());
     entity.setFirstName(client.getFirstName());
     entity.setLastName(client.getLastName());
-    entity.setNationalId(client.getDocument());
+    entity.setDocumentId(client.getDocument());
     return entity;
   }
 
@@ -33,6 +33,6 @@ public class ClientMapper {
         entity.getPhoneNumber(),
         entity.getFirstName(),
         entity.getLastName(),
-        entity.getNationalId());
+        entity.getDocumentId());
   }
 }

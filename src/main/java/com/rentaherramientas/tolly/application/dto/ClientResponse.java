@@ -17,7 +17,7 @@ public record ClientResponse(
     @Schema(description = "Apellido del cliente", example = "Pérez")
     String lastName,
 
-    @Schema(description = "Número de identificación nacional", example = "1234567890")
-    String national
+    @Schema(description = "Número de documento", example = "1234567890")
+    String document
 
 ) {}

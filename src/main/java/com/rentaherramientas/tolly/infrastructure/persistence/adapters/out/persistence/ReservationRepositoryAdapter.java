@@ -14,6 +14,7 @@ import com.rentaherramientas.tolly.application.mapper.ReservationMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 @Component
@@ -77,6 +78,18 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
         return jpaRepository.findByClient_Id(clientId).stream()
                 .map(ReservationMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Reservation> findByStartDateRange(LocalDate from, LocalDate to) {
+        return jpaRepository.findByStartDateRange(from, to).stream()
+                .map(ReservationMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Object[]> findFrequentClients(LocalDate from, LocalDate to) {
+        return jpaRepository.findFrequentClients(from, to);
     }
 
 }

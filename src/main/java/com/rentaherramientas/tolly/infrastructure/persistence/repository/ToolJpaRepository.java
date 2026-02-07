@@ -25,4 +25,19 @@ public interface ToolJpaRepository extends JpaRepository<ToolEntity, Long> {
         @Param("categoryId") Long categoryId,
         @Param("statusName") String statusName,
         @Param("minAvailableQuantity") Integer minAvailableQuantity);
+
+    @Query("""
+        SELECT t FROM ToolEntity t
+        WHERE (:categoryId IS NULL OR t.category.id = :categoryId)
+          AND (:statusName IS NULL OR t.toolStatus.name = :statusName)
+          AND (:minAvailableQuantity IS NULL OR t.availableQuantity > :minAvailableQuantity)
+          AND (:minPrice IS NULL OR t.dailyPrice >= :minPrice)
+          AND (:maxPrice IS NULL OR t.dailyPrice <= :maxPrice)
+        """)
+    List<ToolEntity> findByFilters(
+        @Param("categoryId") Long categoryId,
+        @Param("statusName") String statusName,
+        @Param("minAvailableQuantity") Integer minAvailableQuantity,
+        @Param("minPrice") Double minPrice,
+        @Param("maxPrice") Double maxPrice);
 }

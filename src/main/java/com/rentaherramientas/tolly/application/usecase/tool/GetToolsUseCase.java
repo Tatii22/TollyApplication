@@ -32,70 +32,30 @@ public class GetToolsUseCase {
     }
 
     public List<ToolResponse> execute(boolean availableOnly, Long categoryId) {
-        if (availableOnly && categoryId != null) {
-            return toolRepository
-                .findByCategoryIdAndStatusName(
-                    categoryId,
-                    AVAILABLE_STATUS_NAME,
-                    MIN_AVAILABLE_QUANTITY)
-                .stream()
-                .map(toolMapper::toToolResponse)
-                .toList();
-        }
+        return execute(availableOnly, categoryId, null, null);
+    }
 
-        if (availableOnly) {
-            return toolRepository
-                .findByStatusName(
-                    AVAILABLE_STATUS_NAME,
-                    MIN_AVAILABLE_QUANTITY)
-                .stream()
-                .map(toolMapper::toToolResponse)
-                .toList();
-        }
+    public List<ToolResponse> execute(boolean availableOnly, Long categoryId, Double minPrice, Double maxPrice) {
+        String statusName = availableOnly ? AVAILABLE_STATUS_NAME : null;
+        Integer minAvailable = availableOnly ? MIN_AVAILABLE_QUANTITY : null;
 
-        if (categoryId != null) {
-            return toolRepository.findByCategoryId(categoryId)
-                .stream()
-                .map(toolMapper::toToolResponse)
-                .toList();
-        }
-
-        return toolRepository.findAll()
+        return toolRepository
+            .findByFilters(categoryId, statusName, minAvailable, minPrice, maxPrice)
             .stream()
             .map(toolMapper::toToolResponse)
             .toList();
     }
 
     public List<ToolPublicResponse> executePublic(boolean availableOnly, Long categoryId) {
-        if (availableOnly && categoryId != null) {
-            return toolRepository
-                .findByCategoryIdAndStatusName(
-                    categoryId,
-                    AVAILABLE_STATUS_NAME,
-                    MIN_AVAILABLE_QUANTITY)
-                .stream()
-                .map(toolMapper::toToolPublicResponse)
-                .toList();
-        }
+        return executePublic(availableOnly, categoryId, null, null);
+    }
 
-        if (availableOnly) {
-            return toolRepository
-                .findByStatusName(
-                    AVAILABLE_STATUS_NAME,
-                    MIN_AVAILABLE_QUANTITY)
-                .stream()
-                .map(toolMapper::toToolPublicResponse)
-                .toList();
-        }
+    public List<ToolPublicResponse> executePublic(boolean availableOnly, Long categoryId, Double minPrice, Double maxPrice) {
+        String statusName = availableOnly ? AVAILABLE_STATUS_NAME : null;
+        Integer minAvailable = availableOnly ? MIN_AVAILABLE_QUANTITY : null;
 
-        if (categoryId != null) {
-            return toolRepository.findByCategoryId(categoryId)
-                .stream()
-                .map(toolMapper::toToolPublicResponse)
-                .toList();
-        }
-
-        return toolRepository.findAll()
+        return toolRepository
+            .findByFilters(categoryId, statusName, minAvailable, minPrice, maxPrice)
             .stream()
             .map(toolMapper::toToolPublicResponse)
             .toList();

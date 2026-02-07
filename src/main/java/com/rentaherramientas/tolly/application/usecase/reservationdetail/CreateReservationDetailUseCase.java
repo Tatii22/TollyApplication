@@ -1,6 +1,7 @@
 package com.rentaherramientas.tolly.application.usecase.reservationdetail;
 
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,11 +51,8 @@ public class CreateReservationDetailUseCase {
     if (quantity < 1) {
       throw new RuntimeException("La cantidad debe ser mayor a 0");
     }
-    if (tool.getAvailableQuantity() == null) {
-      throw new RuntimeException("La herramienta no tiene cantidad disponible definida");
-    }
-    if (quantity > tool.getAvailableQuantity()) {
-      throw new RuntimeException("La cantidad solicitada excede la disponibilidad de la herramienta");
+    if (tool.getTotalQuantity() == null && tool.getAvailableQuantity() == null) {
+      throw new RuntimeException("La herramienta no tiene cantidad total definida");
     }
 
     long rentalDays = ChronoUnit.DAYS.between(
@@ -72,6 +70,19 @@ public class CreateReservationDetailUseCase {
     int rentalDaysInt = (int) rentalDays;
     Double dailyPrice = tool.getDailyPrice();
 
+    int totalQuantity = tool.getTotalQuantity() != null
+        ? tool.getTotalQuantity()
+        : tool.getAvailableQuantity();
+    int reserved = reservationDetailRepository.sumReservedQuantityForToolBetweenDates(
+        toolId,
+        reservation.getStartDate(),
+        reservation.getEndDate(),
+        List.of("cancelled", "finished"));
+    int availableByDate = totalQuantity - reserved;
+    if (quantity > availableByDate) {
+      throw new RuntimeException("La cantidad solicitada excede la disponibilidad para las fechas seleccionadas");
+    }
+
     ReservationDetail detail = ReservationDetail.create(
         tool,
         reservation,
@@ -82,10 +93,6 @@ public class CreateReservationDetailUseCase {
     );
 
     ReservationDetail saved = reservationDetailRepository.save(detail);
-
-    tool.setAvailableQuantity(tool.getAvailableQuantity() - quantity);
-    toolRepository.update(tool.getId(), tool)
-        .orElseThrow(() -> new RuntimeException("No se pudo actualizar la disponibilidad de la herramienta"));
 
     return saved;
   }

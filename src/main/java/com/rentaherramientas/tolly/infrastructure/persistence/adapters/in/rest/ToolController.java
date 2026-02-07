@@ -68,13 +68,15 @@ public class ToolController {
     public ResponseEntity<List<?>> findAll(
             @RequestParam(name = "availableOnly", defaultValue = "false") boolean availableOnly,
             @RequestParam(name = "categoryId", required = false) Long categoryId,
+            @RequestParam(name = "minPrice", required = false) Double minPrice,
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice,
             Authentication authentication) {
         if (isClient(authentication)) {
-            List<ToolPublicResponse> tools = getToolsUseCase.executePublic(availableOnly, categoryId);
+            List<ToolPublicResponse> tools = getToolsUseCase.executePublic(availableOnly, categoryId, minPrice, maxPrice);
             return ResponseEntity.ok(tools);
         }
 
-        List<ToolResponse> tools = getToolsUseCase.execute(availableOnly, categoryId);
+        List<ToolResponse> tools = getToolsUseCase.execute(availableOnly, categoryId, minPrice, maxPrice);
         return ResponseEntity.ok(tools);
     }
 
@@ -123,7 +125,8 @@ public class ToolController {
     public ResponseEntity<ToolResponse> create(
             @Valid @RequestBody CreateToolRequest request,
             Authentication authentication) {
-        ToolResponse tool = createToolUseCase.execute(request);
+        UUID userId = (UUID) authentication.getPrincipal();
+        ToolResponse tool = createToolUseCase.execute(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(tool);
     }
 

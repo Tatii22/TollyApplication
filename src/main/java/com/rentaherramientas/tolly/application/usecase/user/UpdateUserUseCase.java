@@ -7,12 +7,14 @@ import com.rentaherramientas.tolly.application.dto.UserFullResponse;
 import com.rentaherramientas.tolly.application.dto.auth.UpdateUserRequest;
 import com.rentaherramientas.tolly.application.mapper.UserMapper;
 import com.rentaherramientas.tolly.domain.exceptions.UserNotFoundException;
+import com.rentaherramientas.tolly.domain.exceptions.DomainException;
 import com.rentaherramientas.tolly.domain.model.Client;
 import com.rentaherramientas.tolly.domain.model.Supplier;
 import com.rentaherramientas.tolly.domain.model.User;
 import com.rentaherramientas.tolly.domain.ports.ClientRepository;
 import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
 import com.rentaherramientas.tolly.domain.ports.UserRepository;
+import com.rentaherramientas.tolly.domain.ports.UserStatusRepository;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -24,17 +26,20 @@ public class UpdateUserUseCase {
   private final SupplierRepository supplierRepository;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+  private final UserStatusRepository userStatusRepository;
 
   public UpdateUserUseCase(UserRepository userRepository,
       ClientRepository clientRepository,
       SupplierRepository supplierRepository,
       UserMapper userMapper,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder,
+      UserStatusRepository userStatusRepository) {
     this.userRepository = userRepository;
     this.clientRepository = clientRepository;
     this.supplierRepository = supplierRepository;
     this.userMapper = userMapper;
     this.passwordEncoder = passwordEncoder;
+    this.userStatusRepository = userStatusRepository;
   }
 
   @Transactional
@@ -53,6 +58,12 @@ public UserFullResponse execute(UpdateUserRequest request) {
         user.setEmail(request.email());
     }
 
+    if (request.status() != null && request.status().name() != null && !request.status().name().isBlank()) {
+        var status = userStatusRepository.findByName(request.status().name())
+            .orElseThrow(() -> new DomainException("Estado de usuario no encontrado: " + request.status().name()));
+        user.assignStatus(status);
+    }
+
     // 3️⃣ Actualizar perfil de cliente si existe
     Client client = user.getClient();
     if (client != null) {
@@ -68,8 +79,8 @@ public UserFullResponse execute(UpdateUserRequest request) {
         if (request.phone() != null && !request.phone().isBlank()) {
             client.changePhone(request.phone());
         }
-        if (request.national() != null && !request.national().isBlank()) {
-            client.setDocument(request.national());
+        if (request.document() != null && !request.document().isBlank()) {
+            client.setDocument(request.document());
         }
         clientRepository.save(client);
     }
