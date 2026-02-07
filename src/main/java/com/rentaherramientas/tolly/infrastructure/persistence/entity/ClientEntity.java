@@ -1,0 +1,95 @@
+package com.rentaherramientas.tolly.infrastructure.persistence.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "clients")
+public class ClientEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, unique = true, name = "id")
+  private Long id;
+
+  @OneToOne(optional = false)
+  @JoinColumn(name = "user_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
+  private UserEntity userId;
+
+
+  @Column(nullable = false, length = 100, name = "first_name")
+  private String firstName;
+
+  @Column(nullable = false, length = 100, name = "last_name")
+  private String lastName;
+
+  @Column(nullable = false, length = 15, name = "document_id")
+  private String documentId;
+
+  @Column(nullable = false, length = 255, name = "address")
+  private String address;
+
+  @Column(nullable = false, length = 15, name = "phone_number")
+  private String phoneNumber;
+
+  public ClientEntity() {
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public UserEntity getUserId() {
+    return userId;
+  }
+
+  public void setUserId(UserEntity userId) {
+    this.userId = userId;
+  }
+
+  public String getDocumentId() {
+    return documentId;
+  }
+
+  public void setDocumentId(String documentId) {
+    this.documentId = documentId;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+
+
+}

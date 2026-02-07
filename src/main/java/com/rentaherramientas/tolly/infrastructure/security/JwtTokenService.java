@@ -94,7 +94,7 @@ public class JwtTokenService implements TokenService {
                     // En producción, deberías buscar desde RoleRepository
                     String name = authority.replace("ROLE_", "").toUpperCase();
                     return Role.reconstruct(
-                        UUID.randomUUID(), // ID temporal, no se usa para comparación
+                        null, // ID temporal, no se usa para comparación
                         name,
                         authority
                     );
@@ -118,3 +118,4 @@ public class JwtTokenService implements TokenService {
         return claims.get("email", String.class);
     }
 }
+

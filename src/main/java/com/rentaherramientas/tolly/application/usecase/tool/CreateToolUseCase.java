@@ -1,0 +1,74 @@
+package com.rentaherramientas.tolly.application.usecase.tool;
+
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import com.rentaherramientas.tolly.domain.ports.ToolRepository;
+import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
+import com.rentaherramientas.tolly.domain.ports.ToolStatusRepository;
+import com.rentaherramientas.tolly.domain.ports.CategoryRepository;
+import com.rentaherramientas.tolly.domain.model.Tool;
+import com.rentaherramientas.tolly.domain.model.Supplier;
+import com.rentaherramientas.tolly.application.mapper.ToolMapper;
+import com.rentaherramientas.tolly.application.dto.tool.CreateToolRequest;
+import com.rentaherramientas.tolly.application.dto.tool.ToolResponse;
+import com.rentaherramientas.tolly.domain.exceptions.DomainException;
+import java.util.UUID;
+
+/**
+ * UseCase para crear una nueva herramienta
+ * - Valida que el supplierId existe
+ * - Fuerza estado AVAILABLE al crear
+ * - Valida que no exista otra herramienta con el mismo nombre
+ */
+@Service
+public class CreateToolUseCase {
+    private static final String DEFAULT_AVAILABLE_STATUS_NAME = "AVAILABLE";
+    private final ToolRepository toolRepository;
+    private final SupplierRepository supplierRepository;
+    private final ToolStatusRepository toolStatusRepository;
+    private final CategoryRepository categoryRepository;
+    private final ToolMapper toolMapper;
+    
+    public CreateToolUseCase(ToolRepository toolRepository, SupplierRepository supplierRepository, 
+                            ToolStatusRepository toolStatusRepository, CategoryRepository categoryRepository,
+                            ToolMapper toolMapper) {
+        this.toolRepository = toolRepository;
+        this.supplierRepository = supplierRepository;
+        this.toolStatusRepository = toolStatusRepository;
+        this.categoryRepository = categoryRepository;
+        this.toolMapper = toolMapper;
+    }
+    
+    @Transactional
+    public ToolResponse execute(CreateToolRequest request, UUID userId) {
+        if (userId == null) {
+            throw new DomainException("UserId is required");
+        }
+
+        Long statusId = toolStatusRepository.findByName(DEFAULT_AVAILABLE_STATUS_NAME)
+            .orElseThrow(() -> new DomainException("Estado AVAILABLE no encontrado"))
+            .getId();
+
+        Supplier supplier = supplierRepository.findByUserId(userId)
+            .orElseThrow(() -> new DomainException("Usuario no tiene perfil de SUPPLIER"));
+        
+        // Forzar estado AVAILABLE al crear herramienta
+
+        // Validar que la categoría existe
+        categoryRepository.findById(request.categoryId())
+            .orElseThrow(() -> new DomainException("Categoría con ID " + request.categoryId() + " no existe"));
+        
+        // Verificar si la herramienta ya existe con el mismo nombre
+        if (toolRepository.existsByName(request.name())) {
+            throw new DomainException("Ya existe una herramienta con el nombre: " + request.name());
+        }
+        
+        // Crear la herramienta
+        Tool tool = toolMapper.toTool(request);
+        tool.setSupplierId(supplier.getId());
+        tool.setStatusId(statusId);
+        Tool saved = toolRepository.save(tool);
+        
+        return toolMapper.toToolResponse(saved);
+    }
+}

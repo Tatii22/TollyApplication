@@ -17,7 +17,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-
 /**
  * Configuración de Spring Security 6
  * Usa SecurityFilterChain (NO WebSecurityConfigurerAdapter)
@@ -26,62 +25,73 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
-    
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(session -> 
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> {
-                // Endpoints públicos
-                auth.requestMatchers("/auth/login", "/auth/register", "/auth/refresh").permitAll();
-                auth.requestMatchers("/h2-console/**").permitAll();
-                auth.requestMatchers("/actuator/health").permitAll();
-                
-                // Swagger/OpenAPI endpoints públicos (todas las rutas posibles)
-                auth.requestMatchers(
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/v3/api-docs/**",
-                    "/v3/api-docs.yaml",
-                    "/v3/api-docs.yml",
-                    "/swagger-resources/**",
-                    "/webjars/**",
-                    "/configuration/**"
-                ).permitAll();
-                
-                // Todos los demás endpoints requieren autenticación
-                auth.anyRequest().authenticated();
-            })
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())); // Para H2 console
-        
-        return http.build();
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+  public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+  }
+
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> {
+          // Endpoints públicos
+          auth.requestMatchers("/auth/login", "/auth/register", "/auth/refresh").permitAll();
+          auth.requestMatchers("/h2-console/**").permitAll();
+          auth.requestMatchers("/actuator/health").permitAll();
+
+          // Swagger/OpenAPI endpoints públicos (todas las rutas posibles)
+          auth.requestMatchers(
+              "/swagger-ui/**",
+              "/swagger-ui.html",
+              "/v3/api-docs/**",
+              "/v3/api-docs.yaml",
+              "/v3/api-docs.yml",
+              "/swagger-resources/**",
+              "/webjars/**",
+              "/configuration/**").permitAll();
+
+          // 🔐 ADMIN
+          auth.requestMatchers("/admin/**").hasRole("ADMIN");
+
+          // 🔐 SUPPLIER (PROVEEDOR)
+          auth.requestMatchers("/supplier/**").hasRole("SUPPLIER");
+
+          // 🔐 CLIENT
+          auth.requestMatchers("/client/**").hasRole("CLIENT");
+
+          // 🔐 USER
+          auth.requestMatchers("/user/**").hasRole("USER");
+
+          // 🔒 cualquier otro endpoint
+          auth.anyRequest().authenticated();
+
+        })
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())); // Para H2 console
+
+    return http.build();
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("*"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
 }

@@ -7,7 +7,6 @@ import com.rentaherramientas.tolly.infrastructure.persistence.repository.RoleJpa
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Adaptador que conecta el puerto RoleRepository con la implementación JPA
@@ -41,7 +40,7 @@ public class RoleRepositoryAdapter implements RoleRepository {
     }
     
     @Override
-    public Optional<Role> findById(UUID id) {
+    public Optional<Role> findById(Long id) {
         return jpaRepository.findById(id)
             .map(this::toDomain);
     }
