@@ -85,6 +85,10 @@ class ReservationPaymentControllerIntegrationTest {
 
     @Test
     void payReservationEndpointMarksPaid() throws Exception {
+        UserEntity supplierUser = createUser("supplier_http_pay@test.com");
+        SupplierEntity supplier = createSupplier(supplierUser);
+        ToolEntity tool = createTool(supplier);
+
         UserEntity clientUser = createUser("client_http1@test.com");
         ClientEntity client = createClient(clientUser);
 
@@ -94,6 +98,7 @@ class ReservationPaymentControllerIntegrationTest {
         ensurePaymentStatus("PAID");
 
         ReservationEntity reservation = createReservation(client, reserved, LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
+        createReservationDetail(reservation, tool);
         createPayment(reservation, "PENDING");
         flushAndClear();
 
