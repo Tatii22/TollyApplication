@@ -63,7 +63,7 @@ public class AdminUserController {
     request.firstName(),  // firstName
     request.lastName(),   // lastName
     request.address(),    // address
-    request.national(),   // national
+    request.document(),   // document
     request.phone(),      // phone
     null,                 // company
     null,                 // identification
@@ -136,7 +136,7 @@ public class AdminUserController {
     null,                 // firstName
     null,                 // lastName
     null,                 // address
-    null,                 // national
+    null,                 // document
     request.phone(),      // phone
     request.company(),    // company
     request.identification(), // identification

@@ -87,12 +87,13 @@ public UserFullResponse execute(RegisterRequest request, boolean isAdmin) {
             throw new DomainException("Los campos firstName, lastName y address son obligatorios para CLIENT");
         }
 
-        Client client = Client.create(savedUser,
+        Client client = Client.create(
+                savedUser,
+                request.address(),
+                request.phone(),
                 request.firstName(),
                 request.lastName(),
-                request.address(),
-                request.national(),
-                request.phone());
+                request.document());
         clientRepository.save(client);
 
         clientResponse = new ClientResponse(

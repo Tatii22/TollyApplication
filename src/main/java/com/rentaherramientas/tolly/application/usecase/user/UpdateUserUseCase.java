@@ -79,8 +79,8 @@ public UserFullResponse execute(UpdateUserRequest request) {
         if (request.phone() != null && !request.phone().isBlank()) {
             client.changePhone(request.phone());
         }
-        if (request.national() != null && !request.national().isBlank()) {
-            client.setDocument(request.national());
+        if (request.document() != null && !request.document().isBlank()) {
+            client.setDocument(request.document());
         }
         clientRepository.save(client);
     }

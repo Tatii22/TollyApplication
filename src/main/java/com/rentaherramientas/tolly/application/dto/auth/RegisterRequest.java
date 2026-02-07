@@ -32,8 +32,8 @@ public record RegisterRequest(
     @Schema(description = "Dirección del cliente (solo CLIENT)")
     String address,
 
-    @Schema(description = "Número de identificación nacional (solo CLIENT)")
-    String national,
+    @Schema(description = "Número de documento (solo CLIENT)")
+    String document,
 
     @Schema(description = "Teléfono del cliente o proveedor")
     String phone,

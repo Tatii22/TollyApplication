@@ -22,8 +22,8 @@ public class ClientEntity {
   @Column(nullable = false, length = 100, name = "last_name")
   private String lastName;
 
-  @Column(nullable = false, length = 15, name = "national_id")
-  private String nationalId;
+  @Column(nullable = false, length = 15, name = "document_id")
+  private String documentId;
 
   @Column(nullable = false, length = 255, name = "address")
   private String address;
@@ -50,12 +50,12 @@ public class ClientEntity {
     this.userId = userId;
   }
 
-  public String getNationalId() {
-    return nationalId;
+  public String getDocumentId() {
+    return documentId;
   }
 
-  public void setNationalId(String nationalId) {
-    this.nationalId = nationalId;
+  public void setDocumentId(String documentId) {
+    this.documentId = documentId;
   }
 
   public String getFirstName() {

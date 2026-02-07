@@ -17,18 +17,18 @@ public class Client {
   }
 
   private Client(Long id, User userId, String address, String phoneNumber, String name, String lastName,
-      String national) {
+      String document) {
     this.id = id;
     this.userId = userId;
     this.address = address;
     this.phone = phoneNumber;
     this.FirstName = name;
     this.lastName = lastName;
-    this.document = national;
+    this.document = document;
   }
 
   public static Client create(User userId, String address, String phoneNumber, String name, String lastName,
-      String national) {
+      String document) {
 
     if (userId == null) {
       throw new DomainException("userId es obligatorio");
@@ -45,7 +45,7 @@ public class Client {
     client.phone = phoneNumber.trim();
     client.FirstName = name.trim();
     client.lastName = lastName.trim();
-    client.document = national.trim();
+    client.document = document.trim();
 
     return client;
   }
@@ -58,9 +58,9 @@ public class Client {
     this.address = newAddress.trim();
   }
 
-  public void existsByNational(String national) {
-    if (national == null || national.isBlank()) {
-      throw new DomainException("El número de identificación nacional es obligatorio");
+  public void existsByDocument(String document) {
+    if (document == null || document.isBlank()) {
+      throw new DomainException("El número de documento es obligatorio");
     }
   }
 
@@ -130,12 +130,12 @@ public class Client {
     return document;
   }
 
-  public void setDocument(String national) {
-    this.document = national;
+  public void setDocument(String document) {
+    this.document = document;
   }
 
   public static Client restore(Long id, User userId, String address, String phoneNumber, String name, String lastName,
-      String national) {
-    return new Client(id, userId, address, phoneNumber, name, lastName, national);
+      String document) {
+    return new Client(id, userId, address, phoneNumber, name, lastName, document);
   }
 }
