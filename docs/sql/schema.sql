@@ -39,7 +39,7 @@ CREATE TABLE clients (
     user_id CHAR(36) NOT NULL UNIQUE,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    national_id VARCHAR(15) NOT NULL,
+    document_id VARCHAR(15) NOT NULL,
     address VARCHAR(255) NOT NULL,
     phone_number VARCHAR(15) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE

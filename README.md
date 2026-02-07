@@ -107,7 +107,7 @@ Roles disponibles:
   "firstName": "Juan",
   "lastName": "Perez",
   "address": "Calle 1",
-  "national": "C001",
+  "document": "C001",
   "phone": "3000000001"
 }
 ```

@@ -106,7 +106,7 @@ public class DataInitializer implements CommandLineRunner {
 
   private void initializeAdmin() {
 
-    String adminEmail = "admintoll@example.com";
+    String adminEmail = "tolly1@example.com";
 
     if (userRepository.existsByEmail(adminEmail)) {
         logger.info("Admin ya existe, no se crea nuevamente");
@@ -121,7 +121,7 @@ public class DataInitializer implements CommandLineRunner {
 
     User adminUser = User.create(
         adminEmail,
-        passwordService.hash("123456"),
+        passwordService.hash("tolly1"),
         activeStatus
     );
     adminUser.assignRole(adminRole);

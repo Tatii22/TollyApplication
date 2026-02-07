@@ -421,7 +421,7 @@ class ReturnFlowIntegrationTest {
         client.setUserId(user);
         client.setFirstName("Test");
         client.setLastName("Client");
-        client.setNationalId(UUID.randomUUID().toString().substring(0, 10));
+        client.setDocumentId(UUID.randomUUID().toString().substring(0, 10));
         client.setAddress("Address 123");
         client.setPhoneNumber("3101234567");
         return clientJpaRepository.save(client);

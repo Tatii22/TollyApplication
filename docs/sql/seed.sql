@@ -108,7 +108,7 @@ INSERT INTO user_roles (user_id, role_id) VALUES
 -- =========================
 -- CLIENTS (10) & SUPPLIERS (10)
 -- =========================
-INSERT INTO clients (id, user_id, first_name, last_name, national_id, address, phone_number) VALUES
+INSERT INTO clients (id, user_id, first_name, last_name, document_id, address, phone_number) VALUES
   (1, '00000000-0000-0000-0000-000000000012', 'Juan', 'Perez', 'C001', 'Calle 1', '3000000001'),
   (2, '00000000-0000-0000-0000-000000000013', 'Ana', 'Gomez', 'C002', 'Calle 2', '3000000002'),
   (3, '00000000-0000-0000-0000-000000000014', 'Luis', 'Diaz', 'C003', 'Calle 3', '3000000003'),

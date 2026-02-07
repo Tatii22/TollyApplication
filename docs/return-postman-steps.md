@@ -25,7 +25,7 @@ Headers:
   "firstName": "Juan",
   "lastName": "Perez",
   "address": "Calle 123",
-  "national": "1234567890",
+  "document": "1234567890",
   "phone": "3101234567"
 }
 ```
