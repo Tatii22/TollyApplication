@@ -65,6 +65,7 @@ public class ReturnController {
 
     @GetMapping
     @PreAuthorize("hasRole('SUPPLIER') or hasRole('CLIENT') or hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Listar devoluciones", description = "Retorna todas las devoluciones")
     @ApiResponse(responseCode = "200", description = "Lista de devoluciones obtenida exitosamente")
     public ResponseEntity<List<ReturnResponse>> getAll() {
@@ -73,6 +74,7 @@ public class ReturnController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('SUPPLIER') or hasRole('CLIENT') or hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Obtener devolucion por ID", description = "Retorna una devolucion por ID")
     @ApiResponse(responseCode = "200", description = "Devolucion obtenida exitosamente")
     public ResponseEntity<ReturnResponse> getById(@PathVariable Long id) {

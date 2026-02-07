@@ -24,9 +24,15 @@ import com.rentaherramientas.tolly.application.usecase.report.GetRentalHistoryRe
 import com.rentaherramientas.tolly.application.usecase.report.GetToolAvailabilityReportUseCase;
 import com.rentaherramientas.tolly.application.usecase.report.GetTopToolsReportUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/admin/reports")
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Reportes", description = "Endpoints de reportes y estadísticas (solo ADMIN)")
 public class ReportController {
 
   private final GetIncomeReportUseCase getIncomeReportUseCase;
@@ -48,6 +54,9 @@ public class ReportController {
   }
 
   @GetMapping("/income")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Ingresos totales", description = "Suma de pagos PAID en un rango de fechas opcional")
+  @ApiResponse(responseCode = "200", description = "Reporte de ingresos generado")
   public ResponseEntity<IncomeReportResponse> income(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
@@ -56,6 +65,9 @@ public class ReportController {
   }
 
   @GetMapping("/top-tools")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Herramientas más alquiladas", description = "Ranking por cantidad alquilada en un rango de fechas")
+  @ApiResponse(responseCode = "200", description = "Reporte de herramientas más alquiladas")
   public ResponseEntity<List<TopToolReportResponse>> topTools(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
@@ -64,6 +76,9 @@ public class ReportController {
   }
 
   @GetMapping("/frequent-clients")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Clientes frecuentes", description = "Ranking por número de reservas en un rango de fechas")
+  @ApiResponse(responseCode = "200", description = "Reporte de clientes frecuentes")
   public ResponseEntity<List<FrequentClientReportResponse>> frequentClients(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
@@ -72,11 +87,17 @@ public class ReportController {
   }
 
   @GetMapping("/availability")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Disponibilidad de equipos", description = "Lista con cantidades y estado actual")
+  @ApiResponse(responseCode = "200", description = "Reporte de disponibilidad")
   public ResponseEntity<List<ToolAvailabilityReportResponse>> availability() {
     return ResponseEntity.ok(getToolAvailabilityReportUseCase.execute());
   }
 
   @GetMapping("/rentals")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Historial de alquileres", description = "Lista de reservas en un rango de fechas")
+  @ApiResponse(responseCode = "200", description = "Reporte de historial de alquileres")
   public ResponseEntity<List<ReservationResponse>> rentalHistory(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {

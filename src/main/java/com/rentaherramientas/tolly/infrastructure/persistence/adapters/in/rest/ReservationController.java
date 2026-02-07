@@ -17,6 +17,9 @@ import com.rentaherramientas.tolly.application.usecase.reservation.ReservationLi
 import com.rentaherramientas.tolly.application.usecase.reservation.ReservationStatusUseCase;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -48,6 +51,9 @@ public class ReservationController {
   // -------------------------------------------------
   @PreAuthorize("hasRole('CLIENT')")
   @PostMapping
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Crear reserva", description = "Crea una reserva para el cliente autenticado")
+  @ApiResponse(responseCode = "201", description = "Reserva creada exitosamente")
   public ResponseEntity<ReservationResponse> createReservation(
       @RequestBody ReservationRequest request,
       Authentication authentication) {
@@ -63,6 +69,9 @@ public class ReservationController {
   // -------------------------------------------------
   @PreAuthorize("hasRole('CLIENT')")
   @GetMapping("/client/{clientId}")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar reservas por cliente", description = "Retorna las reservas de un cliente")
+  @ApiResponse(responseCode = "200", description = "Reservas obtenidas exitosamente")
   public ResponseEntity<List<ReservationResponse>> getReservationsByClient(
       @PathVariable Long clientId) {
 
@@ -76,6 +85,9 @@ public class ReservationController {
   // -------------------------------------------------
   @PreAuthorize("hasRole('CLIENT')")
   @PutMapping("/{id}/cancel")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Cancelar reserva", description = "Cancela una reserva del cliente autenticado")
+  @ApiResponse(responseCode = "200", description = "Reserva cancelada exitosamente")
   public ResponseEntity<ReservationResponse> cancelReservation(
       @PathVariable Long id,
       Authentication authentication) {
@@ -89,6 +101,9 @@ public class ReservationController {
   // -------------------------------------------------
   @PreAuthorize("hasAnyRole('SUPPLIER','ADMIN')")
   @PutMapping("/{id}/finish")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Finalizar reserva", description = "Marca una reserva como finalizada")
+  @ApiResponse(responseCode = "200", description = "Reserva finalizada exitosamente")
   public ResponseEntity<ReservationResponse> finishReservation(
       @PathVariable Long id,
       Authentication authentication) {
@@ -103,6 +118,9 @@ public class ReservationController {
   // -------------------------------------------------
   @PreAuthorize("hasAnyRole('SUPPLIER','ADMIN')")
   @PutMapping("/{id}/incident")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Marcar incidencia", description = "Marca una reserva en incidencia")
+  @ApiResponse(responseCode = "200", description = "Reserva marcada en incidencia")
   public ResponseEntity<ReservationResponse> incidentReservation(
       @PathVariable Long id,
       Authentication authentication) {
@@ -125,6 +143,9 @@ public class ReservationController {
   // -------------------------------------------------
   @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
   @GetMapping("/status/{statusName}")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar reservas por estado", description = "Retorna reservas filtradas por estado")
+  @ApiResponse(responseCode = "200", description = "Reservas obtenidas exitosamente")
   public ResponseEntity<List<ReservationResponse>> getReservationsByStatus(
       @PathVariable String statusName) {
 

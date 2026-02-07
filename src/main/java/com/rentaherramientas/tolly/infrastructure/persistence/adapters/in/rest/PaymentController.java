@@ -20,8 +20,14 @@ import java.util.UUID;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/payments")
+@Tag(name = "Pagos", description = "Endpoints para gestión de pagos")
 public class PaymentController {
 
     private final PayPaymentUseCase payPaymentUseCase;
@@ -47,6 +53,9 @@ public class PaymentController {
 
     @PostMapping("/reservation/{reservationId}/pay")
     @PreAuthorize("hasRole('CLIENT')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Pagar reserva", description = "Marca el pago de una reserva del cliente autenticado")
+    @ApiResponse(responseCode = "200", description = "Pago realizado exitosamente")
     public ResponseEntity<PaymentResponse> payReservation(
             @PathVariable Long reservationId,
             Authentication authentication) {
@@ -59,6 +68,9 @@ public class PaymentController {
 
     @GetMapping("/reservation/{reservationId}")
     @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER','CLIENT')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Obtener pago por reserva")
+    @ApiResponse(responseCode = "200", description = "Pago obtenido exitosamente")
     public ResponseEntity<PaymentResponse> getByReservation(
             @PathVariable Long reservationId,
             Authentication authentication) {
@@ -70,6 +82,9 @@ public class PaymentController {
 
     @GetMapping("/client/{clientId}")
     @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER','CLIENT')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Listar pagos por cliente")
+    @ApiResponse(responseCode = "200", description = "Pagos obtenidos exitosamente")
     public ResponseEntity<List<PaymentResponse>> getByClient(
             @PathVariable Long clientId,
             Authentication authentication) {
@@ -81,6 +96,9 @@ public class PaymentController {
 
     @GetMapping("/status/{statusName}")
     @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Listar pagos por estado")
+    @ApiResponse(responseCode = "200", description = "Pagos obtenidos exitosamente")
     public ResponseEntity<List<PaymentResponse>> getByStatus(
             @PathVariable String statusName) {
         List<Payment> payments = getPaymentsByStatusUseCase.execute(statusName);
@@ -89,6 +107,9 @@ public class PaymentController {
 
     @GetMapping("/supplier/{supplierId}")
     @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Listar pagos por proveedor", description = "Filtra pagos por proveedor y rango de fechas opcional")
+    @ApiResponse(responseCode = "200", description = "Pagos obtenidos exitosamente")
     public ResponseEntity<List<PaymentResponse>> getBySupplier(
             @PathVariable Long supplierId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
@@ -102,6 +123,9 @@ public class PaymentController {
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Buscar pagos", description = "Filtra pagos por rango de fechas y estado")
+    @ApiResponse(responseCode = "200", description = "Pagos obtenidos exitosamente")
     public ResponseEntity<List<PaymentResponse>> searchPayments(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,

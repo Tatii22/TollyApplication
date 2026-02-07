@@ -36,6 +36,7 @@ public class ReturnStatusController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('SUPPLIER') or hasRole('CLIENT')")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Listar todos los estados de devolucion",
                description = "Retorna una lista de todos los estados disponibles en el sistema")
     @ApiResponse(responseCode = "200", description = "Lista de estados obtenida exitosamente")

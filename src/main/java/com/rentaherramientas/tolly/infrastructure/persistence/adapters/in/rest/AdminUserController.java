@@ -14,8 +14,14 @@ import com.rentaherramientas.tolly.application.usecase.user.ListUsersUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.UpdateUserUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.DeleteUserUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/admin/users")
+@Tag(name = "Administración de Usuarios", description = "Gestión de clientes y proveedores (solo ADMIN)")
 public class AdminUserController {
 
   private final CreateUserUseCase createUserUseCase;
@@ -36,12 +42,18 @@ public class AdminUserController {
 
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/by-email")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Buscar usuario por email")
+  @ApiResponse(responseCode = "200", description = "Usuario encontrado")
   public UserFullResponse getUserByEmail(@RequestParam String email) {
     return findUserByEmailUseCase.execute(email);
   }
 
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/clients")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Crear cliente")
+  @ApiResponse(responseCode = "201", description = "Cliente creado")
   public UserFullResponse createClient(@RequestBody RegisterRequest request) {
     // Fuerza el rol a CLIENT
     RegisterRequest clientRequest = new RegisterRequest(
@@ -62,6 +74,9 @@ public class AdminUserController {
 
   @PutMapping("/update")
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Actualizar usuario")
+  @ApiResponse(responseCode = "200", description = "Usuario actualizado")
   public UserFullResponse updateUser(
       @RequestBody UpdateUserRequest request) {
     return updateUserUseCase.execute(request);
@@ -69,12 +84,18 @@ public class AdminUserController {
 
   @GetMapping("/list")
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar usuarios")
+  @ApiResponse(responseCode = "200", description = "Lista de usuarios")
   public List<UserFullResponse> listUsers() {
     return listUsersUseCase.execute();
   }
 
   @GetMapping("/clients")
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar clientes")
+  @ApiResponse(responseCode = "200", description = "Lista de clientes")
   public List<UserFullResponse> listClients() {
     return listUsersUseCase.execute().stream()
         .filter(user -> user.client() != null)
@@ -83,6 +104,9 @@ public class AdminUserController {
 
   @GetMapping("/suppliers")
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Listar proveedores")
+  @ApiResponse(responseCode = "200", description = "Lista de proveedores")
   public List<UserFullResponse> listSuppliers() {
     return listUsersUseCase.execute().stream()
         .filter(user -> user.supplier() != null)
@@ -91,12 +115,18 @@ public class AdminUserController {
 
   @DeleteMapping("/{userId}")
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Eliminar usuario")
+  @ApiResponse(responseCode = "204", description = "Usuario eliminado")
   public void deleteUser(@PathVariable java.util.UUID userId) {
     deleteUserUseCase.execute(userId);
   }
 
   @PostMapping("/suppliers")
   @PreAuthorize("hasRole('ADMIN')")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Crear proveedor")
+  @ApiResponse(responseCode = "201", description = "Proveedor creado")
   public UserFullResponse createSupplier(@RequestBody RegisterRequest request) {
     // Fuerza el rol a SUPPLIER
     RegisterRequest supplierRequest = new RegisterRequest(
