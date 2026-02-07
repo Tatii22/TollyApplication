@@ -82,15 +82,18 @@ public class ReturnController {
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "Crear devolucion", description = "Crea una devolucion")
+    @Operation(summary = "Crear devolucion", description = "Crea una devolucion (clientId se toma del token)")
     @ApiResponse(responseCode = "201", description = "Devolucion creada exitosamente")
-    public ResponseEntity<ReturnResponse> create(@Valid @RequestBody CreateReturnRequest request) {
-        ReturnResponse response = createReturnUseCase.execute(request);
+    public ResponseEntity<ReturnResponse> create(
+        @Valid @RequestBody CreateReturnRequest request,
+        Authentication authentication) {
+        java.util.UUID userId = (java.util.UUID) authentication.getPrincipal();
+        ReturnResponse response = createReturnUseCase.execute(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('SUPPLIER')")
+    @PreAuthorize("hasAnyRole('SUPPLIER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Actualizar devolucion", description = "Actualiza una devolucion")
     @ApiResponse(responseCode = "200", description = "Devolucion actualizada exitosamente")
@@ -127,7 +130,7 @@ public class ReturnController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('SUPPLIER')")
+    @PreAuthorize("hasAnyRole('SUPPLIER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Eliminar devolucion", description = "Elimina una devolucion")
     @ApiResponse(responseCode = "204", description = "Devolucion eliminada exitosamente")

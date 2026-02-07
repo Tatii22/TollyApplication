@@ -11,6 +11,7 @@ public class ReservationDetail {
 
   private Double dailyPrice;
   private int rentalDay;
+  private int quantity;
   private BigDecimal subTotal;
 
   /*
@@ -28,18 +29,20 @@ public class ReservationDetail {
       Reservation reservation,
       Double dailyPrice,
       int rentalDay,
+      int quantity,
       BigDecimal subTotal) {
     this.id = id;
     this.tool = tool;
     this.reservation = reservation;
     this.dailyPrice = dailyPrice;
     this.rentalDay = rentalDay;
+    this.quantity = quantity;
     this.subTotal = subTotal;
   }
 
   /*
    * =======================
-   * MÉTODOS DE FÁBRICA
+   * METODOS DE FABRICA
    * =======================
    */
 
@@ -48,15 +51,18 @@ public class ReservationDetail {
       Reservation reservation,
       Double dailyPrice,
       int rentalDay,
+      int quantity,
       BigDecimal subTotal) {
     validateTool(tool);
     validateReservation(reservation);
     validateDailyPrice(dailyPrice);
     validateRentalDay(rentalDay);
+    validateQuantity(quantity);
 
     BigDecimal subTotal1 = BigDecimal.valueOf(
         Objects.requireNonNull(dailyPrice, "El precio diario no puede ser nulo"))
-        .multiply(BigDecimal.valueOf(rentalDay));
+        .multiply(BigDecimal.valueOf(rentalDay))
+        .multiply(BigDecimal.valueOf(quantity));
 
     return new ReservationDetail(
         null,
@@ -64,6 +70,7 @@ public class ReservationDetail {
         reservation,
         dailyPrice,
         rentalDay,
+        quantity,
         subTotal1);
   }
 
@@ -73,11 +80,13 @@ public class ReservationDetail {
       Reservation reservation,
       Double dailyPrice,
       int rentalDay,
+      int quantity,
       BigDecimal subTotal) {
     validateTool(tool);
     validateReservation(reservation);
     validateDailyPrice(dailyPrice);
     validateRentalDay(rentalDay);
+    validateQuantity(quantity);
 
     return new ReservationDetail(
         id,
@@ -85,6 +94,7 @@ public class ReservationDetail {
         reservation,
         dailyPrice,
         rentalDay,
+        quantity,
         subTotal);
   }
 
@@ -114,7 +124,13 @@ public class ReservationDetail {
 
   private static void validateRentalDay(int rentalDay) {
     if (rentalDay < 1) {
-      throw new IllegalArgumentException("Los días de alquiler no pueden ser menores a 1");
+      throw new IllegalArgumentException("Los dias de alquiler no pueden ser menores a 1");
+    }
+  }
+
+  private static void validateQuantity(int quantity) {
+    if (quantity < 1) {
+      throw new IllegalArgumentException("La cantidad no puede ser menor a 1");
     }
   }
 
@@ -142,6 +158,10 @@ public class ReservationDetail {
 
   public int getRentalDay() {
     return rentalDay;
+  }
+
+  public int getQuantity() {
+    return quantity;
   }
 
   public BigDecimal getSubTotal() {

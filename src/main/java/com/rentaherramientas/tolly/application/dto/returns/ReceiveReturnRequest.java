@@ -15,7 +15,7 @@ public record ReceiveReturnRequest(
 
     @NotEmpty(message = "Debe incluir al menos un detalle de devolucion")
     @Valid
-    @Schema(description = "Detalle de herramientas devueltas")
+    @Schema(description = "Detalle de herramientas devueltas", example = "[{\"toolId\":1,\"quantity\":2,\"observations\":\"Golpes menores\"}]")
     List<ReturnDetailRequest> details,
 
     @Schema(description = "Observaciones generales del proveedor", example = "Equipo recibido con golpes")
