@@ -44,5 +44,6 @@ INSERT IGNORE INTO tool_status (name)
 VALUES
     ('AVAILABLE'),
     ('RENTED'),
+    ('UNAVAILABLE'),
     ('UNDER_REPAIR'),
     ('UNAVAILABLE');
