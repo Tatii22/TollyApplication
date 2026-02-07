@@ -75,8 +75,16 @@ public class ToolEntity {
 
     public Long getStatusId() {return toolStatus != null ? toolStatus.getId() : null;}
     public void setStatusId(Long statusId) {
-        if (toolStatus == null) toolStatus = new ToolStatusEntity();
-        toolStatus.setId(statusId);
+        if (toolStatus == null) {
+            toolStatus = new ToolStatusEntity();
+            toolStatus.setId(statusId);
+            return;
+        }
+        if (toolStatus.getId() == null || !toolStatus.getId().equals(statusId)) {
+            ToolStatusEntity replacement = new ToolStatusEntity();
+            replacement.setId(statusId);
+            toolStatus = replacement;
+        }
     }
 
     public ToolStatusEntity getToolStatus() {return toolStatus;}
