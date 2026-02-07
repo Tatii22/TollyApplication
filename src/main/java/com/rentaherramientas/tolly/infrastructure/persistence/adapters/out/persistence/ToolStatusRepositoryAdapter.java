@@ -23,6 +23,11 @@ public class ToolStatusRepositoryAdapter implements ToolStatusRepository {
     }
 
     @Override
+    public Optional<ToolStatus> findByName(String name) {
+        return jpaRepository.findByName(name).map(this::toDomain);
+    }
+
+    @Override
     public ToolStatus save(ToolStatus toolStatus) {
         ToolStatusEntity entity = new ToolStatusEntity();
         entity.setName(toolStatus.getName());

@@ -17,6 +17,8 @@ import com.rentaherramientas.tolly.domain.ports.ReturnStatusRepository;
 @Service
 public class CreateReturnUseCase {
 
+    private static final String STATUS_PENDING = "PENDING";
+
     private final ReturnRepository returnRepository;
     private final ReturnStatusRepository returnStatusRepository;
     private final ReservationRepository reservationRepository;
@@ -43,8 +45,8 @@ public class CreateReturnUseCase {
         clientRepository.findById(request.clientId())
             .orElseThrow(() -> new DomainException("Cliente no encontrado con ID: " + request.clientId()));
 
-        ReturnStatus status = returnStatusRepository.findById(request.returnStatusId())
-            .orElseThrow(() -> new DomainException("Estado de devolucion no encontrado con ID: " + request.returnStatusId()));
+        ReturnStatus status = returnStatusRepository.findByName(STATUS_PENDING)
+            .orElseThrow(() -> new DomainException("Estado PENDING no encontrado"));
 
         Return value = returnMapper.toReturn(request);
         value.setStatus(status);
