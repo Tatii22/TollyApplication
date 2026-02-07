@@ -19,9 +19,11 @@ VALUES
 -- Insertar estados de reserva iniciales si no existen
 INSERT IGNORE INTO reservation_status (status_name)
 VALUES
+    ('RESERVED'),
     ('IN_PROGRESS'),
     ('FINISHED'),
-    ('CANCELLED');
+    ('CANCELLED'),
+    ('IN_INCIDENT');
 
 INSERT IGNORE INTO payment_status (name) 
 VALUES 
