@@ -40,6 +40,3 @@ application-local.yml
 *.db
 *.mv.db
 *.trace.db
-
-# Se agrega application-dev.yml para evitar conflictos en entornos de desarrollo
-src/main/resources/application-dev.yml

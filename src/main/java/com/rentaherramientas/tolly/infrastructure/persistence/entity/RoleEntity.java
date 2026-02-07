@@ -3,6 +3,7 @@ package com.rentaherramientas.tolly.infrastructure.persistence.entity;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Entidad JPA para Role
@@ -12,9 +13,8 @@ import java.util.Set;
 public class RoleEntity {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(columnDefinition = "CHAR(36)", length = 36)
+    private UUID id;
     
     @Column(nullable = false, unique = true)
     private String name;
@@ -29,18 +29,18 @@ public class RoleEntity {
     public RoleEntity() {
     }
     
-    public RoleEntity(Long id, String name, String authority) {
+    public RoleEntity(UUID id, String name, String authority) {
         this.id = id;
         this.name = name;
         this.authority = authority;
     }
     
     // Getters y Setters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
     
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
     
