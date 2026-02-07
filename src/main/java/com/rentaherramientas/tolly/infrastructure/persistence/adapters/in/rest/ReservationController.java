@@ -49,9 +49,12 @@ public class ReservationController {
   @PreAuthorize("hasRole('CLIENT')")
   @PostMapping
   public ResponseEntity<ReservationResponse> createReservation(
-      @RequestBody ReservationRequest request) {
+      @RequestBody ReservationRequest request,
+      Authentication authentication) {
 
-    ReservationResponse response = reservationCreate.createReservation(request);
+    ReservationResponse response = reservationCreate.createReservation(
+        request,
+        (java.util.UUID) authentication.getPrincipal());
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 

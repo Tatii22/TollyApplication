@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Schema(description = "Datos para crear una reserva")
 public record ReservationRequest(
-    @Schema(description = "ID del cliente", example = "1")
+    @Schema(description = "ID del cliente (se toma del token)", hidden = true)
     Long clientId,
 
     @Schema(description = "Fecha de inicio de la reserva", example = "2026-02-05")

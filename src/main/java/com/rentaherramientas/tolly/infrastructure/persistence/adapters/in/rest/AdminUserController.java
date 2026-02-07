@@ -12,6 +12,7 @@ import com.rentaherramientas.tolly.application.usecase.user.CreateUserUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.FindUserByEmailUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.ListUsersUseCase;
 import com.rentaherramientas.tolly.application.usecase.user.UpdateUserUseCase;
+import com.rentaherramientas.tolly.application.usecase.user.DeleteUserUseCase;
 
 @RestController
 @RequestMapping("/admin/users")
@@ -21,13 +22,16 @@ public class AdminUserController {
   private final FindUserByEmailUseCase findUserByEmailUseCase;
   private final ListUsersUseCase listUsersUseCase;
   private final UpdateUserUseCase updateUserUseCase;
+  private final DeleteUserUseCase deleteUserUseCase;
 
   public AdminUserController(CreateUserUseCase createUserUseCase, FindUserByEmailUseCase findUserByEmailUseCase,
-      ListUsersUseCase listUsersUseCase, UpdateUserUseCase updateUserUseCase) {
+      ListUsersUseCase listUsersUseCase, UpdateUserUseCase updateUserUseCase,
+      DeleteUserUseCase deleteUserUseCase) {
     this.createUserUseCase = createUserUseCase;
     this.findUserByEmailUseCase = findUserByEmailUseCase;
     this.listUsersUseCase = listUsersUseCase;
     this.updateUserUseCase = updateUserUseCase;
+    this.deleteUserUseCase = deleteUserUseCase;
   }
 
   @PreAuthorize("hasRole('ADMIN')")
@@ -59,7 +63,7 @@ public class AdminUserController {
   @PutMapping("/update")
   @PreAuthorize("hasRole('ADMIN')")
   public UserFullResponse updateUser(
-      @RequestBody UpdateUserRequest request, @RequestParam boolean isAdmin) {
+      @RequestBody UpdateUserRequest request) {
     return updateUserUseCase.execute(request);
   }
 
@@ -69,7 +73,30 @@ public class AdminUserController {
     return listUsersUseCase.execute();
   }
 
+  @GetMapping("/clients")
+  @PreAuthorize("hasRole('ADMIN')")
+  public List<UserFullResponse> listClients() {
+    return listUsersUseCase.execute().stream()
+        .filter(user -> user.client() != null)
+        .toList();
+  }
+
+  @GetMapping("/suppliers")
+  @PreAuthorize("hasRole('ADMIN')")
+  public List<UserFullResponse> listSuppliers() {
+    return listUsersUseCase.execute().stream()
+        .filter(user -> user.supplier() != null)
+        .toList();
+  }
+
+  @DeleteMapping("/{userId}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public void deleteUser(@PathVariable java.util.UUID userId) {
+    deleteUserUseCase.execute(userId);
+  }
+
   @PostMapping("/suppliers")
+  @PreAuthorize("hasRole('ADMIN')")
   public UserFullResponse createSupplier(@RequestBody RegisterRequest request) {
     // Fuerza el rol a SUPPLIER
     RegisterRequest supplierRequest = new RegisterRequest(

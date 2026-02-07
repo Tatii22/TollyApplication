@@ -10,11 +10,13 @@ import com.rentaherramientas.tolly.application.dto.reservation.ReservationReques
 import com.rentaherramientas.tolly.application.dto.reservation.ReservationResponse;
 import com.rentaherramientas.tolly.application.usecase.payment.CreatePaymentUseCase;
 import com.rentaherramientas.tolly.domain.model.Client;
+import com.rentaherramientas.tolly.domain.model.User;
 import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.model.ReservationStatus;
 import com.rentaherramientas.tolly.domain.ports.ClientRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationStatusRepository;
+import java.util.UUID;
 
 @Service
 public class CreateReservationUseCase {
@@ -36,10 +38,13 @@ public class CreateReservationUseCase {
   }
 
   @Transactional
-  public ReservationResponse createReservation(ReservationRequest request) {
+  public ReservationResponse createReservation(ReservationRequest request, UUID userId) {
     // 1ï¸âƒ£ Buscar el cliente
-    Client client = clientRepository.findById(request.clientId())
-        .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + request.clientId()));
+    if (userId == null) {
+      throw new IllegalArgumentException("UserId is required");
+    }
+    Client client = clientRepository.findByUserId(User.restore(userId))
+        .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado para el usuario"));
 
     // 2ï¸âƒ£ Buscar o crear el estado de reserva
     ReservationStatus status = reservationStatusRepository.findByStatusName("RESERVED")
