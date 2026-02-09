@@ -21,11 +21,12 @@ import com.rentaherramientas.tolly.domain.ports.ReturnDetailRepository;
 import com.rentaherramientas.tolly.domain.ports.ReturnRepository;
 import com.rentaherramientas.tolly.domain.ports.ReturnStatusRepository;
 import com.rentaherramientas.tolly.domain.ports.ToolRepository;
+import java.time.LocalDate;
 
 @Service
 public class CreateReturnUseCase {
 
-    private static final String STATUS_PENDING = "PENDING";
+    private static final String STATUS_SENT = "SENT";
     private static final String STATUS_CLIENT_DAMAGED = "CL_DAMAGED";
     private static final String STATUS_CLIENT_INCOMPLETE = "CL_INCOMPLETE";
     private static final String RESERVATION_IN_PROGRESS = "IN_PROGRESS";
@@ -78,7 +79,7 @@ public class CreateReturnUseCase {
         }
 
         String requestedStatus = normalizeStatus(request.returnStatusName());
-        String initialStatus = resolveInitialStatus(requestedStatus);
+        String initialStatus = resolveInitialStatus(requestedStatus, reservation, request.details());
 
         ReturnStatus status = returnStatusRepository.findByName(initialStatus)
             .orElseThrow(() -> new DomainException("Estado de devolucion no encontrado: " + initialStatus));
@@ -147,13 +148,52 @@ public class CreateReturnUseCase {
         return statusName.trim().toUpperCase();
     }
 
-    private String resolveInitialStatus(String requestedStatus) {
+    private String resolveInitialStatus(String requestedStatus, Reservation reservation,
+        java.util.List<ReturnDetailRequest> details) {
         if (requestedStatus.isBlank()) {
-            return STATUS_PENDING;
+            if (canAutoSend(reservation, details)) {
+                return STATUS_SENT;
+            }
+            throw new DomainException("Debe indicar el estado de devolucion");
         }
-        if (!STATUS_CLIENT_DAMAGED.equals(requestedStatus) && !STATUS_CLIENT_INCOMPLETE.equals(requestedStatus)) {
-            throw new DomainException("Estado de devolucion invalido para cliente: " + requestedStatus);
+        if (STATUS_CLIENT_DAMAGED.equals(requestedStatus) || STATUS_CLIENT_INCOMPLETE.equals(requestedStatus)) {
+            return requestedStatus;
         }
-        return requestedStatus;
+        if (STATUS_SENT.equals(requestedStatus)) {
+            if (!canAutoSend(reservation, details)) {
+                throw new DomainException("Solo se permite devolucion total cuando la reserva ya vencio");
+            }
+            return requestedStatus;
+        }
+        throw new DomainException("Estado de devolucion invalido para cliente: " + requestedStatus);
+    }
+
+    private boolean canAutoSend(Reservation reservation, java.util.List<ReturnDetailRequest> details) {
+        LocalDate endDate = reservation.getEndDate();
+        if (endDate == null || LocalDate.now().isBefore(endDate)) {
+            return false;
+        }
+        return isFullReturn(reservation.getId(), details);
+    }
+
+    private boolean isFullReturn(Long reservationId, java.util.List<ReturnDetailRequest> details) {
+        java.util.Map<Long, Integer> reservedCounts = loadReservedCounts(reservationId);
+        java.util.Map<Long, Integer> requestedCounts = new java.util.HashMap<>();
+        for (ReturnDetailRequest detail : details) {
+            requestedCounts.put(detail.toolId(),
+                requestedCounts.getOrDefault(detail.toolId(), 0) + detail.quantity());
+        }
+        if (reservedCounts.isEmpty()) {
+            return false;
+        }
+        if (requestedCounts.size() != reservedCounts.size()) {
+            return false;
+        }
+        for (java.util.Map.Entry<Long, Integer> entry : reservedCounts.entrySet()) {
+            if (!entry.getValue().equals(requestedCounts.get(entry.getKey()))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
