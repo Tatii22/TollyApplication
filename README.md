@@ -3,11 +3,29 @@
 ## Descripcion
 Sistema backend para gestionar usuarios, herramientas, reservas, pagos, devoluciones y facturacion con autenticacion JWT y control de acceso por roles.
 
+## Autores
+- Claudia Tatiana Villamizar Marquez
+- Juan David Quiñonez Rojas
+- Maicoll Stiven Mendez Cuadros
+
+## Repositorios
+- Backend: este repositorio
+- Frontend: https://github.com/Killerdav02/tollyFront.git
+
 ## Tecnologias Utilizadas
 - Java 21
 - Spring Boot
+- Spring Security + JWT
+- Spring Data JPA
 - MySQL
-- JWT
+- Swagger / OpenAPI
+
+### Frontend
+- React 18 + TypeScript (Vite 6)
+- Tailwind CSS 4
+- MUI (Material UI)
+- Radix UI
+- React Router
 
 ## Requisitos Previos
 - JDK 21
@@ -32,7 +50,7 @@ export JWT_SECRET=tu-secreto-seguro
 ```
 
 ### 3. Crear base de datos y datos iniciales (opcional)
-Puedes usar los scripts incluidos:
+Scripts incluidos:
 - `docs/sql/schema.sql`
 - `docs/sql/seed.sql`
 
@@ -65,9 +83,7 @@ app.cors.allowed-origins=http://localhost:3000
 ```
 
 ## Diagrama Relacional
-Coloca aqui la imagen del diagrama relacional:
-
-`docs/diagrams/ERD.png`
+![Diagrama relacional](docs/diagrams/diagramaFinal.png)
 
 ## Autenticacion y Roles
 
@@ -91,11 +107,18 @@ Roles disponibles:
 6. Pagar la reserva (genera factura automaticamente).
 7. Descargar factura en HTML o PDF.
 
-## Documentacion Swagger
-- UI: `http://localhost:8080/swagger-ui.html`
-- OpenAPI: `http://localhost:8080/v3/api-docs`
+## Documentacion Swagger / OpenAPI
+Swagger esta habilitado y protegido con JWT para endpoints privados.
 
-## Endpoints principales (con ejemplos JSON)
+- UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
+Para probar endpoints protegidos en Swagger:
+1. Ejecuta `POST /auth/login`
+2. Copia el `access_token`
+3. En Swagger, pulsa "Authorize" y pega: `Bearer <token>`
+
+## Endpoints Principales (con ejemplos JSON)
 
 ### Auth
 - `POST /auth/register`
@@ -191,6 +214,54 @@ Roles disponibles:
 - `GET /admin/reports/frequent-clients`
 - `GET /admin/reports/availability`
 - `GET /admin/reports/rentals`
+
+## Estructura del Proyecto
+```text
+TollyApplication/
+├─ docs/
+│  ├─ diagrams/
+│  │  └─ diagramaFinal.png
+│  └─ sql/
+│     ├─ schema.sql
+│     └─ seed.sql
+├─ src/
+│  ├─ main/
+│  │  ├─ java/com/rentaherramientas/tolly/
+│  │  │  ├─ application/
+│  │  │  │  ├─ dto/
+│  │  │  │  ├─ mapper/
+│  │  │  │  ├─ service/
+│  │  │  │  └─ usecase/
+│  │  │  ├─ domain/
+│  │  │  │  ├─ exceptions/
+│  │  │  │  ├─ model/
+│  │  │  │  └─ ports/
+│  │  │  └─ infrastructure/
+│  │  │     ├─ config/
+│  │  │     ├─ exception/
+│  │  │     ├─ persistence/
+│  │  │     │  ├─ adapters/in/rest/
+│  │  │     │  ├─ adapters/out/persistence/
+│  │  │     │  ├─ entity/
+│  │  │     │  └─ repository/
+│  │  │     └─ security/
+│  │  └─ resources/
+│  │     └─ application.yml
+│  └─ test/
+│     ├─ java/com/rentaherramientas/tolly/
+│     └─ resources/
+├─ pom.xml
+└─ README.md
+```
+
+## Frontend (Ejecucion local)
+```bash
+npm install
+npm run dev
+```
+
+Configuracion del backend (API) en el repo frontend:
+`http://localhost:8080` (definido en el archivo `.env`).
 
 ## Scripts SQL
 Los scripts de base de datos estan en:
