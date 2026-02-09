@@ -54,6 +54,9 @@ public class Payment {
     public boolean isPending() {
         return status.isPending();
     }
+    public boolean isCancelled() {
+        return status.isCancelled();
+    }
 
     @Override
     public boolean equals(Object o) {
