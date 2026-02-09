@@ -75,7 +75,7 @@ public class ReturnRepositoryAdapter implements ReturnRepository {
 
     @Override
     public List<Return> findByReservationId(Long reservationId) {
-        return returnJpaRepository.findByReservationId(reservationId)
+        return returnJpaRepository.findByReservation_Id(reservationId)
             .stream()
             .map(this::toDomain)
             .toList();

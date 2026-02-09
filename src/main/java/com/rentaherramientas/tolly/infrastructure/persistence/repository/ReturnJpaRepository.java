@@ -1,5 +1,7 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,6 +9,5 @@ import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReturnEntit
 
 @Repository
 public interface ReturnJpaRepository extends JpaRepository<ReturnEntity, Long> {
-    List<ReturnEntity> findByReservationId(Long reservationId);
+    List<ReturnEntity> findByReservation_Id(Long reservationId);
 }
-import java.util.List;

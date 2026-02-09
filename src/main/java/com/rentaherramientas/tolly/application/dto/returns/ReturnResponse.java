@@ -1,6 +1,7 @@
 package com.rentaherramientas.tolly.application.dto.returns;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -25,5 +26,8 @@ public record ReturnResponse(
     String returnStatusName,
 
     @Schema(description = "Observaciones", example = "Entrega completa sin novedades")
-    String observations
+    String observations,
+
+    @Schema(description = "Detalles de herramientas devueltas")
+    List<ReturnDetailResponse> details
 ) {}
