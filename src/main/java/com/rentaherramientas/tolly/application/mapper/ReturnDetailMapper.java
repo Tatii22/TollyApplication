@@ -1,5 +1,6 @@
 package com.rentaherramientas.tolly.application.mapper;
 
+import com.rentaherramientas.tolly.application.dto.returns.ReturnDetailResponse;
 import com.rentaherramientas.tolly.domain.model.Return;
 import com.rentaherramientas.tolly.domain.model.ReturnDetail;
 import com.rentaherramientas.tolly.domain.model.ReturnStatus;
@@ -43,6 +44,20 @@ public class ReturnDetailMapper {
         entity.setObservations(domain.getObservations());
 
         return entity;
+    }
+
+    public static ReturnDetailResponse toResponse(ReturnDetail domain) {
+        if (domain == null) return null;
+
+        Long toolId = domain.getTool() != null ? domain.getTool().getId() : null;
+        String toolName = domain.getTool() != null ? domain.getTool().getName() : null;
+
+        return new ReturnDetailResponse(
+            toolId,
+            toolName,
+            domain.getQuantity(),
+            domain.getObservations()
+        );
     }
 
     private static Tool toToolDomain(ToolEntity entity) {
