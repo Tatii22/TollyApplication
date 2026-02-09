@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Información del proveedor")
 public record SupplierResponse(
 
+    @Schema(description = "ID del proveedor", example = "1")
+    Long id,
+
     @Schema(description = "Teléfono del proveedor", example = "3142875690")
     String phone,
 

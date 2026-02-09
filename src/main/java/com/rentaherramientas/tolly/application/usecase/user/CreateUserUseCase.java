@@ -97,11 +97,12 @@ public UserFullResponse execute(RegisterRequest request, boolean isAdmin) {
         clientRepository.save(client);
 
         clientResponse = new ClientResponse(
+                client.getId(),
+                client.getAddress(),
+                client.getPhone(),
                 client.getFirstName(),
                 client.getLastName(),
-                client.getAddress(),
-                client.getDocument(),
-                client.getPhone());
+                client.getDocument());
 
     } else { // SUPPLIER
 
@@ -118,10 +119,11 @@ public UserFullResponse execute(RegisterRequest request, boolean isAdmin) {
         supplierRepository.save(supplier);
 
         supplierResponse = new SupplierResponse(
+                supplier.getId(),
                 supplier.getPhone(),
                 supplier.getCompany(),
-                supplier.getIdentification(),
-                supplier.getContactName());
+                supplier.getContactName(),
+                supplier.getIdentification());
     }
 
     // 7️⃣ Construir roles para la respuesta
