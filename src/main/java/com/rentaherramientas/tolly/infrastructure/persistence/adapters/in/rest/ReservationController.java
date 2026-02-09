@@ -63,7 +63,7 @@ public class ReservationController {
   @Operation(summary = "Crear reserva", description = "Crea una reserva para el cliente autenticado")
   @ApiResponse(responseCode = "201", description = "Reserva creada exitosamente")
   public ResponseEntity<ReservationResponse> createReservation(
-      @RequestBody ReservationRequest request,
+      @jakarta.validation.Valid @RequestBody ReservationRequest request,
       Authentication authentication) {
 
     ReservationResponse response = reservationCreate.createReservation(
@@ -92,8 +92,8 @@ public class ReservationController {
     Sort sortOrder = parseSort(sort);
     PageRequest pageable = PageRequest.of(page, size, sortOrder);
 
-    Page<ReservationResponse> responses =
-        reservationList.getReservationsByClient(clientId, statusName, from, to, pageable);
+    Page<ReservationResponse> responses = reservationList.getReservationsByClient(clientId, statusName, from, to,
+        pageable);
 
     return ResponseEntity.ok(responses);
   }
