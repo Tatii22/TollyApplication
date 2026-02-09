@@ -51,6 +51,7 @@ public class InvoiceRenderService {
     sb.append("<thead><tr>");
     sb.append("<th>Herramienta</th>");
     sb.append("<th>Precio dia</th>");
+    sb.append("<th>Cantidad</th>");
     sb.append("<th>Dias</th>");
     sb.append("<th>Subtotal</th>");
     sb.append("</tr></thead><tbody>");
@@ -59,6 +60,7 @@ public class InvoiceRenderService {
       sb.append("<tr>");
       sb.append("<td>").append(escapeHtml(nameOf(d))).append("</td>");
       sb.append("<td>").append(formatMoney(d.getDailyPrice())).append("</td>");
+      sb.append("<td>").append(d.getQuantity()).append("</td>");
       sb.append("<td>").append(d.getRentalDay()).append("</td>");
       sb.append("<td>").append(formatMoney(d.getSubTotal())).append("</td>");
       sb.append("</tr>");
@@ -92,17 +94,19 @@ public class InvoiceRenderService {
       }
 
       doc.add(new Paragraph(" "));
-      PdfPTable table = new PdfPTable(4);
+      PdfPTable table = new PdfPTable(5);
       table.setWidthPercentage(100);
       table.setHeaderRows(1);
       addHeader(table, "Herramienta");
       addHeader(table, "Precio dia");
+      addHeader(table, "Cantidad");
       addHeader(table, "Dias");
       addHeader(table, "Subtotal");
 
       for (InvoiceDetail d : invoice.getDetails()) {
         table.addCell(safeCell(nameOf(d)));
         table.addCell(safeCell(formatMoney(d.getDailyPrice())));
+        table.addCell(safeCell(String.valueOf(d.getQuantity())));
         table.addCell(safeCell(String.valueOf(d.getRentalDay())));
         table.addCell(safeCell(formatMoney(d.getSubTotal())));
       }

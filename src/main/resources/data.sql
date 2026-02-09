@@ -1,7 +1,7 @@
 -- Script de inicialización de roles
 -- Este script se ejecuta automáticamente al iniciar la aplicación
 
--- Insertar roles iniciales si no existen
+-- Insertar roles iniciales si no existen (MySQL/MariaDB idempotente)
 INSERT IGNORE INTO roles (name, authority)
 VALUES
     ('USER', 'ROLE_USER'),
@@ -9,14 +9,14 @@ VALUES
     ('SUPPLIER', 'ROLE_SUPPLIER'),
     ('CLIENT', 'ROLE_CLIENT');
 
--- Insertar estados de usuario iniciales si no existen
+-- Insertar estados de usuario iniciales si no existen (MySQL/MariaDB idempotente)
 INSERT IGNORE INTO user_statuses (name)
 VALUES
     ('ACTIVE'),
     ('INACTIVE'),
     ('BLOCKED');
 
--- Insertar estados de reserva iniciales si no existen
+-- Insertar estados de reserva iniciales si no existen (MySQL/MariaDB idempotente)
 INSERT IGNORE INTO reservation_status (status_name)
 VALUES
     ('RESERVED'),
@@ -31,7 +31,7 @@ VALUES
     ('PAID'),
     ('CANCELLED');
 
--- Insertar estados de devolucion iniciales si no existen
+-- Insertar estados de devolucion iniciales si no existen (MySQL/MariaDB idempotente)
 INSERT IGNORE INTO return_status (name)
 VALUES
     ('PENDING'),
@@ -39,7 +39,7 @@ VALUES
     ('RECEIVED'),
     ('DAMAGED');
 
--- Insertar estados de herramienta iniciales si no existen
+-- Insertar estados de herramienta iniciales si no existen (MySQL/MariaDB idempotente)
 INSERT IGNORE INTO tool_status (name)
 VALUES
     ('AVAILABLE'),

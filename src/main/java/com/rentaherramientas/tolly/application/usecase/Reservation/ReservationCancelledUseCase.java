@@ -11,13 +11,16 @@ import com.rentaherramientas.tolly.domain.model.Client;
 import com.rentaherramientas.tolly.domain.model.Payment;
 import com.rentaherramientas.tolly.domain.model.PaymentStatus;
 import com.rentaherramientas.tolly.domain.model.Reservation;
+import com.rentaherramientas.tolly.domain.model.ReservationDetail;
 import com.rentaherramientas.tolly.domain.model.ReservationStatus;
+import com.rentaherramientas.tolly.domain.model.Tool;
 import com.rentaherramientas.tolly.domain.model.User;
 import com.rentaherramientas.tolly.domain.ports.ClientRepository;
 import com.rentaherramientas.tolly.domain.ports.PaymentRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationDetailRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationStatusRepository;
+import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 
 @Service
 public class ReservationCancelledUseCase {
@@ -27,17 +30,20 @@ public class ReservationCancelledUseCase {
     private final PaymentRepository paymentRepository;
     private final ClientRepository clientRepository;
     private final ReservationDetailRepository reservationDetailRepository;
+    private final ToolRepository toolRepository;
 
     public ReservationCancelledUseCase(ReservationRepository reservationRepository,
                                        ReservationStatusRepository reservationStatusRepository,
                                        PaymentRepository paymentRepository,
                                        ClientRepository clientRepository,
-                                       ReservationDetailRepository reservationDetailRepository) {
+                                       ReservationDetailRepository reservationDetailRepository,
+                                       ToolRepository toolRepository) {
         this.reservationRepository = reservationRepository;
         this.reservationStatusRepository = reservationStatusRepository;
         this.paymentRepository = paymentRepository;
         this.clientRepository = clientRepository;
         this.reservationDetailRepository = reservationDetailRepository;
+        this.toolRepository = toolRepository;
     }
 
     @Transactional
@@ -58,6 +64,8 @@ public class ReservationCancelledUseCase {
             throw new IllegalStateException("Solo se puede cancelar antes de la fecha de inicio");
         }
 
+        List<ReservationDetail> details = reservationDetailRepository.findByReservationId(reservation.getId());
+        restoreAvailability(details);
         reservationDetailRepository.deleteByReservationId(reservation.getId());
 
         paymentRepository.findByReservationId(reservationId)
@@ -88,5 +96,25 @@ public class ReservationCancelledUseCase {
                 reservation.getStatus().getName(),
                 reservation.getCreatedAt()
         );
+    }
+
+    private void restoreAvailability(List<ReservationDetail> details) {
+        for (ReservationDetail detail : details) {
+            Tool tool = detail.getTool();
+            if (tool == null || tool.getId() == null) {
+                continue;
+            }
+            Integer available = tool.getAvailableQuantity();
+            if (available == null) {
+                Integer total = tool.getTotalQuantity();
+                if (total == null) {
+                    continue;
+                }
+                available = total;
+            }
+            int updated = available + detail.getQuantity();
+            tool.setAvailableQuantity(updated);
+            toolRepository.update(tool.getId(), tool);
+        }
     }
 }

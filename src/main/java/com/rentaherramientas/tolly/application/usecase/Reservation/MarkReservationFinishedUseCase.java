@@ -12,11 +12,13 @@ import com.rentaherramientas.tolly.domain.model.Reservation;
 import com.rentaherramientas.tolly.domain.model.ReservationDetail;
 import com.rentaherramientas.tolly.domain.model.ReservationStatus;
 import com.rentaherramientas.tolly.domain.model.Supplier;
+import com.rentaherramientas.tolly.domain.model.Tool;
 import com.rentaherramientas.tolly.domain.ports.PaymentRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationDetailRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationRepository;
 import com.rentaherramientas.tolly.domain.ports.ReservationStatusRepository;
 import com.rentaherramientas.tolly.domain.ports.SupplierRepository;
+import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 
 @Service
 public class MarkReservationFinishedUseCase {
@@ -26,17 +28,20 @@ public class MarkReservationFinishedUseCase {
     private final PaymentRepository paymentRepository;
     private final ReservationDetailRepository reservationDetailRepository;
     private final SupplierRepository supplierRepository;
+    private final ToolRepository toolRepository;
 
     public MarkReservationFinishedUseCase(ReservationRepository reservationRepository,
                                           ReservationStatusRepository reservationStatusRepository,
                                           PaymentRepository paymentRepository,
                                           ReservationDetailRepository reservationDetailRepository,
-                                          SupplierRepository supplierRepository) {
+                                          SupplierRepository supplierRepository,
+                                          ToolRepository toolRepository) {
         this.reservationRepository = reservationRepository;
         this.reservationStatusRepository = reservationStatusRepository;
         this.paymentRepository = paymentRepository;
         this.reservationDetailRepository = reservationDetailRepository;
         this.supplierRepository = supplierRepository;
+        this.toolRepository = toolRepository;
     }
 
     @Transactional
@@ -62,6 +67,9 @@ public class MarkReservationFinishedUseCase {
         ReservationStatus finishedStatus = reservationStatusRepository.findByStatusName("FINISHED")
                 .orElseThrow(() -> new IllegalArgumentException("Estado FINISHED no encontrado en la base de datos"));
         reservation.setStatus(finishedStatus);
+
+        List<ReservationDetail> details = reservationDetailRepository.findByReservationId(reservationId);
+        restoreAvailability(details);
 
         Reservation updated = reservationRepository.save(reservation);
 
@@ -92,6 +100,26 @@ public class MarkReservationFinishedUseCase {
                         && detail.getTool().getSupplierId().equals(supplier.getId()));
         if (!ownsAll) {
             throw new IllegalStateException("La reserva no pertenece al proveedor");
+        }
+    }
+
+    private void restoreAvailability(List<ReservationDetail> details) {
+        for (ReservationDetail detail : details) {
+            Tool tool = detail.getTool();
+            if (tool == null || tool.getId() == null) {
+                continue;
+            }
+            Integer available = tool.getAvailableQuantity();
+            if (available == null) {
+                Integer total = tool.getTotalQuantity();
+                if (total == null) {
+                    continue;
+                }
+                available = total;
+            }
+            int updated = available + detail.getQuantity();
+            tool.setAvailableQuantity(updated);
+            toolRepository.update(tool.getId(), tool);
         }
     }
 }

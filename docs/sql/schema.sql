@@ -184,6 +184,7 @@ CREATE TABLE invoice_detail (
     id_invoice BIGINT NOT NULL,
     id_tool BIGINT NOT NULL,
     daily_price DECIMAL(10,2) NOT NULL,
+    quantity INT NOT NULL,
     rental_days INT NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (id_invoice) REFERENCES invoices(id_invoice) ON DELETE CASCADE,

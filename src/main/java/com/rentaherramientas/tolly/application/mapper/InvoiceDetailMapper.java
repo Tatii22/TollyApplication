@@ -22,6 +22,7 @@ public class InvoiceDetailMapper {
         toToolDomain(entity.getTool()),
         entity.getDailyPrice(),
         entity.getRentalDay(),
+        entity.getQuantity() != null ? entity.getQuantity() : 1,
         entity.getSubTotal()
     );
   }
@@ -39,6 +40,7 @@ public class InvoiceDetailMapper {
     }
 
     entity.setRentalDay(domain.getRentalDay());
+    entity.setQuantity(domain.getQuantity());
     entity.setSubTotal(domain.getSubTotal());
 
     if (domain.getTool() != null) {
@@ -61,6 +63,7 @@ public class InvoiceDetailMapper {
         toolName,
         domain.getDailyPrice(),
         domain.getRentalDay(),
+        domain.getQuantity(),
         domain.getSubTotal()
     );
   }

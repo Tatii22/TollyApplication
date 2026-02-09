@@ -26,17 +26,20 @@ public class ReservationDetailController {
 
   private final CreateReservationDetailUseCase createUseCase;
   private final UpdateReservationDetailUseCase updateUseCase;
+  private final com.rentaherramientas.tolly.application.usecase.reservationdetail.UpdateReservationDetailQuantityUseCase updateQuantityUseCase;
   private final DeleteReservationDetailUseCase deleteUseCase;
   private final GetReservationDetailsByReservationUseCase getByReservationUseCase;
 
   public ReservationDetailController(
       CreateReservationDetailUseCase createUseCase,
       UpdateReservationDetailUseCase updateUseCase,
+      com.rentaherramientas.tolly.application.usecase.reservationdetail.UpdateReservationDetailQuantityUseCase updateQuantityUseCase,
       DeleteReservationDetailUseCase deleteUseCase,
       GetReservationDetailsByReservationUseCase getByReservationUseCase) {
 
     this.createUseCase = createUseCase;
     this.updateUseCase = updateUseCase;
+    this.updateQuantityUseCase = updateQuantityUseCase;
     this.deleteUseCase = deleteUseCase;
     this.getByReservationUseCase = getByReservationUseCase;
   }
@@ -48,7 +51,7 @@ public class ReservationDetailController {
    */
   @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
   @PostMapping
-  @SecurityRequirement(name = "Bearer Authentication")
+  @SecurityRequirement(name = "bearerAuth")
   @Operation(summary = "Crear detalle de reserva", description = "Agrega una herramienta a la reserva")
   @ApiResponse(responseCode = "201", description = "Detalle creado exitosamente")
   public ResponseEntity<ReservationDetail> create(
@@ -71,7 +74,7 @@ public class ReservationDetailController {
    */
   @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
   @GetMapping("/reservation/{reservationId}")
-  @SecurityRequirement(name = "Bearer Authentication")
+  @SecurityRequirement(name = "bearerAuth")
   @Operation(summary = "Listar detalles por reserva", description = "Retorna detalles de una reserva")
   @ApiResponse(responseCode = "200", description = "Detalles obtenidos exitosamente")
   public ResponseEntity<List<ReservationDetail>> getByReservation(
@@ -89,7 +92,7 @@ public class ReservationDetailController {
    */
   @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
   @PutMapping("/{detailId}")
-  @SecurityRequirement(name = "Bearer Authentication")
+  @SecurityRequirement(name = "bearerAuth")
   @Operation(summary = "Actualizar detalle de reserva", description = "Actualiza dias de alquiler")
   @ApiResponse(responseCode = "200", description = "Detalle actualizado exitosamente")
   public ResponseEntity<ReservationDetail> update(
@@ -104,12 +107,32 @@ public class ReservationDetailController {
 
   /*
    * =========================
+   * ACTUALIZAR CANTIDAD
+   * =========================
+   */
+  @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
+  @PutMapping("/{detailId}/quantity")
+  @SecurityRequirement(name = "bearerAuth")
+  @Operation(summary = "Actualizar cantidad", description = "Actualiza la cantidad de herramientas")
+  @ApiResponse(responseCode = "200", description = "Cantidad actualizada exitosamente")
+  public ResponseEntity<ReservationDetail> updateQuantity(
+      @Parameter(description = "ID del detalle", example = "1")
+      @PathVariable Long detailId,
+      @Parameter(description = "Nueva cantidad", example = "2")
+      @RequestParam int quantity) {
+
+    return ResponseEntity.ok(
+        updateQuantityUseCase.execute(detailId, quantity));
+  }
+
+  /*
+   * =========================
    * ELIMINAR DETALLE
    * =========================
    */
   @PreAuthorize("hasAnyRole('ADMIN')")
   @DeleteMapping("/{detailId}")
-  @SecurityRequirement(name = "Bearer Authentication")
+  @SecurityRequirement(name = "bearerAuth")
   @Operation(summary = "Eliminar detalle de reserva", description = "Elimina un detalle de reserva")
   @ApiResponse(responseCode = "204", description = "Detalle eliminado exitosamente")
   public ResponseEntity<Void> delete(
