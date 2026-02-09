@@ -26,6 +26,8 @@ import com.rentaherramientas.tolly.domain.ports.ToolRepository;
 public class CreateReturnUseCase {
 
     private static final String STATUS_PENDING = "PENDING";
+    private static final String STATUS_CLIENT_DAMAGED = "CL_DAMAGED";
+    private static final String STATUS_CLIENT_INCOMPLETE = "CL_INCOMPLETE";
     private static final String RESERVATION_IN_PROGRESS = "IN_PROGRESS";
 
     private final ReturnRepository returnRepository;
@@ -75,8 +77,17 @@ public class CreateReturnUseCase {
             throw new DomainException("La reserva no pertenece al cliente");
         }
 
-        ReturnStatus status = returnStatusRepository.findByName(STATUS_PENDING)
-            .orElseThrow(() -> new DomainException("Estado PENDING no encontrado"));
+        String requestedStatus = normalizeStatus(request.returnStatusName());
+        String initialStatus = STATUS_PENDING;
+        if (!requestedStatus.isBlank()) {
+            if (!STATUS_CLIENT_DAMAGED.equals(requestedStatus) && !STATUS_CLIENT_INCOMPLETE.equals(requestedStatus)) {
+                throw new DomainException("Estado de devolucion invalido para cliente: " + request.returnStatusName());
+            }
+            initialStatus = requestedStatus;
+        }
+
+        ReturnStatus status = returnStatusRepository.findByName(initialStatus)
+            .orElseThrow(() -> new DomainException("Estado de devolucion no encontrado: " + initialStatus));
 
         Return value = returnMapper.toReturn(request);
         value.setClientId(client.getId());
@@ -135,5 +146,10 @@ public class CreateReturnUseCase {
         if (detail.quantity() > reserved) {
             throw new DomainException("La cantidad excede lo reservado para la herramienta: " + detail.toolId());
         }
+    }
+
+    private String normalizeStatus(String statusName) {
+        if (statusName == null) return "";
+        return statusName.trim().toUpperCase();
     }
 }

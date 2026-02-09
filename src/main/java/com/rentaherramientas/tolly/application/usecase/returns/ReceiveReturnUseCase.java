@@ -34,6 +34,7 @@ public class ReceiveReturnUseCase {
     private static final String STATUS_SENT = "SENT";
     private static final String STATUS_RECEIVED = "RECEIVED";
     private static final String STATUS_DAMAGED = "DAMAGED";
+    private static final String STATUS_SUPPLIER_INCOMPLETE = "SPP_INCOMPLETE";
 
     private static final String TOOL_AVAILABLE = "AVAILABLE";
     private static final String TOOL_UNAVAILABLE = "UNAVAILABLE";
@@ -83,7 +84,9 @@ public class ReceiveReturnUseCase {
         }
 
         String statusName = normalizeStatus(request.returnStatusName());
-        if (!STATUS_RECEIVED.equals(statusName) && !STATUS_DAMAGED.equals(statusName)) {
+        if (!STATUS_RECEIVED.equals(statusName)
+            && !STATUS_DAMAGED.equals(statusName)
+            && !STATUS_SUPPLIER_INCOMPLETE.equals(statusName)) {
             throw new DomainException("Estado de devolucion invalido: " + request.returnStatusName());
         }
 
@@ -106,7 +109,7 @@ public class ReceiveReturnUseCase {
 
         saveDetailsAndUpdateTools(saved, request.details(), statusName);
 
-        if (STATUS_DAMAGED.equals(statusName)) {
+        if (STATUS_DAMAGED.equals(statusName) || STATUS_SUPPLIER_INCOMPLETE.equals(statusName)) {
             markReservationIncidentUseCase.execute(
                 saved.getReservationId(),
                 isAdmin ? null : userId,

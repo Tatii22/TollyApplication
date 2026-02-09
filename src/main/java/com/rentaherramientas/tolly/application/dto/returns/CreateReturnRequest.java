@@ -18,6 +18,9 @@ public record CreateReturnRequest(
     @Schema(description = "Fecha de devolucion", example = "2026-02-10")
     LocalDate returnDate,
 
+    @Schema(description = "Estado de devolucion reportado por el cliente", example = "CL_DAMAGED")
+    String returnStatusName,
+
     @Schema(description = "ID del estado de devolucion (se asigna automaticamente a PENDING)", example = "1")
     Long returnStatusId,
 

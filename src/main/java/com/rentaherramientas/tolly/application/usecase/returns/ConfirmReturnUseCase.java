@@ -23,6 +23,8 @@ import com.rentaherramientas.tolly.domain.ports.UserRepository;
 public class ConfirmReturnUseCase {
 
     private static final String STATUS_PENDING = "PENDING";
+    private static final String STATUS_CLIENT_DAMAGED = "CL_DAMAGED";
+    private static final String STATUS_CLIENT_INCOMPLETE = "CL_INCOMPLETE";
     private static final String STATUS_SENT = "SENT";
     private static final String RESERVATION_IN_PROGRESS = "IN_PROGRESS";
 
@@ -61,9 +63,14 @@ public class ConfirmReturnUseCase {
             throw new DomainException("La reserva no esta en estado IN_PROGRESS");
         }
 
-        if (existing.getStatus() == null
-            || !STATUS_PENDING.equalsIgnoreCase(existing.getStatus().getName())) {
-            throw new DomainException("Solo se puede confirmar devolucion en estado PENDING");
+        if (existing.getStatus() == null) {
+            throw new DomainException("Estado de devolucion no encontrado");
+        }
+        String current = existing.getStatus().getName();
+        if (!STATUS_PENDING.equalsIgnoreCase(current)
+            && !STATUS_CLIENT_DAMAGED.equalsIgnoreCase(current)
+            && !STATUS_CLIENT_INCOMPLETE.equalsIgnoreCase(current)) {
+            throw new DomainException("Solo se puede confirmar devolucion en estado PENDING, CL_DAMAGED o CL_INCOMPLETE");
         }
 
         if (userId == null) {
