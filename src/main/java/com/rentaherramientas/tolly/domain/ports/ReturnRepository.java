@@ -13,5 +13,7 @@ public interface ReturnRepository {
 
     List<Return> findAll();
 
+    List<Return> findByReservationId(Long reservationId);
+
     void deleteById(Long id);
 }

@@ -7,4 +7,6 @@ import com.rentaherramientas.tolly.infrastructure.persistence.entity.ReturnEntit
 
 @Repository
 public interface ReturnJpaRepository extends JpaRepository<ReturnEntity, Long> {
+    List<ReturnEntity> findByReservationId(Long reservationId);
 }
+import java.util.List;
