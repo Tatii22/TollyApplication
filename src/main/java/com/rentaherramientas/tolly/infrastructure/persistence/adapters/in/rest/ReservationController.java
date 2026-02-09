@@ -55,6 +55,22 @@ public class ReservationController {
     this.markReservationIncidentUseCase = markReservationIncidentUseCase;
   }
 
+    // -------------------------------------------------
+    // OBTENER RESERVA POR ID (ADMIN, SUPPLIER, CLIENT)
+    // -------------------------------------------------
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Obtener reserva por ID", description = "Retorna una reserva por su ID")
+    @ApiResponse(responseCode = "200", description = "Reserva obtenida exitosamente")
+    @ApiResponse(responseCode = "404", description = "Reserva no encontrada")
+    public ResponseEntity<ReservationResponse> getReservationById(@PathVariable Long id) {
+      ReservationResponse response = reservationList.getReservationById(id);
+      if (response == null) {
+        return ResponseEntity.notFound().build();
+      }
+      return ResponseEntity.ok(response);
+    }
   // -------------------------------------------------
   // CREAR RESERVA (CLIENT)
   // -------------------------------------------------

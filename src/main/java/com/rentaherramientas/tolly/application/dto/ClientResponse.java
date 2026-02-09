@@ -23,4 +23,15 @@ public record ClientResponse(
     @Schema(description = "Número de documento", example = "1234567890")
     String document
 
-) {}
+    ) {
+        public static ClientResponse fromDomain(com.rentaherramientas.tolly.domain.model.Client client) {
+            return new ClientResponse(
+                client.getId(),
+                client.getAddress(),
+                client.getPhone(),
+                client.getFirstName(),
+                client.getLastName(),
+                client.getDocument()
+            );
+        }
+    }
