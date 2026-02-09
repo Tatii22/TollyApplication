@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 @Component
 public class ReservationRepositoryAdapter implements ReservationRepository {
 
@@ -90,6 +92,40 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
     @Override
     public List<Object[]> findFrequentClients(LocalDate from, LocalDate to) {
         return jpaRepository.findFrequentClients(from, to);
+    }
+
+    @Override
+    public List<Reservation> findBySupplierIdAndFilters(
+        Long supplierId,
+        String statusName,
+        LocalDate from,
+        LocalDate to) {
+        return jpaRepository.findBySupplierIdAndFilters(supplierId, statusName, from, to)
+            .stream()
+            .map(ReservationMapper::toDomain)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<Reservation> findByClientIdAndFilters(
+        Long clientId,
+        String statusName,
+        LocalDate from,
+        LocalDate to,
+        Pageable pageable) {
+        return jpaRepository.findByClientIdAndFilters(clientId, statusName, from, to, pageable)
+            .map(ReservationMapper::toDomain);
+    }
+
+    @Override
+    public Page<Reservation> findBySupplierIdAndFilters(
+        Long supplierId,
+        String statusName,
+        LocalDate from,
+        LocalDate to,
+        Pageable pageable) {
+        return jpaRepository.findBySupplierIdAndFilters(supplierId, statusName, from, to, pageable)
+            .map(ReservationMapper::toDomain);
     }
 
 }
