@@ -39,6 +39,12 @@ public class CreateReservationUseCase {
 
   @Transactional
   public ReservationResponse createReservation(ReservationRequest request, UUID userId) {
+    if (request.startDate() == null || request.endDate() == null) {
+      throw new IllegalArgumentException("startDate y endDate son obligatorias");
+    }
+    if (request.startDate().isAfter(request.endDate())) {
+      throw new IllegalArgumentException("startDate no puede ser mayor que endDate");
+    }
     // 1ï¸âƒ£ Buscar el cliente
     if (userId == null) {
       throw new IllegalArgumentException("UserId is required");

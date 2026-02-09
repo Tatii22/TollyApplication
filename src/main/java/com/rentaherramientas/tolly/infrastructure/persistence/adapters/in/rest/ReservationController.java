@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -63,7 +64,7 @@ public class ReservationController {
   @Operation(summary = "Crear reserva", description = "Crea una reserva para el cliente autenticado")
   @ApiResponse(responseCode = "201", description = "Reserva creada exitosamente")
   public ResponseEntity<ReservationResponse> createReservation(
-      @jakarta.validation.Valid @RequestBody ReservationRequest request,
+      @Valid @RequestBody ReservationRequest request,
       Authentication authentication) {
 
     ReservationResponse response = reservationCreate.createReservation(

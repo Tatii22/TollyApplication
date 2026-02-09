@@ -1,5 +1,6 @@
 package com.rentaherramientas.tolly.application.usecase.payment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -72,6 +73,14 @@ public class PayPaymentUseCase {
             throw new DomainException("Payment amount does not match reservation total");
         }
 
+        if (reservation.getStartDate() != null) {
+            LocalDate today = LocalDate.now();
+            if (!today.isBefore(reservation.getStartDate())) {
+                cancelReservationAndPayment(reservation, payment);
+                throw new DomainException("Payment must be made before reservation start date");
+            }
+        }
+
         Payment updated = new Payment(
                 payment.getId(),
                 reservation,
@@ -91,5 +100,24 @@ public class PayPaymentUseCase {
         generateInvoiceForPaymentUseCase.execute(savedPayment);
 
         return savedPayment;
+    }
+
+    private void cancelReservationAndPayment(Reservation reservation, Payment payment) {
+        reservationStatusRepository.findByStatusName("CANCELLED")
+                .ifPresent(status -> {
+                    reservation.setStatus(status);
+                    reservationRepository.save(reservation);
+                });
+
+        if (payment != null && !payment.isCancelled()) {
+            Payment cancelled = new Payment(
+                    payment.getId(),
+                    reservation,
+                    payment.getAmount(),
+                    payment.getPaymentDate(),
+                    new PaymentStatus(null, PaymentStatus.CANCELLED)
+            );
+            paymentRepository.save(cancelled);
+        }
     }
 }
