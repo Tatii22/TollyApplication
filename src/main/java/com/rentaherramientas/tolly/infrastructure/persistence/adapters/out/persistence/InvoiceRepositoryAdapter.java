@@ -63,6 +63,7 @@ public class InvoiceRepositoryAdapter implements InvoiceRepository {
       detailEntity.setTool(tool);
       detailEntity.setDailyPrice(detail.getDailyPrice());
       detailEntity.setRentalDay(detail.getRentalDay());
+      detailEntity.setQuantity(detail.getQuantity());
       detailEntity.setSubTotal(detail.getSubTotal());
       entity.getDetails().add(detailEntity);
     }

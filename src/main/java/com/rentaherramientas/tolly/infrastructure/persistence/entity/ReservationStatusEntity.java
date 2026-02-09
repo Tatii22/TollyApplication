@@ -12,7 +12,7 @@ public class ReservationStatusEntity {
   @Column(name = "id_reservation_status", nullable = false)
   private Long id;
 
-  @Column(name = "status_name", nullable = false, length = 50)
+  @Column(name = "status_name", nullable = false, length = 50, unique = true)
   private String statusName;
 
   public ReservationStatusEntity() {

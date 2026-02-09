@@ -56,21 +56,31 @@ public class GenerateInvoiceForPaymentUseCase {
     }
 
     List<InvoiceDetail> details = reservationDetails.stream()
-        .map(detail -> new InvoiceDetail(
-            null,
-            null,
-            detail.getTool(),
-            BigDecimal.valueOf(detail.getDailyPrice()),
-            detail.getRentalDay(),
-            detail.getSubTotal()
-        ))
+        .map(detail -> {
+          if (detail.getDailyPrice() == null) {
+            throw new DomainException("Reservation detail daily price is required");
+          }
+          BigDecimal subTotal = detail.getSubTotal();
+          if (subTotal == null) {
+            subTotal = BigDecimal.valueOf(detail.getDailyPrice())
+                .multiply(BigDecimal.valueOf(detail.getRentalDay()))
+                .multiply(BigDecimal.valueOf(detail.getQuantity()));
+          }
+          return new InvoiceDetail(
+              null,
+              null,
+              detail.getTool(),
+              BigDecimal.valueOf(detail.getDailyPrice()),
+              detail.getRentalDay(),
+              detail.getQuantity(),
+              subTotal
+          );
+        })
         .toList();
 
-    BigDecimal total = payment.getAmount() != null
-        ? payment.getAmount()
-        : reservationDetails.stream()
-            .map(ReservationDetail::getSubTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal total = details.stream()
+        .map(InvoiceDetail::getSubTotal)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     LocalDateTime issueDate = payment.getPaymentDate() != null
         ? payment.getPaymentDate()

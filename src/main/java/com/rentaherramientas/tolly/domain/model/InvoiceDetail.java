@@ -10,6 +10,7 @@ public class InvoiceDetail {
   private final Tool tool;
   private final BigDecimal dailyPrice;
   private final int rentalDay;
+  private final int quantity;
   private final BigDecimal subTotal;
 
   public InvoiceDetail(Long id,
@@ -17,6 +18,7 @@ public class InvoiceDetail {
                        Tool tool,
                        BigDecimal dailyPrice,
                        int rentalDay,
+                       int quantity,
                        BigDecimal subTotal) {
     if (tool == null) {
       throw new IllegalArgumentException("Tool is required");
@@ -27,6 +29,9 @@ public class InvoiceDetail {
     if (rentalDay < 1) {
       throw new IllegalArgumentException("Rental days must be greater than 0");
     }
+    if (quantity < 1) {
+      throw new IllegalArgumentException("Quantity must be greater than 0");
+    }
     if (subTotal == null || subTotal.compareTo(BigDecimal.ZERO) < 0) {
       throw new IllegalArgumentException("Subtotal must be zero or positive");
     }
@@ -35,6 +40,7 @@ public class InvoiceDetail {
     this.tool = tool;
     this.dailyPrice = dailyPrice;
     this.rentalDay = rentalDay;
+    this.quantity = quantity;
     this.subTotal = subTotal;
   }
 
@@ -56,6 +62,10 @@ public class InvoiceDetail {
 
   public int getRentalDay() {
     return rentalDay;
+  }
+
+  public int getQuantity() {
+    return quantity;
   }
 
   public BigDecimal getSubTotal() {

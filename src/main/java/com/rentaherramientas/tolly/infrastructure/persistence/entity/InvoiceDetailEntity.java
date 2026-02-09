@@ -34,6 +34,9 @@ public class InvoiceDetailEntity {
   @Column(name = "rental_days", nullable = false)
   private Integer rentalDay;
 
+  @Column(name = "quantity", nullable = false)
+  private Integer quantity;
+
   @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
   private BigDecimal subTotal;
 
@@ -78,6 +81,14 @@ public class InvoiceDetailEntity {
 
   public void setRentalDay(Integer rentalDay) {
     this.rentalDay = rentalDay;
+  }
+
+  public Integer getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(Integer quantity) {
+    this.quantity = quantity;
   }
 
   public BigDecimal getSubTotal() {
