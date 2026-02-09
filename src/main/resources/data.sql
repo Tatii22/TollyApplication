@@ -37,7 +37,10 @@ VALUES
     ('PENDING'),
     ('SENT'),
     ('RECEIVED'),
-    ('DAMAGED');
+    ('DAMAGED'),
+    ('CL_DAMAGED'),
+    ('CL_INCOMPLETE'),
+    ('SPP_INCOMPLETE');
 
 -- Insertar estados de herramienta iniciales si no existen (MySQL/MariaDB idempotente)
 INSERT IGNORE INTO tool_status (name)
