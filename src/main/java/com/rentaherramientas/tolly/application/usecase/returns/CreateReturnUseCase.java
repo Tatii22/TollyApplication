@@ -78,13 +78,7 @@ public class CreateReturnUseCase {
         }
 
         String requestedStatus = normalizeStatus(request.returnStatusName());
-        String initialStatus = STATUS_PENDING;
-        if (!requestedStatus.isBlank()) {
-            if (!STATUS_CLIENT_DAMAGED.equals(requestedStatus) && !STATUS_CLIENT_INCOMPLETE.equals(requestedStatus)) {
-                throw new DomainException("Estado de devolucion invalido para cliente: " + request.returnStatusName());
-            }
-            initialStatus = requestedStatus;
-        }
+        String initialStatus = resolveInitialStatus(requestedStatus);
 
         ReturnStatus status = returnStatusRepository.findByName(initialStatus)
             .orElseThrow(() -> new DomainException("Estado de devolucion no encontrado: " + initialStatus));
@@ -151,5 +145,15 @@ public class CreateReturnUseCase {
     private String normalizeStatus(String statusName) {
         if (statusName == null) return "";
         return statusName.trim().toUpperCase();
+    }
+
+    private String resolveInitialStatus(String requestedStatus) {
+        if (requestedStatus.isBlank()) {
+            return STATUS_PENDING;
+        }
+        if (!STATUS_CLIENT_DAMAGED.equals(requestedStatus) && !STATUS_CLIENT_INCOMPLETE.equals(requestedStatus)) {
+            throw new DomainException("Estado de devolucion invalido para cliente: " + requestedStatus);
+        }
+        return requestedStatus;
     }
 }
