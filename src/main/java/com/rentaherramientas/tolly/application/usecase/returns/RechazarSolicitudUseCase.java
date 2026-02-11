@@ -31,7 +31,7 @@ public class RechazarSolicitudUseCase {
 
 
 
-    public ReservationStatusResponse Rechazo(Long idReserva, ReservationStatusRequest request, ReservationRequest reservation){
+    public ReservationStatusResponse Rechazo(Long idReserva, ReservationStatusRequest request){
 
         reservationStatus.findByStatusName(request.statusName()).ifPresent(
             estado ->{
