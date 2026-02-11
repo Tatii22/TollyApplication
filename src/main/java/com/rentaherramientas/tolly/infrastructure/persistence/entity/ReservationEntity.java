@@ -27,9 +27,11 @@ public class ReservationEntity {
 
   @Column(name = "total", nullable = false)
   private BigDecimal totalPrice;
-
-  @Column(name = "estado")
-  private String estadoDevolucion;
+  /** Campo para el estado de la devolución: PENDIENTE_DEVOLUCION, DEVUELTO_OK, DEVUELTO_CON_DAÑOS.
+   * El estado inicial debe ser PENDIENTE_DEVOLUCION */
+  @Enumerated(EnumType.STRING)
+  @Column(name = "estado_devolucion", nullable = false)
+  private EstadoDevolucion estadoDevolucion = EstadoDevolucion.PENDIENTE_DEVOLUCION;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "id_reservation_status", nullable = false)
@@ -97,6 +99,11 @@ public class ReservationEntity {
     this.createdAt = createdAt;
   }
 
+  public EstadoDevolucion getEstadoDevolucion() {
+    return estadoDevolucion;
+  }
 
-
+  public void setEstadoDevolucion(EstadoDevolucion estadoDevolucion) {
+    this.estadoDevolucion = estadoDevolucion;
+  }
 }
