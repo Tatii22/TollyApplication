@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rentaherramientas.tolly.application.dto.returns.CreateReturnRequest;
+import com.rentaherramientas.tolly.application.dto.returns.DevolucionDTO;
 import com.rentaherramientas.tolly.application.dto.returns.ReceiveReturnRequest;
 import com.rentaherramientas.tolly.application.dto.returns.ReturnResponse;
 import com.rentaherramientas.tolly.application.dto.returns.UpdateReturnRequest;
 import com.rentaherramientas.tolly.application.usecase.returns.ConfirmReturnUseCase;
 import com.rentaherramientas.tolly.application.usecase.returns.CreateReturnUseCase;
 import com.rentaherramientas.tolly.application.usecase.returns.DeleteReturnUseCase;
+import com.rentaherramientas.tolly.application.usecase.returns.DevolucionService;
 import com.rentaherramientas.tolly.application.usecase.returns.GetReturnByIdUseCase;
 import com.rentaherramientas.tolly.application.usecase.returns.GetReturnsUseCase;
 import com.rentaherramientas.tolly.application.usecase.returns.ReceiveReturnUseCase;
@@ -79,6 +81,18 @@ public class ReturnController {
     @ApiResponse(responseCode = "200", description = "Devolucion obtenida exitosamente")
     public ResponseEntity<ReturnResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(getReturnByIdUseCase.execute(id));
+    }
+    /*
+    Controlador REST (Nuevo Endpoint):
+    POST /api/reservas/{id}/registrar-devolucion (Rol: Proveedor): Recibe el DevolucionDTO en el body y llama al servicio.
+    */
+    @PostMapping("/api/reservas/{id}/registrar-devolucion")
+    @PreAuthorize("hasrole('SUPPLIER')")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<DevolucionDTO> create(){
+        java.util.UUID userId = (java.util.UUID) authentication.getPrincipal();
+        DevolucionDTO response = DevolucionService.execute(request, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping

@@ -27,7 +27,7 @@ public class ReservationEntity {
 
   @Column(name = "total", nullable = false)
   private BigDecimal totalPrice;
-  /** Campo para el estado de la devolución: PENDIENTE_DEVOLUCION, DEVUELTO_OK, DEVUELTO_CON_DAÑOS.
+  /** Estado de la devolución: PENDIENTE_DEVOLUCION, DEVUELTO_OK, DEVUELTO_CON_DAÑOS.
    * El estado inicial debe ser PENDIENTE_DEVOLUCION */
   @Enumerated(EnumType.STRING)
   @Column(name = "estado_devolucion", nullable = false)
