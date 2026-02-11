@@ -134,6 +134,20 @@ public class PaymentController {
         return ResponseEntity.ok(toResponses(payments));
     }
 
+    @GetMapping("/pagos/cliente/{id}") 
+    @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER','CLIENT')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Listar pagos por cliente")
+    @ApiResponse(responseCode = "200", description = "Pagos obtenidos exitosamente")
+    public ResponseEntity<List<PaymentResponse>> getByCliente(
+            @PathVariable Long clientId,
+            Authentication authentication) {
+        boolean validateOwner = isClient(authentication);
+        UUID userId = validateOwner ? (UUID) authentication.getPrincipal() : null;
+        List<Payment> payments = getPaymentsByClientUseCase.execute(clientId, userId, validateOwner);
+        return ResponseEntity.ok(toResponses(payments));
+    }
+
     private boolean isClient(Authentication authentication) {
         if (authentication == null || authentication.getAuthorities() == null) {
             return false;
