@@ -20,7 +20,7 @@ public class ReservationStatusMapper {
     if (domain == null)
       return null;
     ReservationStatusEntity entity = new ReservationStatusEntity();
-    entity.setId(domain.getId());
+    entity.setId(domain.getId_reservacion());
     entity.setStatusName(domain.getName());
     return entity;
   }

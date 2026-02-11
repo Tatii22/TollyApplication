@@ -1,11 +1,11 @@
 package com.rentaherramientas.tolly.domain.model;
 
 public class ReservationStatus {
-  private Long id;
+  private Long id_reservacion;
   private String name;
 
   public ReservationStatus(Long id, String name) {
-    this.id = id;
+    this.id_reservacion = id;
     this.name = name;
   }
 
@@ -14,7 +14,7 @@ public class ReservationStatus {
 
   public static ReservationStatus reconstruct(Long id, String name) {
     ReservationStatus reservationStatus = new ReservationStatus();
-    reservationStatus.id = id;
+    reservationStatus.id_reservacion = id;
     reservationStatus.name = name;
     return reservationStatus;
   }
@@ -24,7 +24,7 @@ public class ReservationStatus {
       throw new IllegalArgumentException("El nombre del estado de la reserva no puede estar vacío");
     }
     ReservationStatus reservationStatus = new ReservationStatus();
-    reservationStatus.id = null;
+    reservationStatus.id_reservacion = null;
     reservationStatus.name = name;
     return reservationStatus;
   }
@@ -40,20 +40,20 @@ public class ReservationStatus {
     if (o == null || getClass() != o.getClass())
       return false;
     ReservationStatus that = (ReservationStatus) o;
-    return id != null && id.equals(that.id);
+    return id_reservacion != null && id_reservacion.equals(that.id_reservacion);
   }
 
   @Override
   public int hashCode() {
-    return id != null ? id.hashCode() : 0;
+    return id_reservacion != null ? id_reservacion.hashCode() : 0;
   }
 
-  public Long getId() {
-    return id;
+  public Long getId_reservacion() {
+    return id_reservacion;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setId_reservacion(Long id) {
+    this.id_reservacion = id;
   }
 
   public String getName() {

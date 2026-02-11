@@ -59,7 +59,7 @@ public class ReservationCancelledUseCase {
         }
 
         if (!"RESERVED".equalsIgnoreCase(reservation.getStatus().getName())) {
-            throw new IllegalStateException("Solo se pueden cancelar reservas en estado RESERVED");
+            throw new IllegalStateException("Solo se pueden cancelar reservas en estado PENDIENTE");
         }
         if (!LocalDate.now().isBefore(reservation.getStartDate())) {
             throw new IllegalStateException("Solo se puede cancelar antes de la fecha de inicio");
@@ -78,8 +78,8 @@ public class ReservationCancelledUseCase {
                         new PaymentStatus(null, PaymentStatus.CANCELLED)
                 )));
 
-        ReservationStatus cancelledStatus = reservationStatusRepository.findByStatusName("CANCELLED")
-                .orElseThrow(() -> new IllegalArgumentException("Estado CANCELLED no encontrado en la base de datos"));
+        ReservationStatus cancelledStatus = reservationStatusRepository.findByStatusName("RECHAZADA")
+                .orElseThrow(() -> new IllegalArgumentException("Estado RECHAZADA no encontrado en la base de datos"));
         reservation.setStatus(cancelledStatus);
 
         Reservation updated = reservationRepository.save(reservation);

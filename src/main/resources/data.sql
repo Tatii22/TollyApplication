@@ -26,22 +26,19 @@ INSERT INTO user_statuses (name)
 SELECT 'BLOCKED'
 WHERE NOT EXISTS (SELECT 1 FROM user_statuses WHERE name = 'BLOCKED');
 
+PENDIENTE, APROBADA, RECHAZADA.
 -- Insertar estados de reserva iniciales si no existen (compatible con H2 y MySQL)
 INSERT INTO reservation_status (status_name)
-SELECT 'RESERVED'
-WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'RESERVED');
+SELECT 'PENDIENTE'
+WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'PENDIENTE');
 INSERT INTO reservation_status (status_name)
-SELECT 'IN_PROGRESS'
-WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'IN_PROGRESS');
+SELECT 'APROBADA'
+WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'APROBADA');
 INSERT INTO reservation_status (status_name)
-SELECT 'FINISHED'
-WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'FINISHED');
-INSERT INTO reservation_status (status_name)
-SELECT 'CANCELLED'
-WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'CANCELLED');
-INSERT INTO reservation_status (status_name)
-SELECT 'IN_INCIDENT'
-WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'IN_INCIDENT');
+SELECT 'RECHAZADA'
+WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'RECHAZADA');
+
+
 
 INSERT INTO payment_status (name)
 SELECT 'PENDING'

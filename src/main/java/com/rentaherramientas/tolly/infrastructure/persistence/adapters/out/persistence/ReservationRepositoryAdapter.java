@@ -43,7 +43,7 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
             .findById(reservation.getClientId())
             .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
         ReservationStatusEntity statusEntity = reservationStatusJpaRepository
-            .findById(reservation.getStatus().getId())
+            .findById(reservation.getStatus().getId_reservacion())
             .orElseThrow(() -> new IllegalArgumentException("Estado de reserva no encontrado"));
         ReservationEntity entity = ReservationMapper.toEntity(reservation, clientEntity, statusEntity);
         ReservationEntity saved = jpaRepository.save(entity);
@@ -62,7 +62,7 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
             .findById(reservation.getClientId())
             .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado")); // Deberías obtener el ClientEntity correspondiente
         ReservationStatusEntity statusEntity = reservationStatusJpaRepository
-            .findById(reservation.getStatus().getId())
+            .findById(reservation.getStatus().getId_reservacion())
             .orElseThrow(() -> new IllegalArgumentException("Estado de reserva no encontrado"));
         ReservationEntity entity = ReservationMapper.toEntity(reservation, clientEntity, statusEntity);
         jpaRepository.delete(entity);

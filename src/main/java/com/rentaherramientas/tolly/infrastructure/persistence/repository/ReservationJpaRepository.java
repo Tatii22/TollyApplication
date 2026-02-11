@@ -1,6 +1,7 @@
 package com.rentaherramientas.tolly.infrastructure.persistence.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +21,8 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationEntit
 
     // Listar por algún otro criterio, como fecha (si startDate es LocalDate)
     List<ReservationEntity> findByStartDate(java.time.LocalDate date);
+
+  Optional<ReservationEntity> findById(Long id);
 
     @Query("""
         SELECT r FROM ReservationEntity r

@@ -45,8 +45,8 @@ public class MarkReservationIncidentUseCase {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + reservationId));
 
-        if (!"IN_PROGRESS".equalsIgnoreCase(reservation.getStatus().getName())) {
-            throw new IllegalStateException("Solo se puede marcar incidencia en reservas IN_PROGRESS");
+        if (!"PENDIENTE".equalsIgnoreCase(reservation.getStatus().getName())) {
+            throw new IllegalStateException("Solo se puede marcar incidencia en reservas PENDIENTE");
         }
         if (!LocalDate.now().isAfter(reservation.getEndDate())) {
             throw new IllegalStateException("La reserva aun no ha vencido");
