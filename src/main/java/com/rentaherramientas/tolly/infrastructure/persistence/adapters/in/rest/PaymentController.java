@@ -133,7 +133,7 @@ public class PaymentController {
         List<Payment> payments = searchPaymentsUseCase.execute(from, to, status);
         return ResponseEntity.ok(toResponses(payments));
     }
-
+ ///frontend https://github.com/Killerdav02/tollyFront.git rama: examenJuan
     @GetMapping("/pagos/cliente/{id}") 
     @PreAuthorize("hasAnyRole('ADMIN','SUPPLIER','CLIENT')")
     @SecurityRequirement(name = "bearerAuth")
