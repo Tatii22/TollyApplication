@@ -28,6 +28,9 @@ public class ReservationEntity {
   @Column(name = "total", nullable = false)
   private BigDecimal totalPrice;
 
+  @Column(name = "estado")
+  private String estadoDevolucion;
+
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "id_reservation_status", nullable = false)
   private ReservationStatusEntity reservationStatus;

@@ -94,12 +94,12 @@ class ReservationPaymentControllerIntegrationTest {
 
         ReservationStatusEntity reserved = ensureReservationStatus("RESERVED");
         ensureReservationStatus("IN_PROGRESS");
-        ensurePaymentStatus("PENDING");
+        ensurePaymentStatus("PENDIENTE_DEVOLUCION");
         ensurePaymentStatus("PAID");
 
         ReservationEntity reservation = createReservation(client, reserved, LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
         createReservationDetail(reservation, tool);
-        createPayment(reservation, "PENDING");
+        createPayment(reservation, "PENDIENTE_DEVOLUCION");
         flushAndClear();
 
         mockMvc.perform(post("/payments/reservation/{id}/pay", reservation.getId())
@@ -115,11 +115,11 @@ class ReservationPaymentControllerIntegrationTest {
 
         ReservationStatusEntity reserved = ensureReservationStatus("RESERVED");
         ensureReservationStatus("CANCELLED");
-        ensurePaymentStatus("PENDING");
+        ensurePaymentStatus("PENDIENTE_DEVOLUCION");
         ensurePaymentStatus("CANCELLED");
 
         ReservationEntity reservation = createReservation(client, reserved, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4));
-        createPayment(reservation, "PENDING");
+        createPayment(reservation, "PENDIENTE_DEVOLUCION");
         flushAndClear();
 
         mockMvc.perform(put("/api/reservations/{id}/cancel", reservation.getId())

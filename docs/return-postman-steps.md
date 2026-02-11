@@ -104,7 +104,7 @@ Headers:
 - `Content-Type: application/json`
 
 ```json
-{ "name": "PENDING" }
+{ "name": "PENDIENTE_DEVOLUCION" }
 ```
 
 ## 9) Crear RETURN (cliente)

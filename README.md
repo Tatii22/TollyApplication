@@ -269,7 +269,7 @@ Los scripts de base de datos estan en:
 - `docs/sql/seed.sql`
 
 ## Notas Importantes
-- El pago se crea automaticamente en estado `PENDING` al crear la reserva.
+- El pago se crea automaticamente en estado `PENDIENTE_DEVOLUCION` al crear la reserva.
 - La factura se genera cuando se paga la reserva.
 - Para que la factura exista, la reserva debe tener detalles.
 

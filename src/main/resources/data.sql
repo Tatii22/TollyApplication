@@ -44,8 +44,8 @@ SELECT 'IN_INCIDENT'
 WHERE NOT EXISTS (SELECT 1 FROM reservation_status WHERE status_name = 'IN_INCIDENT');
 
 INSERT INTO payment_status (name)
-SELECT 'PENDING'
-WHERE NOT EXISTS (SELECT 1 FROM payment_status WHERE name = 'PENDING');
+SELECT 'PENDIENTE_DEVOLUCION'
+WHERE NOT EXISTS (SELECT 1 FROM payment_status WHERE name = 'PENDIENTE_DEVOLUCION');
 INSERT INTO payment_status (name)
 SELECT 'PAID'
 WHERE NOT EXISTS (SELECT 1 FROM payment_status WHERE name = 'PAID');
@@ -55,8 +55,8 @@ WHERE NOT EXISTS (SELECT 1 FROM payment_status WHERE name = 'CANCELLED');
 
 -- Insertar estados de devolucion iniciales si no existen (compatible con H2 y MySQL)
 INSERT INTO return_status (name)
-SELECT 'PENDING'
-WHERE NOT EXISTS (SELECT 1 FROM return_status WHERE name = 'PENDING');
+SELECT 'PENDIENTE_DEVOLUCION'
+WHERE NOT EXISTS (SELECT 1 FROM return_status WHERE name = 'PENDIENTE_DEVOLUCION');
 INSERT INTO return_status (name)
 SELECT 'SENT'
 WHERE NOT EXISTS (SELECT 1 FROM return_status WHERE name = 'SENT');

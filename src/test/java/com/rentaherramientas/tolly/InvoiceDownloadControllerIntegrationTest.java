@@ -120,13 +120,13 @@ class InvoiceDownloadControllerIntegrationTest {
 
     ReservationStatusEntity reserved = ensureReservationStatus("RESERVED");
     ensureReservationStatus("IN_PROGRESS");
-    ensurePaymentStatus("PENDING");
+    ensurePaymentStatus("PENDIENTE_DEVOLUCION");
     ensurePaymentStatus("PAID");
 
     ReservationEntity reservation = createReservation(client, reserved,
         LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
     createReservationDetail(reservation, tool);
-    PaymentEntity payment = createPayment(reservation, "PENDING");
+    PaymentEntity payment = createPayment(reservation, "PENDIENTE_DEVOLUCION");
     flushAndClear();
 
     payPaymentUseCase.execute(reservation.getId(), clientUser.getId());

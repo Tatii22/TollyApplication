@@ -72,7 +72,7 @@ public class CreateReservationUseCase {
     // 4ï¸âƒ£ Guardar la reserva usando el adapter
     Reservation saved = reservationRepository.save(reservation);
 
-    // 5) Crear pago automaticamente en estado PENDING
+    // 5) Crear pago automaticamente en estado PENDIENTE_DEVOLUCION
     createPaymentUseCase.execute(new CreatePaymentRequest(saved.getId(), saved.getTotal()));
 
     // 5ï¸âƒ£ Devolver DTO de respuesta

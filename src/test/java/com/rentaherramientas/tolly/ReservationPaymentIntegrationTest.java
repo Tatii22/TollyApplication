@@ -86,12 +86,12 @@ class ReservationPaymentIntegrationTest {
 
         ReservationStatusEntity reserved = ensureReservationStatus("RESERVED");
         ReservationStatusEntity inProgress = ensureReservationStatus("IN_PROGRESS");
-        ensurePaymentStatus("PENDING");
+        ensurePaymentStatus("PENDIENTE_DEVOLUCION");
         ensurePaymentStatus("PAID");
 
         ReservationEntity reservation = createReservation(client, reserved, LocalDate.now().plusDays(1), LocalDate.now().plusDays(3));
         createReservationDetail(reservation, tool);
-        PaymentEntity payment = createPayment(reservation, "PENDING");
+        PaymentEntity payment = createPayment(reservation, "PENDIENTE_DEVOLUCION");
 
         Payment paid = payPaymentUseCase.execute(reservation.getId(), clientUser.getId());
 
@@ -114,11 +114,11 @@ class ReservationPaymentIntegrationTest {
 
         ReservationStatusEntity reserved = ensureReservationStatus("RESERVED");
         ensureReservationStatus("CANCELLED");
-        ensurePaymentStatus("PENDING");
+        ensurePaymentStatus("PENDIENTE_DEVOLUCION");
         ensurePaymentStatus("CANCELLED");
 
         ReservationEntity reservation = createReservation(client, reserved, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4));
-        PaymentEntity payment = createPayment(reservation, "PENDING");
+        PaymentEntity payment = createPayment(reservation, "PENDIENTE_DEVOLUCION");
 
         reservationCancelledUseCase.cancelReservation(reservation.getId(), clientUser.getId());
 

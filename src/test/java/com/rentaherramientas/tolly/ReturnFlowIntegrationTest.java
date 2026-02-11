@@ -100,7 +100,7 @@ class ReturnFlowIntegrationTest {
         ClientEntity client = createClient(clientUser);
 
         ensureReservationStatus("IN_PROGRESS");
-        ensureReturnStatus("PENDING");
+        ensureReturnStatus("PENDIENTE_DEVOLUCION");
         ensureReturnStatus("SENT");
 
         ReservationEntity reservation = createReservation(
@@ -122,7 +122,7 @@ class ReturnFlowIntegrationTest {
                     """.formatted(reservation.getId(), LocalDate.now().toString(), tool.getId()))
                 .with(SecurityMockMvcRequestPostProcessors.authentication(auth(clientUser.getId(), "ROLE_CLIENT"))))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.returnStatusName").value("PENDING"));
+            .andExpect(jsonPath("$.returnStatusName").value("PENDIENTE_DEVOLUCION"));
 
         ReturnEntity created = returnJpaRepository.findAll().get(0);
 
@@ -143,7 +143,7 @@ class ReturnFlowIntegrationTest {
 
         ensureReservationStatus("IN_PROGRESS");
         ensureReservationStatus("FINISHED");
-        ensureReturnStatus("PENDING");
+        ensureReturnStatus("PENDIENTE_DEVOLUCION");
         ensureReturnStatus("SENT");
         ensureReturnStatus("RECEIVED");
         ensureToolStatus("AVAILABLE");
@@ -207,7 +207,7 @@ class ReturnFlowIntegrationTest {
 
         ensureReservationStatus("IN_PROGRESS");
         ensureReservationStatus("IN_INCIDENT");
-        ensureReturnStatus("PENDING");
+        ensureReturnStatus("PENDIENTE_DEVOLUCION");
         ensureReturnStatus("SENT");
         ensureReturnStatus("DAMAGED");
         ensureToolStatus("UNAVAILABLE");
@@ -270,7 +270,7 @@ class ReturnFlowIntegrationTest {
         ClientEntity client = createClient(clientUser);
 
         ensureReservationStatus("IN_PROGRESS");
-        ensureReturnStatus("PENDING");
+        ensureReturnStatus("PENDIENTE_DEVOLUCION");
         ensureReturnStatus("RECEIVED");
 
         ReservationEntity reservation = createReservation(
@@ -318,7 +318,7 @@ class ReturnFlowIntegrationTest {
         ClientEntity client = createClient(clientUser);
 
         ensureReservationStatus("IN_PROGRESS");
-        ensureReturnStatus("PENDING");
+        ensureReturnStatus("PENDIENTE_DEVOLUCION");
 
         ReservationEntity reservation = createReservation(
             client, "IN_PROGRESS", LocalDate.now(), LocalDate.now().plusDays(1));
@@ -353,7 +353,7 @@ class ReturnFlowIntegrationTest {
         ClientEntity client = createClient(clientUser);
 
         ensureReservationStatus("IN_PROGRESS");
-        ensureReturnStatus("PENDING");
+        ensureReturnStatus("PENDIENTE_DEVOLUCION");
         ensureReturnStatus("SENT");
         ensureReturnStatus("RECEIVED");
 

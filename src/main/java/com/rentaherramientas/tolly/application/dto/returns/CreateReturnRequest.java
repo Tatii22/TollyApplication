@@ -21,7 +21,7 @@ public record CreateReturnRequest(
     @Schema(description = "Estado de devolucion reportado por el cliente", example = "CL_DAMAGED")
     String returnStatusName,
 
-    @Schema(description = "ID del estado de devolucion (se asigna automaticamente a PENDING)", example = "1")
+    @Schema(description = "ID del estado de devolucion (se asigna automaticamente a PENDIENTE_DEVOLUCION)", example = "1")
     Long returnStatusId,
 
     @NotEmpty(message = "Debe incluir al menos un detalle de devolucion")

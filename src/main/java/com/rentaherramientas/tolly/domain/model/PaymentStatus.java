@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class PaymentStatus {
 
-    public static final String PENDING = "PENDING";
+    public static final String PENDIENTE_DEVOLUCION = "PENDIENTE_DEVOLUCION";
     public static final String PAID = "PAID";
     public static final String CANCELLED = "CANCELLED";
 
@@ -32,7 +32,7 @@ public class PaymentStatus {
     }
 
     public boolean isPending() {
-        return PENDING.equalsIgnoreCase(name);
+        return PENDIENTE_DEVOLUCION.equalsIgnoreCase(name);
     }
 
     public boolean isCancelled() {

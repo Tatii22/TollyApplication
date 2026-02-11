@@ -66,7 +66,7 @@ public class PayPaymentUseCase {
             throw new DomainException("Payment already PAID");
         }
         if (!payment.isPending()) {
-            throw new DomainException("Payment must be PENDING");
+            throw new DomainException("Payment must be PENDIENTE_DEVOLUCION");
         }
 
         if (reservation.getTotal() == null || reservation.getTotal().compareTo(payment.getAmount()) != 0) {

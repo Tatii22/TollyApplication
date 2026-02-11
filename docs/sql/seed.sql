@@ -22,12 +22,12 @@ INSERT INTO reservation_status (id_reservation_status, status_name) VALUES
   (5, 'IN_INCIDENT');
 
 INSERT INTO payment_status (id_payment_status, name) VALUES
-  (1, 'PENDING'),
+  (1, 'PENDIENTE_DEVOLUCION'),
   (2, 'PAID'),
   (3, 'CANCELLED');
 
 INSERT INTO return_status (id_return_status, name) VALUES
-  (1, 'PENDING'),
+  (1, 'PENDIENTE_DEVOLUCION'),
   (2, 'SENT'),
   (3, 'RECEIVED'),
   (4, 'DAMAGED');

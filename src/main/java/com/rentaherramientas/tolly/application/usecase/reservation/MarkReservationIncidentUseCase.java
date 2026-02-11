@@ -55,7 +55,7 @@ public class MarkReservationIncidentUseCase {
         Payment payment = paymentRepository.findByReservationId(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Pago no encontrado para la reserva"));
         if (!payment.isPaid()) {
-            throw new IllegalStateException("No se puede marcar incidencia con pago PENDING");
+            throw new IllegalStateException("No se puede marcar incidencia con pago PENDIENTE_DEVOLUCION");
         }
 
         if (!isAdmin) {

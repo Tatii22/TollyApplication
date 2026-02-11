@@ -22,7 +22,7 @@ import com.rentaherramientas.tolly.domain.ports.UserRepository;
 @Service
 public class ConfirmReturnUseCase {
 
-    private static final String STATUS_PENDING = "PENDING";
+    private static final String STATUS_PENDIENTE_DEVOLUCION = "PENDIENTE_DEVOLUCION";
     private static final String STATUS_CLIENT_DAMAGED = "CL_DAMAGED";
     private static final String STATUS_CLIENT_INCOMPLETE = "CL_INCOMPLETE";
     private static final String STATUS_SENT = "SENT";
@@ -67,10 +67,10 @@ public class ConfirmReturnUseCase {
             throw new DomainException("Estado de devolucion no encontrado");
         }
         String current = existing.getStatus().getName();
-        if (!STATUS_PENDING.equalsIgnoreCase(current)
+        if (!STATUS_PENDIENTE_DEVOLUCION.equalsIgnoreCase(current)
             && !STATUS_CLIENT_DAMAGED.equalsIgnoreCase(current)
             && !STATUS_CLIENT_INCOMPLETE.equalsIgnoreCase(current)) {
-            throw new DomainException("Solo se puede confirmar devolucion en estado PENDING, CL_DAMAGED o CL_INCOMPLETE");
+            throw new DomainException("Solo se puede confirmar devolucion en estado PENDIENTE_DEVOLUCION, CL_DAMAGED o CL_INCOMPLETE");
         }
 
         if (userId == null) {

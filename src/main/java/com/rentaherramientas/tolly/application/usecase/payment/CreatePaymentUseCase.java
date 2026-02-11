@@ -59,13 +59,13 @@ public class CreatePaymentUseCase {
             throw new DomainException("Amount does not match reservation total");
         }
 
-        // 4) Crear pago con estado inicial PENDING
+        // 4) Crear pago con estado inicial PENDIENTE_DEVOLUCION
         Payment payment = new Payment(
                 null,
                 reservation,
                 expected,
                 null,
-                new PaymentStatus(null, PaymentStatus.PENDING)
+                new PaymentStatus(null, PaymentStatus.PENDIENTE_DEVOLUCION)
         );
 
         return paymentRepository.save(payment);
